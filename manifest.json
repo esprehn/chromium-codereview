@@ -1,0 +1,39 @@
+{
+  "manifest_version": 2,
+
+  "name": "ChromeReview",
+  "version": "0.1",
+
+  "description": "Making code review amazing.",
+
+  "author": "esprehn",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+
+  "web_accessible_resources": [
+    "ui/*"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["https://codereview.chromium.org/*"],
+      "js": [
+        "ui/underscore.js",
+        "ui/underscore.string.js",
+        "ui/base.js",
+        "ui/resources.js",
+        "ui/model/issue_detail.js",
+        "ui/model/issue_list.js",
+        "ui/model/user.js",
+        "ui/main.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+
+  "permissions": [
+    "https://codereview.chromium.org/*"
+  ]
+}
