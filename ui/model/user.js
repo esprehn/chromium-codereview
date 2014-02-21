@@ -7,13 +7,21 @@ function User(name)
     this.reviewedIssues = 0;
 }
 
+User.prototype.getIssueListUrl = function() {
+    return "https://codereview.chromium.org/user/" + encodeURIComponent(this.name);
+};
+
+User.prototype.getDetailUrl = function() {
+    return "https://codereview.chromium.org/user_popup/" + encodeURIComponent(this.name);
+};
+
 User.prototype.loadDetail = function()
 {
     var user = this;
     return new Promise(function(fulfill, reject) {
         var xhr = new XMLHttpRequest();
         xhr.responseType = "document";
-        xhr.open("GET", "https://codereview.chromium.org/user_popup/" + encodeURIComponent(user.name));
+        xhr.open("GET", user.getDetailUrl());
         xhr.send();
         xhr.onload = function() {
             user.parseDetail(xhr.responseXML.documentElement.innerText);
@@ -24,6 +32,23 @@ User.prototype.loadDetail = function()
         };
     });
 };
+
+User.prototype.loadIssues = function()
+{
+    var user = this;
+    return new Promise(function(fulfill, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = "document";
+        xhr.open("GET", user.getIssueListUrl());
+        xhr.send();
+        xhr.onload = function() {
+            fulfill(parseIssueList(xhr.responseXML));
+        };
+        xhr.onerror = function(e) {
+            reject(e);
+        };
+    });
+}
 
 User.prototype.parseDetail = function(text)
 {

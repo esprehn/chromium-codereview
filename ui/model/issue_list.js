@@ -1,5 +1,4 @@
 
-
 function parseIssueList(document)
 {
     var FIELDS = [null, null, "id", "subject", "owner", "reviewers", "comments", "drafts", "lastUpdated"];
