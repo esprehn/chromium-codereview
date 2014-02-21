@@ -2,7 +2,7 @@
 function parseIssueList(document)
 {
     var FIELDS = [null, null, "id", "subject", "owner", "reviewers", "comments", "drafts", "lastUpdated"];
-    var HANDLERS = [null, null, Number, String, String, convertToUsers, Number, Number, String];
+    var HANDLERS = [null, null, Number, String, convertToUser, convertToUsers, Number, Number, String];
 
     var result = {};
     var rows = document.querySelectorAll("#queues tr");
@@ -12,6 +12,10 @@ function parseIssueList(document)
         return value.split(",").map(function(value) {
             return new User(value.trim());
         });
+    }
+
+    function convertToUser(value) {
+        return new User(value);
     }
 
     function processHeaderRow(row) {

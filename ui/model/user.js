@@ -7,48 +7,31 @@ function User(name)
     this.reviewedIssues = 0;
 }
 
-User.prototype.getIssueListUrl = function() {
+User.prototype.getIssueListUrl = function()
+{
     return "https://codereview.chromium.org/user/" + encodeURIComponent(this.name);
 };
 
-User.prototype.getDetailUrl = function() {
+User.prototype.getDetailUrl = function()
+{
     return "https://codereview.chromium.org/user_popup/" + encodeURIComponent(this.name);
 };
 
 User.prototype.loadDetail = function()
 {
     var user = this;
-    return new Promise(function(fulfill, reject) {
-        var xhr = new XMLHttpRequest();
-        xhr.responseType = "document";
-        xhr.open("GET", user.getDetailUrl());
-        xhr.send();
-        xhr.onload = function() {
-            user.parseDetail(xhr.responseXML.documentElement.innerText);
-            fulfill(user);
-        };
-        xhr.onerror = function(e) {
-            reject(e);
-        };
+    return loadDocument(this.getDetailUrl()).then(function(document) {
+        user.parseDetail(document.documentElement.innerText);
+        return user;
     });
 };
 
 User.prototype.loadIssues = function()
 {
-    var user = this;
-    return new Promise(function(fulfill, reject) {
-        var xhr = new XMLHttpRequest();
-        xhr.responseType = "document";
-        xhr.open("GET", user.getIssueListUrl());
-        xhr.send();
-        xhr.onload = function() {
-            fulfill(parseIssueList(xhr.responseXML));
-        };
-        xhr.onerror = function(e) {
-            reject(e);
-        };
+    return loadDocument(this.getIssueListUrl()).then(function(document) {
+        return parseIssueList(document);
     });
-}
+};
 
 User.prototype.parseDetail = function(text)
 {
@@ -69,4 +52,4 @@ User.prototype.parseDetail = function(text)
     match = ISSUES_REVIEW_PATTERN.exec(text);
     if (match)
         this.reviewedIssues = Number(match[1]);
-}
+};
