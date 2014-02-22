@@ -1,18 +1,28 @@
 
 var util = _;
 
-function loadDocument(url)
+function loadResource(type, url)
 {
     return new Promise(function(fulfill, reject) {
         var xhr = new XMLHttpRequest();
-        xhr.responseType = "document";
+        xhr.responseType = type;
         xhr.open("GET", url);
         xhr.send();
         xhr.onload = function() {
-            fulfill(xhr.responseXML);
+            fulfill(xhr);
         };
         xhr.onerror = function(e) {
-            reject(e);
+            reject(xhr);
         };
     });
+}
+
+function loadDocument(url)
+{
+    return loadResource("document", url);
+}
+
+function loadJSON(url)
+{
+    return loadResource("json", url);
 }
