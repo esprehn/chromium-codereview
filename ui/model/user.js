@@ -62,7 +62,9 @@ User.prototype.loadDetail = function()
 User.prototype.loadIssues = function()
 {
     return loadDocument(this.getIssueListUrl()).then(function(document) {
-        return parseIssueList(document);
+        var issueList = new IssueList();
+        issueList.parseDocument(document);
+        return issueList;
     });
 };
 

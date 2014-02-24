@@ -1,8 +1,10 @@
 
 onload = function() {
     User.parseCurrentUser(document);
-    var issues = IssueList.parseIssueList(document);
+    var issues = new IssueList();
+    issues.parseDocument(document);
     var issue = issues.incoming[0];
+    console.log(issues);
     issue.loadDetails().then(function() {
         console.log(issue);
     }, function(e) {

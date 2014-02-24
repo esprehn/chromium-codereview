@@ -1,6 +1,7 @@
 
 function IssueList()
 {
+    this.owner = null; // User
     this.incoming = []; // Array<Issue>
     this.outgoing = []; // Array<Issue>
     this.unsent = []; // Array<Issue>
@@ -8,45 +9,48 @@ function IssueList()
     this.closed = []; // Array<Issue>
 }
 
-IssueList.parseIssueList = function(document)
+IssueList.convertRelativeDate = function(value) {
+    var result = new Date();
+    value.split(",").each(function(value) {
+        var tokens = value.trim().split(" ");
+        if (tokens.length != 2)
+            return;
+        var type = tokens[1];
+        var amount = parseInt(tokens[0], 10);
+        if (isNaN(amount) || amount <= 0)
+            return;
+        var args = {};
+        args[type] = amount;
+        result.rewind(args);
+    });
+    return result;
+};
+
+IssueList.convertToUsers = function(value) {
+    return value.split(",").map(function(value) {
+        return User.forName(value.trim());
+    });
+};
+
+IssueList.prototype.parseDocument = function(document)
 {
     var FIELDS = [null, null, "id", "subject", "owner", "reviewers", "messageCount", "draftCount", "lastModified"];
-    var HANDLERS = [null, null, Number, String, convertToUser, convertToUsers, Number, Number, convertRelativeDate];
+    var HANDLERS = [null, null, Number, String, User.forName, IssueList.convertToUsers, Number, Number, IssueList.convertRelativeDate];
 
-    var result = new IssueList();
+    var issueList = this;
+
     var rows = document.querySelectorAll("#queues tr");
     var currentType;
 
-    function convertRelativeDate(value) {
-        var result = new Date();
-        value.split(",").each(function(value) {
-            var tokens = value.trim().split(" ");
-            if (tokens.length != 2)
-                return;
-            var type = tokens[1];
-            var amount = parseInt(tokens[0], 10);
-            if (isNaN(amount) || amount <= 0)
-                return;
-            var args = {};
-            args[type] = amount;
-            result.rewind(args);
-        });
-        return result;
-    }
-
-    function convertToUsers(value) {
-        return value.split(",").map(function(value) {
-            return User.forName(value.trim());
-        });
-    }
-
-    function convertToUser(value) {
-        return User.forName(value);
+    var h2 = document.querySelector("h2");
+    if (h2) {
+        var name = h2.textContent.remove("Issues for ");
+        issueList.owner = new User(name);
     }
 
     function processHeaderRow(row) {
         var type = row.classList[1];
-        currentType = result[type];
+        currentType = issueList[type];
     }
 
     function processIssueRow(row) {
@@ -68,6 +72,4 @@ IssueList.parseIssueList = function(document)
         else if (row.classList.contains("header"))
             processHeaderRow(row);
     }
-
-    return result;
 };
