@@ -32,14 +32,22 @@ User.forName = function(name)
     return new User(name);
 };
 
+User.forMailingListEmail = function(email)
+{
+    // Lots of people use a + url for auto-cc lists, remove it since they
+    // often use their normal user name just with the + part added.
+    email = email.remove(/\+[^@]+/);
+    return new User("", email);
+};
+
 User.prototype.getIssueListUrl = function()
 {
-    return "https://codereview.chromium.org/user/" + encodeURIComponent(this.name);
+    return "https://codereview.chromium.org/user/" + encodeURIComponent(this.email || this.name);
 };
 
 User.prototype.getDetailUrl = function()
 {
-    return "https://codereview.chromium.org/user_popup/" + encodeURIComponent(this.name);
+    return "https://codereview.chromium.org/user_popup/" + encodeURIComponent(this.email || this.name);
 };
 
 User.prototype.loadDetail = function()

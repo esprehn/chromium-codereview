@@ -10,7 +10,7 @@ function Issue()
     this.draftCount = 0;
     this.owner = null; // User
     this.private = false;
-    this.baseURL = "";
+    this.baseUrl = "";
     this.subject = "";
     this.created = ""; // Date
     this.patchsets = []; // Array<PatchSet>
@@ -23,4 +23,44 @@ function Issue()
 Issue.prototype.getDetailUrl = function()
 {
     return "https://codereview.chromium.org/api/" + encodeURIComponent(this.id) + "?messages=true";
+};
+
+Issue.prototype.loadDetails = function()
+{
+    var issue = this;
+    return loadJSON(this.getDetailUrl()).then(function(data) {
+        issue.parseData(data);
+        return issue;
+    });
+};
+
+Issue.prototype.parseData = function(data)
+{
+    if (this.id !== data.issue)
+        throw new Error("Incorrect issue loaded " + this.id + " != " + data.issue);
+    this.baseUrl = data.base_url || "";
+    this.closed = data.closed || false;
+    this.commit = data.commit || false;
+    this.created = Date.create(data.created);
+    this.description = data.description || "";
+    this.lastModified = Date.create(data.modified);
+    this.owner = User.forName(data.owner);
+    this.private = data.private;
+    this.subject = data.subject || "";
+    this.cc = (data.cc || []).map(function(email) {
+        return User.forMailingListEmail(email);
+    });
+    this.reviwers = (data.reviwers || []).map(function(email) {
+        return new User("", email);
+    });
+    this.patchsets = (data.patchsets || []).map(function(id) {
+        return new PatchSet(id);
+    });
+    this.messages = (data.messages || []).map(function(messageData) {
+        var message = new IssueMessage();
+        message.parseData(messageData);
+        return message;
+    });
+    // Overwrite the count in case they differ (ex. new comments were added since the summary list was loaded).
+    this.messageCount = this.messages.length;
 };
