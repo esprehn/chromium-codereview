@@ -20,8 +20,7 @@
     {
       "matches": ["https://codereview.chromium.org/*"],
       "js": [
-        "ui/underscore.js",
-        "ui/underscore.string.js",
+        "ui/sugar.js",
         "ui/base.js",
         "ui/resources.js",
         "ui/model/issue.js",

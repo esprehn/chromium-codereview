@@ -1,6 +1,4 @@
 
-var util = _;
-
 function loadResource(type, url)
 {
     return new Promise(function(fulfill, reject) {

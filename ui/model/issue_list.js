@@ -1,12 +1,38 @@
 
-function parseIssueList(document)
+function IssueList()
 {
-    var FIELDS = [null, null, "id", "subject", "owner", "reviewers", "comments", "drafts", "lastUpdated"];
-    var HANDLERS = [null, null, Number, String, convertToUser, convertToUsers, Number, Number, String];
+    this.incoming = []; // Array<Issue>
+    this.outgoing = []; // Array<Issue>
+    this.unsent = []; // Array<Issue>
+    this.cc = []; // Array<Issue>
+    this.closed = []; // Array<Issue>
+}
 
-    var result = {};
+IssueList.parseIssueList = function(document)
+{
+    var FIELDS = [null, null, "id", "subject", "owner", "reviewers", "messageCount", "draftCount", "lastModified"];
+    var HANDLERS = [null, null, Number, String, convertToUser, convertToUsers, Number, Number, convertRelativeDate];
+
+    var result = new IssueList();
     var rows = document.querySelectorAll("#queues tr");
     var currentType;
+
+    function convertRelativeDate(value) {
+        var result = new Date();
+        value.split(",").each(function(value) {
+            var tokens = value.trim().split(" ");
+            if (tokens.length != 2)
+                return;
+            var type = tokens[1];
+            var amount = parseInt(tokens[0], 10);
+            if (isNaN(amount) || amount <= 0)
+                return;
+            var args = {};
+            args[type] = amount;
+            result.rewind(args);
+        });
+        return result;
+    }
 
     function convertToUsers(value) {
         return value.split(",").map(function(value) {
@@ -20,14 +46,13 @@ function parseIssueList(document)
 
     function processHeaderRow(row) {
         var type = row.classList[1];
-        result[type] = result[type] || [];
         currentType = result[type];
     }
 
     function processIssueRow(row) {
         if (!currentType)
             return;
-        var issue = {};
+        var issue = new Issue();
         for (var td = row.firstElementChild, i = 0; td; td = td.nextElementSibling, ++i) {
             if (!FIELDS[i])
                 continue;
@@ -45,4 +70,4 @@ function parseIssueList(document)
     }
 
     return result;
-}
+};
