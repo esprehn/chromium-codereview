@@ -30,20 +30,22 @@ PatchSet.prototype.loadDetails = function()
 PatchSet.prototype.parseData = function(data)
 {
     var patchset = this;
+
     if (!this.issue || data.issue != this.issue.id || data.patchset != this.id) {
         throw new Error("Invalid patchset loaded " + data.issue + " != " + this.issue.id
             + " or " + data.patchset + " != " + this.id);
     }
-    this.owner = new User(data.owner);
+
+    this.owner = new User(data.owner || "");
     this.message = data.message || "";
     this.lastModified = Date.create(data.modified);
-    this.commentCount = data.comments;
+    this.commentCount = data.num_comments || 0;
     this.created = Date.create(data.created);
     this.files = {};
 
     var files = data.files || {};
     Object.keys(files).each(function(name) {
-        var file = new PatchFile(name);
+        var file = new PatchFile(patchset, name);
         file.parseData(files[name]);
         patchset.files[name] = file;
     });
