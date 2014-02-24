@@ -9,7 +9,8 @@ function IssueList()
     this.closed = []; // Array<Issue>
 }
 
-IssueList.convertRelativeDate = function(value) {
+IssueList.convertRelativeDate = function(value)
+{
     var result = new Date();
     value.split(",").each(function(value) {
         var tokens = value.trim().split(" ");
@@ -26,7 +27,8 @@ IssueList.convertRelativeDate = function(value) {
     return result;
 };
 
-IssueList.convertToUsers = function(value) {
+IssueList.convertToUsers = function(value)
+{
     return value.split(",").map(function(value) {
         return User.forName(value.trim());
     });

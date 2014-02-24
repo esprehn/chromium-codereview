@@ -17,3 +17,8 @@ function TryJobResult()
 }
 
 TryJobResult.RESULT = ["success", "warnings", "failure", "skipped", "exception", "retry", "pending"];
+
+TryJobResult.prototype.parseData = function(data)
+{
+    // FIXME: Implement me.
+};

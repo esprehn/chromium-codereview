@@ -37,6 +37,7 @@ Issue.prototype.loadDetails = function()
 
 Issue.prototype.parseData = function(data)
 {
+    var issue = this;
     if (this.id !== data.issue)
         throw new Error("Incorrect issue loaded " + this.id + " != " + data.issue);
     this.baseUrl = data.base_url || "";
@@ -54,8 +55,8 @@ Issue.prototype.parseData = function(data)
     this.reviewers = (data.reviewers || []).map(function(email) {
         return new User("", email);
     });
-    this.patchsets = (data.patchsets || []).map(function(id) {
-        return new PatchSet(id);
+    this.patchsets = (data.patchsets || []).map(function(patchsetId) {
+        return new PatchSet(issue, patchsetId);
     });
     this.messages = (data.messages || []).map(function(messageData) {
         var message = new IssueMessage();

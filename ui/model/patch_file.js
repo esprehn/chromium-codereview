@@ -12,3 +12,8 @@ function PatchFile()
     this.isBinary = false;
     this.messages = []; // Array<PatchFileMessage>
 }
+
+PatchFile.prototype.parseData = function(data)
+{
+    // FIXME: Implement me.
+};

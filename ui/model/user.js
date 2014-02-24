@@ -50,7 +50,7 @@ User.prototype.getDetailUrl = function()
     return "https://codereview.chromium.org/user_popup/" + encodeURIComponent(this.email || this.name);
 };
 
-User.prototype.loadDetail = function()
+User.prototype.loadDetails = function()
 {
     var user = this;
     return loadDocument(this.getDetailUrl()).then(function(document) {
