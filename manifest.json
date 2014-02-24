@@ -23,6 +23,7 @@
         "ui/sugar.js",
         "ui/base.js",
         "ui/resources.js",
+        "ui/model/autocomplete.js",
         "ui/model/issue.js",
         "ui/model/issue_list.js",
         "ui/model/issue_message.js",

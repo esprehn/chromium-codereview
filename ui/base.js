@@ -15,6 +15,13 @@ function loadResource(type, url)
     });
 }
 
+function loadText(url)
+{
+    return loadResource("text", url).then(function(xhr) {
+        return xhr.responseText;
+    });
+}
+
 function loadDocument(url)
 {
     return loadResource("document", url).then(function(xhr) {

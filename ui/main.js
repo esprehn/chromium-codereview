@@ -8,6 +8,15 @@ onload = function() {
     var issue = issues.incoming[0];
     console.log(issues);
 
+    AutoComplete.findUsers("esp", 10).then(function(users) {
+        console.log(users);
+    }, function(e) {
+        console.log(e, e.stack);
+    });
+
+    if (!issue)
+        return;
+
     issue.loadDetails().then(function() {
         console.log(issue);
         issue.patchsets[1].loadDetails().then(function(patchset) {
