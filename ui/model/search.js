@@ -4,12 +4,13 @@ function Search()
 }
 
 Search.USER_URL = "https://codereview.chromium.org/account?limit={1}&q={2}";
-Search.ISSUE_URL = "https://codereview.chromium.org/search?format=json&closed={1}&owner={2}&reviewer={3}&limit={4}&cursor={5}"
+Search.ISSUE_URL = "https://codereview.chromium.org/search?format=json&closed={1}&owner={2}&reviewer={3}&limit={4}&cursor={5}";
+Search.DEFAULT_LIMIT = 10;
 
 Search.findUsers = function(query, limit)
 {
     var url = Search.USER_URL.assign(
-        encodeURIComponent(Number(limit) || 10),
+        encodeURIComponent(Number(limit) || Search.DEFAULT_LIMIT),
         encodeURIComponent(query));
 
     return loadText(url).then(function(text) {
@@ -36,7 +37,7 @@ Search.findIssues = function(query, limit)
         encodeURIComponent(closed),
         encodeURIComponent(query.owner || ""),
         encodeURIComponent(query.reviewer || ""),
-        encodeURIComponent(Number(limit) || 10),
+        encodeURIComponent(Number(limit) || Search.DEFAULT_LIMIT),
         encodeURIComponent(query.cursor || ""));
 
     return loadJSON(url).then(function(data) {
