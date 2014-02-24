@@ -1,7 +1,7 @@
 
 // https://codereview.chromium.org/api/148223004/?messages=true
 // FIXME: There's no obvious way to get the draft comments, the API doesn't have them.
-function Issue()
+function Issue(id)
 {
     this.description = "";
     this.cc = []; // Array<User>
@@ -18,7 +18,7 @@ function Issue()
     this.lastModified = ""; // Date
     this.closed = false;
     this.commit = false;
-    this.id = 0;
+    this.id = id || 0;
 }
 
 Issue.prototype.getDetailUrl = function()

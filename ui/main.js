@@ -8,10 +8,16 @@ onload = function() {
     var issue = issues.incoming[0];
     console.log(issues);
 
-    AutoComplete.findUsers("esp", 10).then(function(users) {
+    Search.findUsers("esp", 10).then(function(users) {
         console.log(users);
     }, function(e) {
-        console.log(e, e.stack);
+        console.log(e.stack, e);
+    });
+
+    Search.findIssues({owner: "esprehn@chromium.org"}).then(function(result) {
+        console.log(result);
+    }, function(e) {
+        console.log(e.stack, e);
     });
 
     if (!issue)
@@ -22,10 +28,10 @@ onload = function() {
         issue.patchsets[1].loadDetails().then(function(patchset) {
             console.log(patchset);
         }, function(e) {
-            console.log(e.stack);
+            console.log(e.stack, e);
         });
     }, function(e) {
-        console.log(e);
+        console.log(e.stack, e);
     });
 
     // var user = issues.cc[0].reviewers[0];
