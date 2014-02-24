@@ -1,11 +1,26 @@
 
-function User(name)
+function User(name, email)
 {
-    this.name = name;
-    this.email = "";
+    this.name = name || "";
+    this.email = email || "";
     this.openIssues = 0;
     this.reviewedIssues = 0;
 }
+
+User.EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
+User.ISSUES_OPEN_PATTERN = /issues created: (\d+)/;
+User.ISSUES_REVIEW_PATTERN = /issues reviewed: (\d+)/;
+
+User.parseCurrentUser = function(document)
+{
+    var b = document.body.querySelector("div[align=right] b");
+    if (!b)
+        return null;
+    var match = User.EMAIL_PATTERN.exec(b.textContent);
+    if (!match)
+        return null;
+    return new User(match[2], match[1]);
+};
 
 User.prototype.getIssueListUrl = function()
 {
@@ -41,17 +56,17 @@ User.prototype.parseDetail = function(text)
 
     var match;
 
-    match = EMAIL_PATTERN.exec(text);
+    match = User.EMAIL_PATTERN.exec(text);
     if (match) {
         this.email = match[1];
         this.name = match[2];
     }
 
-    match = ISSUES_OPEN_PATTERN.exec(text);
+    match = User.ISSUES_OPEN_PATTERN.exec(text);
     if (match)
         this.openIssues = Number(match[1]);
 
-    match = ISSUES_REVIEW_PATTERN.exec(text);
+    match = User.ISSUES_REVIEW_PATTERN.exec(text);
     if (match)
         this.reviewedIssues = Number(match[1]);
 };
