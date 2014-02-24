@@ -36,7 +36,7 @@ PatchSet.prototype.parseData = function(data)
             + " or " + data.patchset + " != " + this.id);
     }
 
-    this.owner = new User(data.owner || "");
+    this.owner = new User(data.owner);
     this.message = data.message || "";
     this.lastModified = Date.create(data.modified);
     this.commentCount = data.num_comments || 0;
@@ -50,7 +50,7 @@ PatchSet.prototype.parseData = function(data)
         patchset.files[name] = file;
     });
 
-    this.tryJobResults = (data.tryJobResults || []).map(function(resultData) {
+    this.tryJobResults = (data.try_job_results || []).map(function(resultData) {
         var result = new TryJobResult();
         result.parseData(resultData);
         return result;

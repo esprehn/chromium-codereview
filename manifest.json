@@ -30,6 +30,7 @@
         "ui/model/patch_file_message.js",
         "ui/model/patch_set.js",
         "ui/model/try_job_result.js",
+        "ui/model/try_job_result_step.js",
         "ui/model/user.js",
         "ui/main.js"
       ],

@@ -10,7 +10,7 @@ onload = function() {
 
     issue.loadDetails().then(function() {
         console.log(issue);
-        issue.patchsets[0].loadDetails().then(function(patchset) {
+        issue.patchsets[1].loadDetails().then(function(patchset) {
             console.log(patchset);
         }, function(e) {
             console.log(e.stack);
