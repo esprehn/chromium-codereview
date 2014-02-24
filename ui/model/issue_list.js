@@ -36,12 +36,12 @@ IssueList.parseIssueList = function(document)
 
     function convertToUsers(value) {
         return value.split(",").map(function(value) {
-            return new User(value.trim());
+            return User.forName(value.trim());
         });
     }
 
     function convertToUser(value) {
-        return new User(value);
+        return User.forName(value);
     }
 
     function processHeaderRow(row) {

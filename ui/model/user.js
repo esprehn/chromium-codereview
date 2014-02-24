@@ -11,6 +11,8 @@ User.EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
 User.ISSUES_OPEN_PATTERN = /issues created: (\d+)/;
 User.ISSUES_REVIEW_PATTERN = /issues reviewed: (\d+)/;
 
+User.current = null;
+
 User.parseCurrentUser = function(document)
 {
     var b = document.body.querySelector("div[align=right] b");
@@ -19,7 +21,15 @@ User.parseCurrentUser = function(document)
     var match = User.EMAIL_PATTERN.exec(b.textContent);
     if (!match)
         return null;
-    return new User(match[2], match[1]);
+    User.current = new User(match[2], match[1]);
+    return User.current;
+};
+
+User.forName = function(name)
+{
+    if (name === "me" && User.current)
+        return User.current;
+    return new User(name);
 };
 
 User.prototype.getIssueListUrl = function()
