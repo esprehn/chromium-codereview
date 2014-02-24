@@ -19,10 +19,14 @@ function loadResource(type, url)
 
 function loadDocument(url)
 {
-    return loadResource("document", url);
+    return loadResource("document", url).then(function(xhr) {
+        return xhr.responseXML;
+    });
 }
 
 function loadJSON(url)
 {
-    return loadResource("json", url);
+    return loadResource("json", url).then(function(xhr) {
+        return xhr.response;
+    });
 }

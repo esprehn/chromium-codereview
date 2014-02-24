@@ -35,15 +35,17 @@ User.prototype.loadIssues = function()
 
 User.prototype.parseDetail = function(text)
 {
-    var EMAIL_PATTERN = /([^@]+@[^ ]+) \([^)]+\)/;
+    var EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
     var ISSUES_OPEN_PATTERN = /issues created: (\d+)/;
     var ISSUES_REVIEW_PATTERN = /issues reviewed: (\d+)/;
 
     var match;
 
     match = EMAIL_PATTERN.exec(text);
-    if (match)
+    if (match) {
         this.email = match[1];
+        this.name = match[2];
+    }
 
     match = ISSUES_OPEN_PATTERN.exec(text);
     if (match)
