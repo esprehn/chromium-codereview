@@ -50,7 +50,7 @@ Issue.prototype.parseData = function(data)
     this.cc = (data.cc || []).map(function(email) {
         return User.forMailingListEmail(email);
     });
-    this.reviwers = (data.reviwers || []).map(function(email) {
+    this.reviewers = (data.reviewers || []).map(function(email) {
         return new User("", email);
     });
     this.patchsets = (data.patchsets || []).map(function(id) {
