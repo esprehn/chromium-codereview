@@ -1,5 +1,6 @@
 
 // https://codereview.chromium.org/api/148223004/?messages=true
+// FIXME: There's no obvious way to get the draft comments, the API doesn't have them.
 function Issue()
 {
     this.description = "";
