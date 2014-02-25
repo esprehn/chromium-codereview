@@ -10,13 +10,29 @@ onload = function() {
 
     Search.findUsers("esp", 10).then(function(users) {
         console.log(users);
-    }, function(e) {
+    }).catch(function(e) {
         console.log(e.stack, e);
     });
 
     Search.findIssues({owner: "esprehn@chromium.org"}).then(function(result) {
         console.log(result);
-    }, function(e) {
+    }).catch(function(e) {
+        console.log(e.stack, e);
+    });
+
+    var issue = new Issue(68393002);
+    issue.loadDetails().then(function() {
+        issue.patchsets[0].loadDetails().then(function(patchset) {
+            var file = patchset.files["Source/core/rendering/RenderBlockLineLayout.cpp"];
+            file.loadDrafts().then(function() {
+                console.log(file.drafts);
+            }).catch(function(e) {
+                console.log(e.stack, e);
+            });
+        }).catch(function(e) {
+            console.log(e.stack, e);
+        });
+    }).catch(function(e) {
         console.log(e.stack, e);
     });
 
@@ -30,7 +46,7 @@ onload = function() {
         }, function(e) {
             console.log(e.stack, e);
         });
-    }, function(e) {
+    }).catch(function(e) {
         console.log(e.stack, e);
     });
 
