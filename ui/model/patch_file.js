@@ -16,6 +16,7 @@ function PatchFile(patchset, name)
 }
 
 PatchFile.DRAFT_URL = "https://codereview.chromium.org/{1}/patch/{2}/{3}?column_width=2000";
+PatchFile.REVIEW_URL = "https://codereview.chromium.org/{1}/diff/{2}/{3}";
 
 PatchFile.prototype.parseData = function(data)
 {
@@ -35,13 +36,22 @@ PatchFile.prototype.parseData = function(data)
     });
 };
 
+PatchFile.prototype.getReviewUrl = function()
+{
+    // We don't uri encode the name since it's part of the url path.
+    return PatchFile.REVIEW_URL.assign(
+        encodeURIComponent(this.patchset.issue.id),
+        encodeURIComponent(this.patchset.id),
+        this.name);
+};
+
 PatchFile.prototype.getDraftsUrl = function()
 {
     return PatchFile.DRAFT_URL.assign(
         encodeURIComponent(this.patchset.issue.id),
         encodeURIComponent(this.patchset.id),
         encodeURIComponent(this.id));
-}
+};
 
 PatchFile.prototype.loadDrafts = function()
 {

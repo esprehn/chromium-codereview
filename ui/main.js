@@ -24,6 +24,7 @@ onload = function() {
     issue.loadDetails().then(function() {
         issue.patchsets[0].loadDetails().then(function(patchset) {
             var file = patchset.files["Source/core/rendering/RenderBlockLineLayout.cpp"];
+            console.log(file.getReviewUrl());
             file.loadDrafts().then(function() {
                 console.log(file.drafts);
             }).catch(function(e) {
