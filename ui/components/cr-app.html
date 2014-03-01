@@ -26,6 +26,12 @@
                 padding: 1em;
                 font-size: 2em;
             }
+
+            h1 {
+                margin: 0;
+                padding: 0.5em 16px;
+                font-size: 1.5em;
+            }
         </style>
         <template if="{{ loading && !failed }}">
             <p>
@@ -38,18 +44,21 @@
             </p>
         </template>
         <template if="{{ !loading && !failed }}">
+            <h1>{{ issues.owner.name }}'s issues</h1>
             <cr-issue-inbox issues="{{ issues }}"></cr-issue-inbox>
         </template>
     </template>
     <script>
         Polymer("cr-app", {
-            issues: new IssueList(),
+            issues: null,
             loading: false,
             failed: false,
             attached: function() {
                 var self = this;
                 this.loading = true;
-                this.issues.loadIssues().then(function() {
+                var user = new User("pdr");
+                user.loadIssues().then(function(issues) {
+                    self.issues = issues;
                     self.loading = false;
                 }).catch(function(error) {
                     console.log(error);
