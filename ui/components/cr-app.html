@@ -22,21 +22,27 @@
 <polymer-element name="cr-app">
     <template>
         <style>
-          polymer-ui-collapsible {
-            margin-bottom: 2px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-          }
-          
-          .polymer-ui-collapsible-header {
-            padding: 10px;
-            border-bottom: 1px solid #bcbcbc;
-            font-weight: bold;
-            cursor: pointer;
-          }
+            :host { display: block }
+
+            .polymer-ui-collapsible-header {
+                font-size: 1.3em;
+                padding: 0.5em;
+                background-color: #CED6E0;
+                border-bottom: 1px solid #bcbcbc;
+                font-weight: bold;
+                cursor: pointer;
+                -webkit-user-select: none;
+            }
+
+            p {
+                padding: 1em;
+                font-size: 2em;
+            }
         </style>
         <template if="{{ loading && !failed }}">
-            <p>Loading issues from Rietveld.</p>
+            <p>
+                Loading issues from Rietveld...
+            </p>
         </template>
         <template if="{{ !loading && !failed }}">
             <polymer-ui-accordion selected="0">
@@ -63,7 +69,9 @@
             </polymer-ui-accordion>
         </template>
         <template if="{{ !loading && failed }}">
-            <p>Failed to load issues.</p>
+            <p>
+                Failed to load issues. :(
+            </p>
         </template>
     </template>
     <script>

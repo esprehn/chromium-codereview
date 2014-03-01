@@ -31,7 +31,7 @@
                 overflow: hidden;
             }
 
-            .reviewers li {
+            .reviewer {
                 flex-shrink: 0;
             }
 
@@ -46,6 +46,10 @@
             .issue:hover {
                 background-color: #F9F3E4;
             }
+
+            a:hover {
+                text-decoration: underline;
+            }
         </style>
         <template if="{{ issues }}">
             <ul class="issues">
@@ -54,9 +58,11 @@
                         <a href="#/issue/{{ issue.id }}">{{issue.subject}}</a>
                         <ul class="reviewers">
                             <template repeat="{{ reviewer in issue.reviewers }}">
-                                <li class="reviewer">
-                                    <a href="#/user/{{ reviewer.name }}">{{ reviewer.name }}</a>
-                                </li>
+                                <template if="{{ !reviewer.isCurrentUser }}">
+                                    <li class="reviewer">
+                                        <a href="#/user/{{ reviewer.name }}">{{ reviewer.name }}</a>
+                                    </li>
+                                </template>
                             </template>
                         </ul>
                     </li>

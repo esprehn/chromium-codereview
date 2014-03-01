@@ -1,10 +1,11 @@
 
-function User(name, email)
+function User(name, email, isCurrentUser)
 {
     this.name = name || "";
     this.email = email || "";
     this.openIssues = 0;
     this.reviewedIssues = 0;
+    this.isCurrentUser = isCurrentUser || User.isCurrentUser(this);
 }
 
 User.EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
@@ -21,7 +22,7 @@ User.parseCurrentUser = function(document)
     var match = User.EMAIL_PATTERN.exec(b.textContent);
     if (!match)
         return null;
-    User.current = new User(match[2], match[1]);
+    User.current = new User(match[2], match[1], "me");
     return User.current;
 };
 
@@ -37,7 +38,14 @@ User.forMailingListEmail = function(email)
     // Lots of people use a + url for auto-cc lists, remove it since they
     // often use their normal user name just with the + part added.
     email = email.remove(/\+[^@]+/);
-    return new User("", email);
+    return new User(email.split("@")[0] || "", email);
+};
+
+User.isCurrentUser = function(user)
+{
+    return User.current
+        && user.name === User.current.name
+        && user.email == User.current.email;
 };
 
 User.prototype.getIssueListUrl = function()
