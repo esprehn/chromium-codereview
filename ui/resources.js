@@ -36,22 +36,37 @@ function loadJSON(url)
     });
 }
 
+function resolveUrl(name)
+{
+    return chrome.extension.getURL(name);
+}
+
 function createImage(name)
 {
-    return new Image(chrome.extension.getURL("ui/images/" + name));
+    var image = new Image();
+    image.src = resolveUrl(name);
+    return image;
 }
 
 function createScript(name)
 {
-    var script = chrome.extension.getURL("ui/" + name);
-    script.src = this.url;
+    var script = document.createElement("script");
+    script.src = resolveUrl(name);
     return script;
 }
 
-function createStyle(name)
+function createStyleLink(name)
 {
     var link = document.createElement("link");
-    link.href = chrome.extension.getURL("ui/styles/" + name)
+    link.href = resolveUrl(name);
     link.rel = "stylesheet";
+    return link;
+}
+
+function createImport(name)
+{
+    var link = document.createElement("link");
+    link.href = resolveUrl(name);
+    link.rel = "import";
     return link;
 }

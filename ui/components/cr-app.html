@@ -1,0 +1,87 @@
+
+<script src="../sugar.js"></script>
+<script src="../base.js"></script>
+
+<script src="../resources.js"></script>
+<script src="../model/issue.js"></script>
+<script src="../model/issue_list.js"></script>
+<script src="../model/issue_message.js"></script>
+<script src="../model/patch_file.js"></script>
+<script src="../model/patch_file_message.js"></script>
+<script src="../model/patch_set.js"></script>
+<script src="../model/search.js"></script>
+<script src="../model/search_result.js"></script>
+<script src="../model/try_job_result.js"></script>
+<script src="../model/try_job_result_step.js"></script>
+<script src="../model/user.js"></script>
+
+<link rel="import" href="../../bower_components/polymer-ui-accordion/polymer-ui-accordion.html">
+
+<link rel="import" href="cr-issue-list.html">
+
+<polymer-element name="cr-app">
+    <template>
+        <style>
+          polymer-ui-collapsible {
+            margin-bottom: 2px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+          }
+          
+          .polymer-ui-collapsible-header {
+            padding: 10px;
+            border-bottom: 1px solid #bcbcbc;
+            font-weight: bold;
+            cursor: pointer;
+          }
+        </style>
+        <template if="{{ loading && !failed }}">
+            <p>Loading issues from Rietveld.</p>
+        </template>
+        <template if="{{ !loading && !failed }}">
+            <polymer-ui-accordion selected="0">
+                <polymer-ui-collapsible>
+                    <div class="polymer-ui-collapsible-header">Incoming</div>
+                    <cr-issue-list issues="{{ issues.incoming }}"></cr-issue-list>
+                </polymer-ui-collapsible>
+                <polymer-ui-collapsible>
+                    <div class="polymer-ui-collapsible-header">Outgoing</div>
+                    <cr-issue-list issues="{{ issues.outgoing }}"></cr-issue-list>
+                </polymer-ui-collapsible>
+                <polymer-ui-collapsible>
+                    <div class="polymer-ui-collapsible-header">Unsent</div>
+                    <cr-issue-list issues="{{ issues.unsent }}"></cr-issue-list>
+                </polymer-ui-collapsible>
+                <polymer-ui-collapsible>
+                    <div class="polymer-ui-collapsible-header">CCed</div>
+                    <cr-issue-list issues="{{ issues.cc }}"></cr-issue-list>
+                </polymer-ui-collapsible>
+                <polymer-ui-collapsible>
+                    <div class="polymer-ui-collapsible-header">Recently Closed</div>
+                    <cr-issue-list issues="{{ issues.closed }}"></cr-issue-list>
+                </polymer-ui-collapsible>
+            </polymer-ui-accordion>
+        </template>
+        <template if="{{ !loading && failed }}">
+            <p>Failed to load issues.</p>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-app", {
+            issues: new IssueList(),
+            loading: false,
+            failed: false,
+            attached: function() {
+                var self = this;
+                this.loading = true;
+                this.issues.loadIssues().then(function() {
+                    self.loading = false;
+                }).catch(function(error) {
+                    console.log(error);
+                    self.loading = false;
+                    self.failed = true;
+                });
+            },
+        });
+    </script>
+</polymer-element>

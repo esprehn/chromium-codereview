@@ -9,6 +9,17 @@ function IssueList()
     this.closed = []; // Array<Issue>
 }
 
+IssueList.ISSUE_LIST_URL = "https://codereview.chromium.org/";
+
+IssueList.prototype.loadIssues = function()
+{
+    var issueList = this;
+    return loadDocument(IssueList.ISSUE_LIST_URL).then(function(document) {
+        issueList.parseDocument(document);
+        return issueList;
+    });
+};
+
 IssueList.convertRelativeDate = function(value)
 {
     var result = new Date();
@@ -40,6 +51,9 @@ IssueList.prototype.parseDocument = function(document)
     var HANDLERS = [null, null, Number, String, User.forName, IssueList.convertToUsers, Number, Number, IssueList.convertRelativeDate];
 
     var issueList = this;
+
+    // The current user is embedded inside the issue list document.
+    User.parseCurrentUser(document);
 
     var rows = document.querySelectorAll("#queues tr");
     var currentType;

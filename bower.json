@@ -1,0 +1,15 @@
+{
+  "name": "codereview",
+  "version": "0.0.1",
+  "authors": [
+    "Elliott Sprehn"
+  ],
+  "ignore": [
+    "**/.*"
+  ],
+  "dependencies": {
+    "polymer": "~0.2.0",
+    "polymer-elements": "~0.2.0",
+    "polymer-ui-elements": "~0.2.0"
+  }
+}

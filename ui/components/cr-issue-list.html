@@ -1,0 +1,72 @@
+
+<polymer-element name="cr-issue-list" attributes="issues">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            ul, li {
+                display: block;
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            a {
+                display: block;
+                padding: 0.5em;
+                flex: 1;
+                color: black;
+                text-decoration: none;
+            }
+
+            li {
+                display: flex;
+            }
+
+            .reviewers {
+                display: flex;
+                max-width: 30%;
+                overflow: hidden;
+            }
+
+            .reviewers li {
+                flex-shrink: 0;
+            }
+
+            .issue {
+                border-bottom: 1px solid #ccc;
+            }
+
+            .issue:nth-child(2n) {
+                background-color: #F6F6F6;
+            }
+
+            .issue:hover {
+                background-color: #F9F3E4;
+            }
+        </style>
+        <template if="{{ issues }}">
+            <ul class="issues">
+                <template repeat="{{ issue in issues }}">
+                    <li class="issue">
+                        <a href="#/issue/{{ issue.id }}">{{issue.subject}}</a>
+                        <ul class="reviewers">
+                            <template repeat="{{ reviewer in issue.reviewers }}">
+                                <li class="reviewer">
+                                    <a href="#/user/{{ reviewer.name }}">{{ reviewer.name }}</a>
+                                </li>
+                            </template>
+                        </ul>
+                    </li>
+                </template>
+            </ul>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-issue-list", {
+            issues: null,
+        });
+    </script>
+</polymer-element>

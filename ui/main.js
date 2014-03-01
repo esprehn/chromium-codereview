@@ -1,62 +1,11 @@
 
+// Can't use DOMContentLoaded, calling document.write or document.close inside it from
+// inside an extension causes a crash.
 onload = function() {
-    User.parseCurrentUser(document);
+    document.write("<!DOCTYPE html><script src='" + resolveUrl("bower_components/platform/platform.js") + "'></script><cr-app></cr-app>");
+    document.close();
 
-    var issues = new IssueList();
-    issues.parseDocument(document);
-
-    var issue = issues.incoming[0];
-    console.log(issues);
-
-    Search.findUsers("esp", 10).then(function(users) {
-        console.log(users);
-    }).catch(function(e) {
-        console.log(e.stack, e);
-    });
-
-    Search.findIssues({owner: "esprehn@chromium.org"}).then(function(result) {
-        console.log(result);
-    }).catch(function(e) {
-        console.log(e.stack, e);
-    });
-
-    var issue = new Issue(68393002);
-    issue.loadDetails().then(function() {
-        issue.patchsets[0].loadDetails().then(function(patchset) {
-            var file = patchset.files["Source/core/rendering/RenderBlockLineLayout.cpp"];
-            console.log(file.getReviewUrl());
-            file.loadDrafts().then(function() {
-                console.log(file.drafts);
-            }).catch(function(e) {
-                console.log(e.stack, e);
-            });
-        }).catch(function(e) {
-            console.log(e.stack, e);
-        });
-    }).catch(function(e) {
-        console.log(e.stack, e);
-    });
-
-    if (!issue)
-        return;
-
-    issue.loadDetails().then(function() {
-        console.log(issue);
-        issue.patchsets[1].loadDetails().then(function(patchset) {
-            console.log(patchset);
-        }, function(e) {
-            console.log(e.stack, e);
-        });
-    }).catch(function(e) {
-        console.log(e.stack, e);
-    });
-
-    // var user = issues.cc[0].reviewers[0];
-    // user.loadIssues().then(function(r) {
-    //     console.log(r);
-    // }, function(e) {
-    //     console.log(e);
-    // }).catch(function(e) {
-    //     console.log(e);
-    // });
+    document.head.appendChild(createImport("bower_components/polymer/polymer.html"));
+    document.head.appendChild(createImport("ui/components/cr-app.html"));
+    document.head.appendChild(createStyleLink("ui/style.css"));
 };
