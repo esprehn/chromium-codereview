@@ -15,24 +15,12 @@
 <script src="../model/try_job_result_step.js"></script>
 <script src="../model/user.js"></script>
 
-<link rel="import" href="../../bower_components/polymer-ui-accordion/polymer-ui-accordion.html">
-
-<link rel="import" href="cr-issue-list.html">
+<link rel="import" href="cr-issue-inbox.html">
 
 <polymer-element name="cr-app">
     <template>
         <style>
             :host { display: block }
-
-            .polymer-ui-collapsible-header {
-                font-size: 1.3em;
-                padding: 0.5em;
-                background-color: #CED6E0;
-                border-bottom: 1px solid #bcbcbc;
-                font-weight: bold;
-                cursor: pointer;
-                -webkit-user-select: none;
-            }
 
             p {
                 padding: 1em;
@@ -44,34 +32,13 @@
                 Loading issues from Rietveld...
             </p>
         </template>
-        <template if="{{ !loading && !failed }}">
-            <polymer-ui-accordion selected="0">
-                <polymer-ui-collapsible>
-                    <div class="polymer-ui-collapsible-header">Incoming</div>
-                    <cr-issue-list issues="{{ issues.incoming }}"></cr-issue-list>
-                </polymer-ui-collapsible>
-                <polymer-ui-collapsible>
-                    <div class="polymer-ui-collapsible-header">Outgoing</div>
-                    <cr-issue-list issues="{{ issues.outgoing }}"></cr-issue-list>
-                </polymer-ui-collapsible>
-                <polymer-ui-collapsible>
-                    <div class="polymer-ui-collapsible-header">Unsent</div>
-                    <cr-issue-list issues="{{ issues.unsent }}"></cr-issue-list>
-                </polymer-ui-collapsible>
-                <polymer-ui-collapsible>
-                    <div class="polymer-ui-collapsible-header">CCed</div>
-                    <cr-issue-list issues="{{ issues.cc }}"></cr-issue-list>
-                </polymer-ui-collapsible>
-                <polymer-ui-collapsible>
-                    <div class="polymer-ui-collapsible-header">Recently Closed</div>
-                    <cr-issue-list issues="{{ issues.closed }}"></cr-issue-list>
-                </polymer-ui-collapsible>
-            </polymer-ui-accordion>
-        </template>
         <template if="{{ !loading && failed }}">
             <p>
                 Failed to load issues. :(
             </p>
+        </template>
+        <template if="{{ !loading && !failed }}">
+            <cr-issue-inbox issues="{{ issues }}"></cr-issue-inbox>
         </template>
     </template>
     <script>
