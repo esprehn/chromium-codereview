@@ -17,6 +17,7 @@ function PatchFile(patchset, name)
 
 PatchFile.DRAFT_URL = "https://codereview.chromium.org/{1}/patch/{2}/{3}?column_width=2000";
 PatchFile.REVIEW_URL = "https://codereview.chromium.org/{1}/diff/{2}/{3}";
+PatchFile.DIFF_URL = "https://codereview.chromium.org/download/issue{1}_{2}_{3}.diff";
 
 PatchFile.prototype.parseData = function(data)
 {
@@ -57,6 +58,14 @@ PatchFile.prototype.getDraftsUrl = function()
         encodeURIComponent(this.id));
 };
 
+PatchFile.prototype.getDiffUrl = function()
+{
+    return PatchFile.DIFF_URL.assign(
+        encodeURIComponent(this.patchset.issue.id),
+        encodeURIComponent(this.patchset.id),
+        encodeURIComponent(this.id));
+};
+
 PatchFile.prototype.loadDrafts = function()
 {
     var patchFile = this;
@@ -64,6 +73,11 @@ PatchFile.prototype.loadDrafts = function()
         patchFile.parseDraftsDocument(document);
         return patchFile;
     });
+};
+
+PatchFile.prototype.loadDiff = function()
+{
+    return loadText(this.getDiffUrl());
 };
 
 PatchFile.prototype.parseDraftsDocument = function(document)

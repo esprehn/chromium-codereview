@@ -1,7 +1,7 @@
 
 function IssueMessage()
 {
-    this.sender = null; // User
+    this.author = null; // User
     this.recipients = []; // Array<User>
     this.text = "";
     this.disapproval = false;
@@ -11,7 +11,7 @@ function IssueMessage()
 
 IssueMessage.prototype.parseData = function(data)
 {
-    this.sender = new User(data.sender);
+    this.author = new User(data.sender);
     this.recipients = (data.recipients || []).map(function(email) {
         return User.forMailingListEmail(email);
     });

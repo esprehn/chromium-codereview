@@ -4,16 +4,26 @@
         <style>
             :host { display: block }
 
-            p {
-                white-space: pre-wrap;
-                margin: 0;
-                padding: 1em;
-            }
-
             ul, li {
                 list-style-type: none;
                 padding: 0;
                 margin: 0;
+            }
+
+            .issue-subject {
+                font-size: 1.5em;
+                padding: 0.5em 16px;
+            }
+
+            .issue-by {
+                font-size: 1.2em;
+                padding: 0.5em 16px;
+            }
+
+            .issue-description {
+                white-space: pre-wrap;
+                margin: 0;
+                padding: 1em;
             }
 
             .patchset {
@@ -23,13 +33,24 @@
             .patchset-header {
                 font-size: 1.3em;
                 padding: 0.5em 16px;
-                background-color: #1D7FB7;
+                background-color: #3467B4;
+                color: white;
                 border-top: 1px solid black;
+                display: flex;
+            }
+
+            .messages {
+                padding: 0.5em 0;
             }
 
             .message {
                 border: 1px solid #ccc;
                 margin: 0.5em 16px;
+            }
+
+            .message-text {
+                padding: 16px;
+                white-space: pre-wrap;
             }
 
             .message-header {
@@ -39,22 +60,42 @@
 
             .file-header {
                 padding: 0.5em 16px;
-                background-color: #CBD3DF;
                 display: flex;
+                background-color: #CBD3DF;
             }
 
-            .file-name {
+            .file-name,
+            .patchset-title {
                 flex: 1;
             }
         </style>
         <template if="{{ issue }}">
-            <h1>{{ issue.subject }}</h1>
-            <h2>Owner {{ issue.owner.name }}</h2>
-            <h3>Date {{ issue.created | formatDate }}</h3>
-            <p>{{ issue.description }}</p>
-            <template repeat="{{ patchset in issue.patchsets }}">
+            <div class="issue-subject">Issue {{ issue.id }}: {{ issue.subject }}</div>
+            <div class="issue-by">By {{ issue.owner.name }} {{ issue.created | formatDate }}</div>
+            <div class="issue-description">{{ issue.description }}</div>
+
+            <template if="{{ issue.messages.length }}">
+                <ul class="messages">
+                    <template repeat="{{ message, i in issue.messages }}">
+                        <li class="message">
+                            <div class="message-header"><a href="">#{{ i }}</a> {{ message.author.name }} commented {{ message.date | formatDate }}</div>
+                            <div class="message-text">{{ message.text }}</div>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+
+            <template repeat="{{ patchset, i in issue.patchsets }}">
                 <div class="patchset">
-                    <div class="patchset-header">Patch set from {{ patchset.created | formatDate }}</div>
+                    <div class="patchset-header">
+                        <div class="patchset-title">
+                            Patch set {{ i + 1 }}
+                            <template if="{{ patchset.message }}">
+                                {{ patchset.message }}
+                            </template>
+                        </div>
+                        <div class="patchset-date">{{ patchset.created | formatDate }}</div>
+                    </div>
                     <ul class="files">
                         <template repeat="{{ file in patchset.files }}">
                             <li class="file">
@@ -62,14 +103,16 @@
                                     <div class="file-name">{{ file.name }}</div>
                                     <div class="file-delta">+{{ file.added }} lines, -{{ file.removed }} lines</div>
                                 </div>
-                                <ul>
-                                    <template repeat="{{ message in file.messages }}">
-                                        <li class="message">
-                                            <div class="message-header">{{ message.author.name }} commented {{ message.date | formatDate }} on line {{ message.line }}</div>
-                                            <p>{{ message.text }}</p>
-                                        </li>
-                                    </template>
-                                </ul>
+                                <template if="{{ file.messages.length }}">
+                                    <ul class="messages">
+                                        <template repeat="{{ message in file.messages }}">
+                                            <li class="message">
+                                                <div class="message-header">{{ message.author.name }} commented {{ message.date | formatDate }} on line {{ message.line }}</div>
+                                                <div class="message-text">{{ message.text }}</div>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </template>
                             </li>
                         </template>
                     </ul>
