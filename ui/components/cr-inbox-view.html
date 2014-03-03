@@ -1,0 +1,53 @@
+
+<link rel="import" href="cr-issue-inbox.html">
+
+<polymer-element name="cr-inbox-view">
+    <template>
+        <style>
+            :host { display: block; }
+
+            p {
+                padding: 1em;
+                font-size: 2em;
+            }
+
+            h1 {
+                margin: 0;
+                padding: 0.5em 16px;
+                font-size: 1.5em;
+            }
+        </style>
+        <template if="{{ loading && !failed }}">
+            <p>
+                Loading issues from Rietveld...
+            </p>
+        </template>
+        <template if="{{ !loading && failed }}">
+            <p>
+                Failed to load issues. :(
+            </p>
+        </template>
+        <template if="{{ !loading && !failed }}">
+            <h1>{{ issues.owner.name }}'s issues</h1>
+            <cr-issue-inbox issues="{{ issues }}"></cr-issue-inbox>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-inbox-view", {
+            loading: true,
+            failed: false,
+            attached: function() {
+                var self = this;
+                var issues = new IssueList();
+                issues.loadIssues().then(function() {
+                    self.issues = issues;
+                    self.loading = false;
+                }).catch(function(error) {
+                    console.log(error);
+                    self.loading = false;
+                    self.failed = true;
+                });
+            },
+        });
+    </script>
+</polymer-element>

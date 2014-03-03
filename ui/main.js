@@ -10,6 +10,6 @@ onload = function() {
 
     document.documentElement.style.display = '';
     document.head.appendChild(createImport("bower_components/polymer/polymer.html"));
-    document.head.appendChild(createImport("ui/components/cr-app.html"));
+    document.head.appendChild(createImport("ui/cr-app.html"));
     document.head.appendChild(createStyleLink("ui/style.css"));
 };

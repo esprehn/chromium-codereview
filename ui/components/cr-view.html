@@ -1,0 +1,63 @@
+
+<polymer-element name="cr-view">
+    <template>
+        <style>
+            :host { display: block; }
+        </style>
+    </template>
+    <script>
+        Polymer("cr-view", {
+            routes: [],
+            activeView: null,
+            created: function() {
+                this.observer = new MutationObserver(this.childrenChanged.bind(this));
+                this.observer.observe(this, {childList:true});
+
+                // Bind so using addEventListener and later removeEventListener works.
+                this.hashChanged = this.hashChanged.bind(this);
+            },
+            attached: function() {
+                window.addEventListener("hashchange", this.hashChanged);
+            },
+            detached: function() {
+                window.removeEventListener("hashchange", this.hashChanged);
+            },
+            hashChanged: function() {
+                var self = this;
+                var path = this.parseHash(window.location.hash);
+                this.routes.any(function(route) {
+                    var newView = route.createView(path);
+                    if (!newView)
+                        return false;
+                    self.swapViews(newView);
+                    return true;
+                });
+            },
+            childrenChanged: function() {
+                this.routes = toArray(this.querySelectorAll('cr-route'));
+                this.async(this.hashChanged);
+            },
+            swapViews: function(newView) {
+                if (this.activeView)
+                    this.activeView.remove();
+                this.activeView = newView;
+                this.shadowRoot.appendChild(newView);
+            },
+            parseHash: function(hash) {
+                // Remove the # and following slash.
+                hash = hash.replace(/^#\/?/, "");
+
+                // We strip a query string from the hash, we don't handle that yet.
+                hash = hash.replace(/\?.*?$/, "");
+
+                // Collapse duplicate slashes.
+                hash = hash.replace(/\/\/+/, "/");
+
+                // Path should always start with a slash.
+                hash = "/" + hash;
+
+                return hash;
+            },
+        });
+    </script>
+</polymer-element>

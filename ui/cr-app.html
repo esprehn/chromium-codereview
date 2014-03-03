@@ -1,0 +1,40 @@
+
+<script src="sugar.js"></script>
+<script src="base.js"></script>
+
+<script src="resources.js"></script>
+<script src="model/issue.js"></script>
+<script src="model/issue_list.js"></script>
+<script src="model/issue_message.js"></script>
+<script src="model/patch_file.js"></script>
+<script src="model/patch_file_message.js"></script>
+<script src="model/patch_set.js"></script>
+<script src="model/search.js"></script>
+<script src="model/search_result.js"></script>
+<script src="model/try_job_result.js"></script>
+<script src="model/try_job_result_step.js"></script>
+<script src="model/user.js"></script>
+
+<link rel="import" href="components/cr-route.html">
+<link rel="import" href="components/cr-view.html">
+
+<link rel="import" href="views/cr-inbox-view.html">
+<link rel="import" href="views/cr-issue-view.html">
+<link rel="import" href="views/cr-user-view.html">
+
+<polymer-element name="cr-app">
+    <template>
+        <style>
+            :host { display: block; }
+        </style>
+        <cr-view>
+            <cr-route path="/" element="cr-inbox-view"></cr-route>
+            <cr-route path="/issue/:issueid" element="cr-issue-view"></cr-route>
+            <cr-route path="/user/:username" element="cr-user-view"></cr-route>
+        </cr-view>
+    </template>
+    <script>
+        Polymer("cr-app", {
+        });
+    </script>
+</polymer-element>
