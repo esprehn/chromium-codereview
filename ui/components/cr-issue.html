@@ -78,8 +78,19 @@
                 <ul class="messages">
                     <template repeat="{{ message, i in issue.messages }}">
                         <li class="message">
-                            <div class="message-header"><a href="">#{{ i }}</a> {{ message.author.name }} commented {{ message.date | formatDate }}</div>
-                            <div class="message-text">{{ message.text }}</div>
+                            <div class="message-header">
+                                <a href="">#{{ i }}</a> {{ message.author.name }}
+                                <template if="{{ message.text }}">
+                                    commented
+                                </template>
+                                <template if="{{ !message.text }}">
+                                    left a blank comment
+                                </template>
+                                {{ message.date | formatDate }}
+                            </div>
+                            <template if="{{ message.text }}">
+                                <div class="message-text">{{ message.text }}</div>
+                            </template>
                         </li>
                     </template>
                 </ul>
