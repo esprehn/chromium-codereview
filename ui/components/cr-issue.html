@@ -70,7 +70,12 @@
             }
         </style>
         <template if="{{ issue }}">
-            <div class="issue-subject">Issue {{ issue.id }}: {{ issue.subject }}</div>
+            <div class="issue-subject">
+                Issue {{ issue.id }}: {{ issue.subject }}
+                <template if="{{ issue.closed }}">
+                    (Closed)
+                </template>
+            </div>
             <div class="issue-by">By {{ issue.owner.name }} {{ issue.created | formatDate }}</div>
             <div class="issue-description">{{ issue.description }}</div>
 
