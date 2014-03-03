@@ -8,7 +8,6 @@ function Issue(id)
     this.reviewers = []; // Array<User>
     this.messages = []; // Array<IssueMessage>
     this.messageCount = 0;
-    this.draftCount = 0;
     this.owner = null; // User
     this.private = false;
     this.baseUrl = "";
