@@ -2,7 +2,7 @@
 // https://codereview.chromium.org/api/148223004/70001/?comments=true
 function PatchSet(issue, id)
 {
-    this.files = {}; // Array<PatchFile>
+    this.files = []; // Array<PatchFile>
     this.tryJobResults = []; // Array<tryJobResults>
     this.created = ""; // Date
     this.commentCount = 0;
@@ -44,10 +44,10 @@ PatchSet.prototype.parseData = function(data)
     this.files = {};
 
     var files = data.files || {};
-    Object.keys(files).each(function(name) {
+    this.files = Object.keys(files).sort().map(function(name) {
         var file = new PatchFile(patchset, name);
         file.parseData(files[name]);
-        patchset.files[name] = file;
+        return file;
     });
 
     this.tryJobResults = (data.try_job_results || []).map(function(resultData) {

@@ -1,0 +1,104 @@
+
+<polymer-element name="cr-issue">
+    <template>
+        <style>
+            :host { display: block }
+
+            p {
+                white-space: pre-wrap;
+                margin: 0;
+                padding: 1em;
+            }
+
+            ul, li {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .patchset {
+                margin-bottom: 16px;
+            }
+
+            .patchset-header {
+                font-size: 1.3em;
+                padding: 0.5em 16px;
+                background-color: #1D7FB7;
+                border-top: 1px solid black;
+            }
+
+            .message {
+                border: 1px solid #ccc;
+                margin: 0.5em 16px;
+            }
+
+            .message-header {
+                padding: 0.5em;
+                background-color: #F2F2F2;
+            }
+
+            .file-header {
+                padding: 0.5em 16px;
+                background-color: #CBD3DF;
+                display: flex;
+            }
+
+            .file-name {
+                flex: 1;
+            }
+        </style>
+        <template if="{{ issue }}">
+            <h1>{{ issue.subject }}</h1>
+            <h2>Owner {{ issue.owner.name }}</h2>
+            <h3>Date {{ issue.created | formatDate }}</h3>
+            <p>{{ issue.description }}</p>
+            <template repeat="{{ patchset in issue.patchsets }}">
+                <div class="patchset">
+                    <div class="patchset-header">Patch set from {{ patchset.created | formatDate }}</div>
+                    <ul class="files">
+                        <template repeat="{{ file in patchset.files }}">
+                            <li class="file">
+                                <div class="file-header">
+                                    <div class="file-name">{{ file.name }}</div>
+                                    <div class="file-delta">+{{ file.added }} lines, -{{ file.removed }} lines</div>
+                                </div>
+                                <ul>
+                                    <template repeat="{{ message in file.messages }}">
+                                        <li class="message">
+                                            <div class="message-header">{{ message.author.name }} commented {{ message.date | formatDate }} on line {{ message.line }}</div>
+                                            <p>{{ message.text }}</p>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </template>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-issue", {
+            issue: null,
+            attached: function() {
+                var self = this;
+                var issue = new Issue(180743004);
+                issue.loadDetails().then(function() {
+                    return Promise.all(issue.patchsets.map(function(patchset) {
+                        return patchset.loadDetails();
+                    }));
+                }).then(function() {
+                    self.issue = issue;
+                }).catch(function(error) {
+                    console.log(error);
+                    self.failed = true;
+                });
+            },
+            formatDate: function(date) {
+                if (!date)
+                    return "";
+                return date.relative();
+            },
+        });
+    </script>
+</polymer-element>

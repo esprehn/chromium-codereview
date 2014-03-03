@@ -16,6 +16,7 @@
 <script src="../model/user.js"></script>
 
 <link rel="import" href="cr-issue-inbox.html">
+<link rel="import" href="cr-issue.html">
 
 <polymer-element name="cr-app">
     <template>
@@ -33,20 +34,21 @@
                 font-size: 1.5em;
             }
         </style>
-        <template if="{{ loading && !failed }}">
+        <!-- <template if="{{ loading && !failed }}">
             <p>
                 Loading issues from Rietveld...
             </p>
-        </template>
+        </template> -->
         <template if="{{ !loading && failed }}">
             <p>
                 Failed to load issues. :(
             </p>
         </template>
-        <template if="{{ !loading && !failed }}">
+        <!-- <template if="{{ !loading && !failed }}">
             <h1>{{ issues.owner.name }}'s issues</h1>
             <cr-issue-inbox issues="{{ issues }}"></cr-issue-inbox>
-        </template>
+        </template> -->
+        <cr-issue></cr-issue>
     </template>
     <script>
         Polymer("cr-app", {
@@ -56,15 +58,15 @@
             attached: function() {
                 var self = this;
                 this.loading = true;
-                var user = new User("pdr");
-                user.loadIssues().then(function(issues) {
-                    self.issues = issues;
-                    self.loading = false;
-                }).catch(function(error) {
-                    console.log(error);
-                    self.loading = false;
-                    self.failed = true;
-                });
+                // var user = new User("pdr");
+                // user.loadIssues().then(function(issues) {
+                //     self.issues = issues;
+                //     self.loading = false;
+                // }).catch(function(error) {
+                //     console.log(error);
+                //     self.loading = false;
+                //     self.failed = true;
+                // });
             },
         });
     </script>

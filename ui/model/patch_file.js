@@ -33,6 +33,10 @@ PatchFile.prototype.parseData = function(data)
         var message = new PatchFileMessage();
         message.parseData(messageData);
         return message;
+    }).sort(function(messageA, messageB) {
+        if (messageA.line == messageB.line)
+            return messageA.date - messageB.date;
+        return messageA.line - messageB.line;
     });
 };
 
