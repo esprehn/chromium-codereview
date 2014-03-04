@@ -7,6 +7,6 @@ html, body {
 }
 
 body {
-    overflow: scroll;
+    overflow-y: scroll;
     padding-bottom: 0.5em;
 }

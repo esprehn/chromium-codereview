@@ -6,48 +6,21 @@
                 display: block;
             }
 
-            ul, li {
-                display: block;
-                list-style-type: none;
-                margin: 0;
-                padding: 0;
-            }
-
             a {
                 display: block;
-                padding: 0.5em;
                 color: black;
+                padding: 0.5em 16px;
                 text-decoration: none;
             }
 
-            a:hover {
-                text-decoration: underline;
-            }
-
-            .issue-id {
-                min-width: 6em;
-                text-align: center;
-            }
-
-            .issue-subject {
-                display: flex;
-                flex: 1;
-            }
-
-            .reviewers {
-                display: flex;
-                max-width: 30%;
-                overflow: hidden;
-            }
-
-            .reviewer {
-                flex-shrink: 0;
-                display: flex;
+            .issues {
+                display: table;
             }
 
             .issue {
-                border-bottom: 1px solid #ccc;
-                display: flex;
+                border-bottom: 1px solid #E6E6E6;
+                display: table-row;
+                -webkit-user-select: none;
             }
 
             .issue:nth-child(2n) {
@@ -57,27 +30,36 @@
             .issue:hover {
                 background-color: #F9F3E4;
             }
+
+            .issue-data {
+                display: table-cell;
+            }
+
+            .issue-id,
+            .issue-owner {
+                white-space: nowrap;
+            }
+
+            .issue-subject {
+                width: 100%;
+            }
         </style>
         <template if="{{ issues }}">
-            <ul class="issues">
+            <div class="issues">
                 <template repeat="{{ issue in issues }}">
-                    <li class="issue">
-                        <div class="issue-id">
+                    <div class="issue">
+                        <div class="issue-id issue-data">
                             <a href="#/issue/{{ issue.id }}">{{ issue.id }}</a>
                         </div>
-                        <div class="issue-subject">
+                        <div class="issue-owner issue-data">
+                            <a href="#/issue/{{ issue.id }}">{{ issue.owner.name }}</a>
+                        </div>
+                        <div class="issue-subject issue-data">
                             <a href="#/issue/{{ issue.id }}">{{ issue.subject }}</a>
                         </div>
-                        <ul class="reviewers">
-                            <template repeat="{{ reviewer in issue.reviewers }}">
-                                <li class="reviewer">
-                                    <a href="#/user/{{ reviewer.name }}">{{ reviewer.displayName }}</a>
-                                </li>
-                            </template>
-                        </ul>
-                    </li>
+                    </div>
                 </template>
-            </ul>
+            </div>
         </template>
     </template>
     <script>
