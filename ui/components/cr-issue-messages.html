@@ -100,8 +100,6 @@
                 var lines = text.trim().split("\n");
                 var i = 0;
 
-                console.log(lines);
-
                 if (REPLY_HEADER.test(lines[i])) {
                     ++i;
                     while (lines[i].startsWith(">"))

@@ -8,7 +8,6 @@
                 border-color: #375B9C;
                 border-width: 1px 1px 0 1px;
                 border-style: solid;
-                background-color: #DFE7F8;
             }
 
             .patchset:last-child {
@@ -19,16 +18,45 @@
                 padding: 0.5em 16px;
                 display: flex;
                 font-weight: bold;
+                background-color: #DFE7F8;
+                border-bottom: 1px solid #ccc;
             }
 
-            .file-header {
-                padding: 0.5em 16px;
-                display: flex;
-            }
-
-            .file-name,
             .patchset-title {
                 flex: 1;
+            }
+
+            .file {
+                padding: 0.25em 16px;
+                display: table-row;
+            }
+
+            .files {
+                display: table;
+                margin: 0.5em 8px 0.5em 8px;
+            }
+
+            .file-name {
+                padding: 0.25em 8px;
+                display: table-cell;
+                width: 100%;
+            }
+
+            .file-messages,
+            .file-status,
+            .file-added,
+            .file-removed {
+                display: table-cell;
+                padding: 0.25em 8px;
+                white-space: nowrap;
+            }
+
+            .file-added {
+                color: #9FB32F;
+            }
+
+            .file-removed {
+                color: #DA5545;
             }
 
             .polymer-ui-collapsible-header {
@@ -52,10 +80,11 @@
                         <div class="files">
                             <template repeat="{{ file in patchset.files }}">
                                 <div class="file">
-                                    <div class="file-header">
-                                        <div class="file-name">{{ file.name }}</div>
-                                        <div class="file-delta">+{{ file.added }} lines, -{{ file.removed }} lines</div>
-                                    </div>
+                                    <div class="file-status">{{ file.status }}</div>
+                                    <div class="file-removed">-{{ file.removed }}</div>
+                                    <div class="file-added">+{{ file.added }}</div>
+                                    <a class="file-name" href="#/issue/{{ patchset.issue.id }}/{{ patchset.id }}/{{ file.name }}">{{ file.name }}</a>
+                                    <div class="file-messages">{{ file.messages.length | commentCount }}</div>
                                 </div>
                             </template>
                         </div>
@@ -70,6 +99,13 @@
                 if (!date)
                     return "";
                 return date.relative();
+            },
+            commentCount: function(messageCount) {
+                if (!messageCount)
+                    return "";
+                if (messageCount == 1)
+                    return messageCount + " comment";
+                return messageCount + " comments";
             },
         });
     </script>
