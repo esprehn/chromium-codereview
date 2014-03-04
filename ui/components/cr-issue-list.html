@@ -16,13 +16,22 @@
             a {
                 display: block;
                 padding: 0.5em;
-                flex: 1;
                 color: black;
                 text-decoration: none;
             }
 
-            li {
+            a:hover {
+                text-decoration: underline;
+            }
+
+            .issue-id {
+                min-width: 6em;
+                text-align: center;
+            }
+
+            .issue-subject {
                 display: flex;
+                flex: 1;
             }
 
             .reviewers {
@@ -33,10 +42,12 @@
 
             .reviewer {
                 flex-shrink: 0;
+                display: flex;
             }
 
             .issue {
                 border-bottom: 1px solid #ccc;
+                display: flex;
             }
 
             .issue:nth-child(2n) {
@@ -46,23 +57,22 @@
             .issue:hover {
                 background-color: #F9F3E4;
             }
-
-            a:hover {
-                text-decoration: underline;
-            }
         </style>
         <template if="{{ issues }}">
             <ul class="issues">
                 <template repeat="{{ issue in issues }}">
                     <li class="issue">
-                        <a href="#/issue/{{ issue.id }}">{{issue.subject}}</a>
+                        <div class="issue-id">
+                            <a href="#/issue/{{ issue.id }}">{{ issue.id }}</a>
+                        </div>
+                        <div class="issue-subject">
+                            <a href="#/issue/{{ issue.id }}">{{ issue.subject }}</a>
+                        </div>
                         <ul class="reviewers">
                             <template repeat="{{ reviewer in issue.reviewers }}">
-                                <template if="{{ !reviewer.isCurrentUser }}">
-                                    <li class="reviewer">
-                                        <a href="#/user/{{ reviewer.name }}">{{ reviewer.name }}</a>
-                                    </li>
-                                </template>
+                                <li class="reviewer">
+                                    <a href="#/user/{{ reviewer.name }}">{{ reviewer.displayName }}</a>
+                                </li>
                             </template>
                         </ul>
                     </li>

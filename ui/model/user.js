@@ -5,7 +5,10 @@ function User(name, email, isCurrentUser)
     this.email = email || "";
     this.openIssues = 0;
     this.reviewedIssues = 0;
-    this.isCurrentUser = isCurrentUser || User.isCurrentUser(this);
+    if (isCurrentUser || this.isCurrentUser())
+        this.displayName = "me";
+    else
+        this.displayName = name;
 }
 
 User.EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
@@ -41,11 +44,11 @@ User.forMailingListEmail = function(email)
     return new User(email.split("@")[0] || "", email);
 };
 
-User.isCurrentUser = function(user)
+User.prototype.isCurrentUser = function()
 {
     return User.current
-        && user.name === User.current.name
-        && user.email == User.current.email;
+        && this.name === User.current.name
+        && this.email === User.current.email;
 };
 
 User.prototype.getIssueListUrl = function()
