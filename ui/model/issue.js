@@ -58,7 +58,7 @@ Issue.prototype.parseData = function(data)
         return new PatchSet(issue, patchsetId);
     });
     this.messages = (data.messages || []).map(function(messageData) {
-        var message = new IssueMessage();
+        var message = new IssueMessage(issue);
         message.parseData(messageData);
         return message;
     });

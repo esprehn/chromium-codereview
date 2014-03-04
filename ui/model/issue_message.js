@@ -1,6 +1,7 @@
 
-function IssueMessage()
+function IssueMessage(issue)
 {
+    this.issue = issue || null; // Issue
     this.author = null; // User
     this.recipients = []; // Array<User>
     this.text = "";
