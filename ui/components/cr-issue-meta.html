@@ -1,0 +1,76 @@
+
+<polymer-element name="cr-issue-meta" attributes="issue">
+    <template>
+        <style>
+            :host {
+                margin: 1em 16px;
+                border: 1px solid #CCC;
+                display: table;
+            }
+
+            a:link {
+                color: #284D8C;
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            .issue-meta-item {
+                display: table-row;
+            }
+
+            .issue-meta-type,
+            .issue-meta-value {
+                padding: 0.5em 16px;
+                display: table-cell;
+            }
+
+            .issue-meta-type {
+                color: #959595;
+                font-weight: bold;
+            }
+        </style>
+        <template if="{{ issue }}">
+            <div class="issue-author issue-meta-item">
+                <div class="issue-meta-type">Author</div>
+                <div class="issue-meta-value"><a href="#/user/{{ issue.owner.name }}">{{ issue.owner.name }}</a></div>
+            </div>
+            <div class="issue-created issue-meta-item">
+                <div class="issue-meta-type">Created</div>
+                <div class="issue-meta-value">{{ issue.created | formatDate }}</div>
+            </div>
+            <div class="issue-modified issue-meta-item">
+                <div class="issue-meta-type">Modified</div>
+                <div class="issue-meta-value">{{ issue.lastModified | formatDate }}</div>
+            </div>
+            <div class="issue-reviewers issue-meta-item">
+                <div class="issue-meta-type">Reviewers</div>
+                <div class="issue-meta-value">
+                    <template repeat="{{ user, i in issue.reviewers }}">
+                        <a class="issue-reviewer" href="#/user/{{ user.name }}">{{ user.name }}</a>
+                    </template>
+                </div>
+            </div>
+            <div class="issue-cc issue-meta-item">
+                <div class="issue-meta-type">CC</div>
+                <div class="issue-meta-value">
+                    <template repeat="{{ user, i in issue.cc }}">
+                        <a class="issue-cced" href="#/user/{{ user.name }}">{{ user.name }}</a>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-issue-meta", {
+            issue: null,
+            formatDate: function(date) {
+                if (!date)
+                    return "";
+                return date.format("{Mon} {ord} {yyyy} {hh}:{mm}{tt}");
+            },
+        });
+    </script>
+</polymer-element>

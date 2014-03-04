@@ -1,5 +1,6 @@
 
 <link rel="import" href="cr-issue-messages.html">
+<link rel="import" href="cr-issue-meta.html">
 <link rel="import" href="cr-issue-patchsets.html">
 
 <polymer-element name="cr-issue" attributes="issue">
@@ -34,43 +35,18 @@
             }
 
             .issue-description {
-                white-space: pre-wrap;
-                margin: 0;
-                flex: 1;
-            }
-
-            .issue-description,
-            .issue-meta {
                 margin: 1em 16px;
+                white-space: pre-wrap;
+                flex: 1;
             }
 
             .issue-details {
                 display: flex;
             }
 
-            .issue-meta {
+            cr-issue-meta {
                 order: 2;
                 flex-shrink: 0;
-                border: 1px solid #CCC;
-                display: table;
-            }
-
-            .issue-meta-item {
-                display: table-row;
-            }
-
-            .issue-meta-type,
-            .issue-meta-value {
-                padding: 0.5em 16px;
-                display: table-cell;
-            }
-
-            .issue-meta-type {
-                color: #959595;
-                font-weight: bold;
-            }
-
-            .issue-meta {
                 max-width: 25em;
             }
 
@@ -85,36 +61,7 @@
             </h1>
 
             <div class="issue-details">
-                <div class="issue-meta">
-                    <div class="issue-author issue-meta-item">
-                        <div class="issue-meta-type">Author</div>
-                        <div class="issue-meta-value"><a href="#/user/{{ issue.owner.name }}">{{ issue.owner.name }}</a></div>
-                    </div>
-                    <div class="issue-created issue-meta-item">
-                        <div class="issue-meta-type">Created</div>
-                        <div class="issue-meta-value">{{ issue.created | formatDate }}</div>
-                    </div>
-                    <div class="issue-modified issue-meta-item">
-                        <div class="issue-meta-type">Modified</div>
-                        <div class="issue-meta-value">{{ issue.lastModified | formatDate }}</div>
-                    </div>
-                    <div class="issue-reviewers issue-meta-item">
-                        <div class="issue-meta-type">Reviewers</div>
-                        <div class="issue-meta-value">
-                            <template repeat="{{ user, i in issue.reviewers }}">
-                                <a class="issue-reviewer" href="#/user/{{ user.name }}">{{ user.name }}</a>
-                            </template>
-                        </div>
-                    </div>
-                    <div class="issue-cc issue-meta-item">
-                        <div class="issue-meta-type">CC</div>
-                        <div class="issue-meta-value">
-                            <template repeat="{{ user, i in issue.cc }}">
-                                <a class="issue-cced" href="#/user/{{ user.name }}">{{ user.name }}</a>
-                            </template>
-                        </div>
-                    </div>
-                </div>
+                <cr-issue-meta issue="{{ issue }}"></cr-issue-meta>
                 <div class="issue-description">{{ issue.description }}</div>
             </div>
 
