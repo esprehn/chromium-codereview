@@ -1,0 +1,65 @@
+
+<link rel="import" href="../../bower_components/polymer-ui-accordion/polymer-ui-accordion.html">
+<link rel="import" href="../../bower_components/polymer-ui-toggle-button/polymer-ui-toggle-button.html">
+
+<polymer-element name="cr-issue-messages" attributes="messages">
+    <template>
+        <style>
+            :host {
+                padding: 0.5em 16px;
+                display: block;
+            }
+
+            .message {
+                border-color: #D9A171;
+                border-width: 1px 1px 0 1px;
+                border-style: solid;
+                background-color: #F2F1D1;
+            }
+
+            .message:last-child {
+                border-width: 1px;
+            }
+
+            .message-text {
+                padding: 16px;
+                white-space: pre-wrap;
+            }
+
+            .message-header {
+                padding: 0.5em;
+                font-weight: bold;
+            }
+
+            .polymer-ui-collapsible-header {
+                cursor: pointer;
+                -webkit-user-select: none;
+            }
+        </style>
+
+        <template if="{{ messages.length }}">
+            <polymer-ui-accordion multi selected="{{ [ messages.length - 1 ] }}">
+                <template repeat="{{ message, i in messages }}">
+                    <polymer-ui-collapsible class="message">
+                        <div class="message-header polymer-ui-collapsible-header">
+                            <a href="#{{ i }}">#{{ i }}</a>
+                            <a href="#/user/{{ message.author.name }}">{{ message.author.name }}</a>
+                            commented on {{ message.date | formatDate }}
+                        </div>
+                        <div class="message-text">{{ message.text }}</div>
+                    </polymer-ui-collapsible>
+                </template>
+            </polymer-ui-accordion>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-issue-messages", {
+            messages: null,
+            formatDate: function(date) {
+                if (!date)
+                    return "";
+                return date.relative();
+            },
+        });
+    </script>
+</polymer-element>

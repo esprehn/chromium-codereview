@@ -1,4 +1,6 @@
 
+<link rel="import" href="cr-issue-messages.html">
+
 <polymer-element name="cr-issue" attributes="issue">
     <template>
         <style>
@@ -40,12 +42,18 @@
             }
 
             .messages {
-                padding: 0.5em 0;
+                padding: 0.5em 16px;
             }
 
             .message {
-                border: 1px solid #ccc;
-                margin: 0.5em 16px;
+                border-color: #D9A171;
+                border-width: 1px 1px 0 1px;
+                border-style: solid;
+                background-color: #F2F1D1;
+            }
+
+            .message:last-child {
+                border-width: 1px;
             }
 
             .message-text {
@@ -55,7 +63,7 @@
 
             .message-header {
                 padding: 0.5em;
-                background-color: #F2F2F2;
+                font-weight: bold;
             }
 
             .file-header {
@@ -79,27 +87,7 @@
             <div class="issue-by">By {{ issue.owner.name }} {{ issue.created | formatDate }}</div>
             <div class="issue-description">{{ issue.description }}</div>
 
-            <template if="{{ issue.messages.length }}">
-                <ul class="messages">
-                    <template repeat="{{ message, i in issue.messages }}">
-                        <li class="message">
-                            <div class="message-header">
-                                <a href="">#{{ i }}</a> {{ message.author.name }}
-                                <template if="{{ message.text }}">
-                                    commented
-                                </template>
-                                <template if="{{ !message.text }}">
-                                    left a blank comment
-                                </template>
-                                {{ message.date | formatDate }}
-                            </div>
-                            <template if="{{ message.text }}">
-                                <div class="message-text">{{ message.text }}</div>
-                            </template>
-                        </li>
-                    </template>
-                </ul>
-            </template>
+            <cr-issue-messages messages="{{ issue.messages }}"></cr-issue-messages>
 
             <template repeat="{{ patchset, i in issue.patchsets }}">
                 <div class="patchset">
