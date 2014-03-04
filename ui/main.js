@@ -9,7 +9,7 @@ onload = function() {
     document.close();
 
     document.documentElement.style.display = '';
-    document.head.appendChild(createImport("bower_components/polymer/polymer.html"));
-    document.head.appendChild(createImport("ui/cr-app.html"));
-    document.head.appendChild(createStyleLink("ui/style.css"));
+    document.head.appendChild(createLink("import", "bower_components/polymer/polymer.html"));
+    document.head.appendChild(createLink("import", "ui/cr-app.html"));
+    document.head.appendChild(createLink("stylesheet", "ui/style.css"));
 };

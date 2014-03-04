@@ -55,18 +55,10 @@ function createScript(name)
     return script;
 }
 
-function createStyleLink(name)
+function createLink(type, name)
 {
     var link = document.createElement("link");
     link.href = resolveUrl(name);
-    link.rel = "stylesheet";
-    return link;
-}
-
-function createImport(name)
-{
-    var link = document.createElement("link");
-    link.href = resolveUrl(name);
-    link.rel = "import";
+    link.rel = type;
     return link;
 }
