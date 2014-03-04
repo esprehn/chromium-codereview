@@ -19,7 +19,7 @@
             }
         </style>
         <template if="{{ issues }}">
-            <polymer-ui-accordion selected="0">
+            <polymer-ui-accordion selected="0" multi>
                 <polymer-ui-collapsible>
                     <div class="polymer-ui-collapsible-header">Incoming</div>
                     <cr-issue-list issues="{{ issues.incoming }}"></cr-issue-list>

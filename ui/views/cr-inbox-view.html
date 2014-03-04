@@ -17,23 +17,24 @@
                 font-size: 1.5em;
             }
         </style>
-        <template if="{{ loading && !failed }}">
+        <template if="{{ !issues && !failed }}">
             <p>
-                Loading issues from Rietveld...
+                Loading your issues from Rietveld...
             </p>
         </template>
-        <template if="{{ !loading && failed }}">
+        <template if="{{ failed }}">
             <p>
                 Failed to load issues. :(
             </p>
         </template>
-        <template if="{{ !loading && !failed }}">
-            <h1>{{ issues.owner.name }}'s issues</h1>
+        <template if="{{ issues && !failed }}">
+            <h1>My Issues</h1>
             <cr-issue-inbox issues="{{ issues }}"></cr-issue-inbox>
         </template>
     </template>
     <script>
         Polymer("cr-inbox-view", {
+            issues: null,
             loading: true,
             failed: false,
             attached: function() {
@@ -41,10 +42,8 @@
                 var issues = new IssueList();
                 issues.loadIssues().then(function() {
                     self.issues = issues;
-                    self.loading = false;
                 }).catch(function(error) {
                     console.log(error);
-                    self.loading = false;
                     self.failed = true;
                 });
             },

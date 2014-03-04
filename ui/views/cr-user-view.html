@@ -1,13 +1,52 @@
 
+<link rel="import" href="../components/cr-issue-inbox.html">
+
 <polymer-element name="cr-user-view" attributes="username">
     <template>
         <style>
             :host { display: block; }
+
+            p {
+                padding: 1em;
+                font-size: 2em;
+            }
+
+            h1 {
+                margin: 0;
+                padding: 0.5em 16px;
+                font-size: 1.5em;
+            }
         </style>
-        <p>Hello {{ username }}</p>
+        <template if="{{ !issues && !failed }}">
+            <p>
+                Loading issues for {{ username }}...
+            </p>
+        </template>
+        <template if="{{ failed }}">
+            <p>
+                Failed to load issues. :(
+            </p>
+        </template>
+        <template if="{{ issues && !failed }}">
+            <h1>{{ username }}'s Issues</h1>
+            <cr-issue-inbox issues="{{ issues }}"></cr-issue-inbox>
+        </template>
     </template>
     <script>
         Polymer("cr-user-view", {
+            username: "",
+            issues: null,
+            failed: false,
+            attached: function() {
+                var self = this;
+                this.user = new User(this.username);
+                this.user.loadIssues().then(function(issues) {
+                    self.issues = issues;
+                }).catch(function(error) {
+                    console.log(error);
+                    self.failed = true;
+                });
+            },
         });
     </script>
 </polymer-element>
