@@ -1,19 +1,26 @@
 
 <link rel="import" href="cr-issue-messages.html">
+<link rel="import" href="cr-issue-patchsets.html">
 
 <polymer-element name="cr-issue" attributes="issue">
     <template>
         <style>
             :host { display: block; }
 
-            ul, li {
-                list-style-type: none;
-                padding: 0;
+            h1, h2 {
                 margin: 0;
+                padding: 0.5em 16px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            h2 {
+                font-size: 1.3em;
             }
 
             .issue-subject {
-                font-size: 1.5em;
                 padding: 0.5em 16px;
             }
 
@@ -25,103 +32,26 @@
             .issue-description {
                 white-space: pre-wrap;
                 margin: 0;
-                padding: 1em;
+                padding: 1em 16px;
             }
 
-            .patchset {
-                margin-bottom: 16px;
-            }
-
-            .patchset-header {
-                font-size: 1.3em;
+            cr-issue-patchsets,
+            cr-issue-messages {
                 padding: 0.5em 16px;
-                background-color: #3467B4;
-                color: white;
-                border-top: 1px solid black;
-                display: flex;
-            }
-
-            .messages {
-                padding: 0.5em 16px;
-            }
-
-            .message {
-                border-color: #D9A171;
-                border-width: 1px 1px 0 1px;
-                border-style: solid;
-                background-color: #F2F1D1;
-            }
-
-            .message:last-child {
-                border-width: 1px;
-            }
-
-            .message-text {
-                padding: 16px;
-                white-space: pre-wrap;
-            }
-
-            .message-header {
-                padding: 0.5em;
-                font-weight: bold;
-            }
-
-            .file-header {
-                padding: 0.5em 16px;
-                display: flex;
-                background-color: #CBD3DF;
-            }
-
-            .file-name,
-            .patchset-title {
-                flex: 1;
             }
         </style>
         <template if="{{ issue }}">
-            <div class="issue-subject">
-                Issue {{ issue.id }}: {{ issue.subject }}
-                <template if="{{ issue.closed }}">
-                    (Closed)
-                </template>
-            </div>
+            <h1 class="issue-subject">
+                Issue {{ issue.id }}: {{ issue.subject }} <template if="{{ issue.closed }}">(Closed)</template>
+            </h1>
             <div class="issue-by">By {{ issue.owner.name }} {{ issue.created | formatDate }}</div>
             <div class="issue-description">{{ issue.description }}</div>
 
-            <cr-issue-messages messages="{{ issue.messages }}"></cr-issue-messages>
+            <h2>Patchsets</h2>
+            <cr-issue-patchsets patchsets="{{ issue.patchsets }}"></cr-issue-patchsets>
 
-            <template repeat="{{ patchset, i in issue.patchsets }}">
-                <div class="patchset">
-                    <div class="patchset-header">
-                        <div class="patchset-title">
-                            Patch set {{ i + 1 }}
-                            <template if="{{ patchset.message }}">
-                                {{ patchset.message }}
-                            </template>
-                        </div>
-                        <div class="patchset-date">{{ patchset.created | formatDate }}</div>
-                    </div>
-                    <ul class="files">
-                        <template repeat="{{ file in patchset.files }}">
-                            <li class="file">
-                                <div class="file-header">
-                                    <div class="file-name">{{ file.name }}</div>
-                                    <div class="file-delta">+{{ file.added }} lines, -{{ file.removed }} lines</div>
-                                </div>
-                                <template if="{{ file.messages.length }}">
-                                    <ul class="messages">
-                                        <template repeat="{{ message in file.messages }}">
-                                            <li class="message">
-                                                <div class="message-header">{{ message.author.name }} commented {{ message.date | formatDate }} on line {{ message.line }}</div>
-                                                <div class="message-text">{{ message.text }}</div>
-                                            </li>
-                                        </template>
-                                    </ul>
-                                </template>
-                            </li>
-                        </template>
-                    </ul>
-                </div>
-            </template>
+            <h2>Messages</h2>
+            <cr-issue-messages messages="{{ issue.messages }}"></cr-issue-messages>
         </template>
     </template>
     <script>
