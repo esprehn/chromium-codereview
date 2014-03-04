@@ -8,4 +8,5 @@ html, body {
 
 body {
     overflow: scroll;
+    padding-bottom: 0.5em;
 }

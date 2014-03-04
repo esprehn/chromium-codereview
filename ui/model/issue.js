@@ -52,7 +52,7 @@ Issue.prototype.parseData = function(data)
         return User.forMailingListEmail(email);
     });
     this.reviewers = (data.reviewers || []).map(function(email) {
-        return new User("", email);
+        return User.forMailingListEmail(email);
     });
     this.patchsets = (data.patchsets || []).map(function(patchsetId) {
         return new PatchSet(issue, patchsetId);
