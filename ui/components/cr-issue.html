@@ -24,15 +24,44 @@
                 padding: 0.5em 16px;
             }
 
-            .issue-by {
-                font-size: 1.2em;
-                padding: 0.5em 16px;
-            }
-
             .issue-description {
                 white-space: pre-wrap;
                 margin: 0;
-                padding: 1em 16px;
+                flex: 1;
+            }
+
+            .issue-description,
+            .issue-meta {
+                margin: 1em 16px;
+            }
+
+            .issue-details {
+                display: flex;
+            }
+
+            .issue-meta {
+                order: 2;
+                flex-shrink: 0;
+                border: 1px solid #CCC;
+                display: table;
+            }
+
+            .issue-author,
+            .issue-created,
+            .issue-modified {
+                display: table-row;
+            }
+
+            .issue-meta-type,
+            .issue-meta-value {
+                padding: 0.5em 16px;
+                word-wrap: nowrap;
+                display: table-cell;
+            }
+
+            .issue-meta-type {
+                color: #959595;
+                font-weight: bold;
             }
 
             cr-issue-patchsets,
@@ -44,8 +73,24 @@
             <h1 class="issue-subject">
                 Issue {{ issue.id }}: {{ issue.subject }} <template if="{{ issue.closed }}">(Closed)</template>
             </h1>
-            <div class="issue-by">By {{ issue.owner.name }} {{ issue.created | formatDate }}</div>
-            <div class="issue-description">{{ issue.description }}</div>
+
+            <div class="issue-details">
+                <div class="issue-meta">
+                    <div class="issue-author">
+                        <div class="issue-meta-type">Author</div>
+                        <div class="issue-meta-value">{{ issue.owner.name }}</div>
+                    </div>
+                    <div class="issue-created">
+                        <div class="issue-meta-type">Created</div>
+                        <div class="issue-meta-value">{{ issue.created | formatDate }}</div>
+                    </div>
+                    <div class="issue-modified">
+                        <div class="issue-meta-type">Modified</div>
+                        <div class="issue-meta-value">{{ issue.lastModified | formatDate }}</div>
+                    </div>
+                </div>
+                <div class="issue-description">{{ issue.description }}</div>
+            </div>
 
             <h2>Patchsets</h2>
             <cr-issue-patchsets patchsets="{{ issue.patchsets }}"></cr-issue-patchsets>
@@ -60,7 +105,7 @@
             formatDate: function(date) {
                 if (!date)
                     return "";
-                return date.relative();
+                return date.format("{Mon} {ord} {yyyy} {hh}:{mm}{tt}");
             },
         });
     </script>
