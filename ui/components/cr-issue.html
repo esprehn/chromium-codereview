@@ -1,5 +1,5 @@
 
-<polymer-element name="cr-issue">
+<polymer-element name="cr-issue" attributes="issue">
     <template>
         <style>
             :host { display: block; }
@@ -139,20 +139,6 @@
     <script>
         Polymer("cr-issue", {
             issue: null,
-            attached: function() {
-                var self = this;
-                var issue = new Issue(180743004);
-                issue.loadDetails().then(function() {
-                    return Promise.all(issue.patchsets.map(function(patchset) {
-                        return patchset.loadDetails();
-                    }));
-                }).then(function() {
-                    self.issue = issue;
-                }).catch(function(error) {
-                    console.log(error);
-                    self.failed = true;
-                });
-            },
             formatDate: function(date) {
                 if (!date)
                     return "";
