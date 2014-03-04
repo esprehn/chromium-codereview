@@ -8,7 +8,7 @@ function User(name, email, isCurrentUser)
     if (isCurrentUser || this.isCurrentUser())
         this.displayName = "me";
     else
-        this.displayName = name;
+        this.displayName = this.name;
 }
 
 User.EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
@@ -46,9 +46,7 @@ User.forMailingListEmail = function(email)
 
 User.prototype.isCurrentUser = function()
 {
-    return User.current
-        && this.name === User.current.name
-        && this.email === User.current.email;
+    return User.current && this.name === User.current.name;
 };
 
 User.prototype.getIssueListUrl = function()
