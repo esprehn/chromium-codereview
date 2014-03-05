@@ -102,6 +102,8 @@
         Polymer("cr-issue-patchsets", {
             patchsets: null,
             formatDate: function(date) {
+                if (!date)
+                    return "";
                 return date.relative();
             },
             commentCount: function(messageCount) {
