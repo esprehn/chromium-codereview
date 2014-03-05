@@ -1,12 +1,12 @@
 
-function User(name, email)
+function User(name, email, displayName)
 {
     this.name = name || "";
     this.email = email || "";
     this.openIssues = 0;
     this.reviewedIssues = 0;
     this.xsrfToken = "";
-    this.displayName = name || "";
+    this.displayName = displayName || name || "";
 }
 
 User.CURRENT_USER_URL = "https://codereview.chromium.org/settings";
@@ -31,7 +31,6 @@ User.parseCurrentUser = function(document)
     if (!match)
         return null;
     var user = new User(match[2], match[1], "me");
-    user.displayName = "me";
     var script = document.body.querySelector("script");
     if (script) {
         var match = script.textContent.match(User.XSRF_TOKEN_PATTERN);
@@ -53,7 +52,7 @@ User.loadCurrentUser = function(refresh)
 
 User.forName = function(name)
 {
-    if (name === "me" && User.current)
+    if (User.current && (name === "me" || name === User.current.name))
         return User.current;
     return new User(name);
 };
@@ -63,6 +62,8 @@ User.forMailingListEmail = function(email)
     // Lots of people use a + url for auto-cc lists, remove it since they
     // often use their normal user name just with the + part added.
     email = email.remove(/\+[^@]+/);
+    if (User.current && User.current.email === email)
+        return User.current;
     return new User(email.split("@")[0] || "", email);
 };
 

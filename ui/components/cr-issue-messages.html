@@ -90,7 +90,7 @@
                     <polymer-ui-collapsible class="message">
                         <div class="message-header polymer-ui-collapsible-header {{ {approval: message.approval, disapproval: message.disapproval} | tokenList }}">
                             <div class="message-title">
-                                <div class="message-author">{{ message.author.name }}</div>
+                                <div class="message-author">{{ message.author.displayName }}</div>
                                 <div class="message-preview">{{ message.text | messagePreview }}</div>
                             </div>
                             <div class="message-date">
