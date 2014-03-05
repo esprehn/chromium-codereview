@@ -2,6 +2,7 @@
 <link rel="import" href="cr-issue-messages.html">
 <link rel="import" href="cr-issue-meta.html">
 <link rel="import" href="cr-issue-patchsets.html">
+<link rel="import" href="cr-linkified-text.html">
 
 <polymer-element name="cr-issue" attributes="issue">
     <template>
@@ -62,7 +63,7 @@
 
             <div class="issue-details">
                 <cr-issue-meta issue="{{ issue }}"></cr-issue-meta>
-                <div class="issue-description">{{ issue.description }}</div>
+                <div class="issue-description"><cr-linkified-text text="{{ issue.description }}"></cr-linkified-text></div>
             </div>
 
             <h2>Patchsets</h2>

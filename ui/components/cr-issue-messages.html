@@ -2,6 +2,8 @@
 <link rel="import" href="../../bower_components/polymer-ui-accordion/polymer-ui-accordion.html">
 <link rel="import" href="../../bower_components/polymer-ui-toggle-button/polymer-ui-toggle-button.html">
 
+<link rel="import" href="cr-linkified-text.html">
+
 <polymer-element name="cr-issue-messages" attributes="messages">
     <template>
         <style>
@@ -78,7 +80,7 @@
                                 {{ message.date | formatDate }}
                             </div>
                         </div>
-                        <div class="message-text">{{ message.text }}</div>
+                        <div class="message-text"><cr-linkified-text text="{{ message.text }}"></cr-linkified-text></div>
                     </polymer-ui-collapsible>
                 </template>
             </polymer-ui-accordion>
