@@ -41,7 +41,7 @@ TryJobResult.prototype.parseData = function(data)
     });
     this.slave = data.slave || "";
     this.url = data.url || "";
-    this.timestamp = Date.create(data.timestamp);
+    this.timestamp = Date.utc.create(data.timestamp);
     this.builder = data.builder || "";
     this.clobber = data.clobber || false;
     this.project = data.project || "";

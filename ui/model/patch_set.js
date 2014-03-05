@@ -38,9 +38,9 @@ PatchSet.prototype.parseData = function(data)
 
     this.owner = new User(data.owner);
     this.message = data.message || "";
-    this.lastModified = Date.create(data.modified);
+    this.lastModified = Date.utc.create(data.modified);
     this.commentCount = data.num_comments || 0;
-    this.created = Date.create(data.created);
+    this.created = Date.utc.create(data.created);
     this.files = {};
 
     var files = data.files || {};

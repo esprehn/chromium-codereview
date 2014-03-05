@@ -107,7 +107,7 @@ PatchFile.prototype.parseDraftsDocument = function(document)
         message.text = text.textContent;
         message.draft = true;
         message.line = Number(idParts[2]) || 0;
-        message.date = Date.create(title.nextSibling.textContent.trim());
+        message.date = Date.utc.create(title.nextSibling.textContent.trim());
         message.left = (idParts[0] === "old");
 
         this.drafts.push(message);

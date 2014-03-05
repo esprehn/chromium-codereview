@@ -15,6 +15,6 @@ PatchFileMessage.prototype.parseData = function(data)
     this.text = data.text || "";
     this.draft = data.draft || false;
     this.line = data.lineno || 0;
-    this.date = Date.create(data.date);
+    this.date = Date.utc.create(data.date);
     this.left = data.left || false;
 };

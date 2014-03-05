@@ -18,6 +18,6 @@ IssueMessage.prototype.parseData = function(data)
     });
     this.text = data.text || "";
     this.disapproval = data.disapproval || false;
-    this.date = Date.create(data.date);
+    this.date = Date.utc.create(data.date);
     this.approval = data.approval || false;
 };
