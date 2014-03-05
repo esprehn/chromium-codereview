@@ -20,7 +20,7 @@
             }
 
             .message {
-                border-color: #ccc;
+                border-color: #dfdfdf;
                 border-width: 1px 1px 0 1px;
                 border-style: solid;
             }
@@ -32,6 +32,10 @@
             .message-text {
                 padding: 0.5em 16px;
                 white-space: pre-wrap;
+            }
+
+            .message-date {
+                font-weight: bold;
             }
 
             .message-header {
@@ -89,8 +93,8 @@
         <template if="{{ messages.length }}">
             <polymer-ui-accordion multi selected="{{ [ messages.length - 1 ] }}">
                 <template repeat="{{ message, i in messages }}">
-                    <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval} | tokenList }}">
-                        <div class="message-header polymer-ui-collapsible-header">
+                    <polymer-ui-collapsible class="message">
+                        <div class="message-header polymer-ui-collapsible-header {{ {approval: message.approval, disapproval: message.disapproval} | tokenList }}">
                             <div class="message-title">
                                 <div class="message-author">{{ message.author.name }}</div>
                                 <div class="message-preview">{{ message.text | messagePreview }}</div>
