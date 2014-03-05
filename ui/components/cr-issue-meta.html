@@ -49,7 +49,7 @@
                 <div class="issue-meta-type">Reviewers</div>
                 <div class="issue-meta-value">
                     <template repeat="{{ user, i in issue.reviewers }}">
-                        <a class="issue-reviewer" href="#/user/{{ user.name }}">{{ user.name }}</a>
+                        <a class="issue-reviewer" href="#/user/{{ user.email }}">{{ user.name }}</a>
                     </template>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                 <div class="issue-meta-type">CC</div>
                 <div class="issue-meta-value">
                     <template repeat="{{ user, i in issue.cc }}">
-                        <a class="issue-cced" href="#/user/{{ user.name }}">{{ user.name }}</a>
+                        <a class="issue-cced" href="#/user/{{ user.email }}">{{ user.name }}</a>
                     </template>
                 </div>
             </div>
