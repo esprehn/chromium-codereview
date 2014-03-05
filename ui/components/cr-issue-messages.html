@@ -20,10 +20,9 @@
             }
 
             .message {
-                border-color: #D9A171;
+                border-color: #ccc;
                 border-width: 1px 1px 0 1px;
                 border-style: solid;
-                background-color: #F2F1D1;
             }
 
             .message:last-child {
@@ -55,6 +54,16 @@
                 white-space: nowrap;
                 overflow: hidden;
                 margin: 0 1em;
+                opacity: 1;
+                -webkit-transform: translateZ(0);
+                transition: -webkit-transform 0.5s, opacity 0.5s;
+            }
+
+            .message-toolbar span {
+                color: #284D8C;
+                cursor: pointer;
+                padding: 0.5em 16px;
+                display: inline-block;
             }
 
             .polymer-ui-collapsible-header {
@@ -63,17 +72,27 @@
             }
 
             .message[active] .message-preview {
-                visibility: hidden;
+                opacity: 0;
+                transition: -webkit-transform 0.5s, opacity 0.2s;
+                -webkit-transform: translateY(2.2em) translateZ(0);
+            }
+
+            .approval {
+                background-color: #7FFF7F;
+            }
+
+            .disapproval {
+                background-color: #FFAAAA;
             }
         </style>
 
         <template if="{{ messages.length }}">
             <polymer-ui-accordion multi selected="{{ [ messages.length - 1 ] }}">
                 <template repeat="{{ message, i in messages }}">
-                    <polymer-ui-collapsible class="message">
+                    <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval} | tokenList }}">
                         <div class="message-header polymer-ui-collapsible-header">
                             <div class="message-title">
-                                <a class="message-author" href="#/user/{{ message.author.email }}">{{ message.author.name }}</a>
+                                <div class="message-author">{{ message.author.name }}</div>
                                 <div class="message-preview">{{ message.text | messagePreview }}</div>
                             </div>
                             <div class="message-date">
@@ -81,6 +100,9 @@
                             </div>
                         </div>
                         <div class="message-text"><cr-linkified-text text="{{ message.text }}"></cr-linkified-text></div>
+                        <div class="message-toolbar">
+                            <span class="message-reply">Reply</span>
+                        </div>
                     </polymer-ui-collapsible>
                 </template>
             </polymer-ui-accordion>
