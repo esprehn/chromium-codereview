@@ -20,9 +20,11 @@ function Issue(id)
     this.id = id || 0;
 }
 
+Issue.DETAIL_URL = "https://codereview.chromium.org/api/{1}?messages=true";;
+
 Issue.prototype.getDetailUrl = function()
 {
-    return "https://codereview.chromium.org/api/" + encodeURIComponent(this.id) + "?messages=true";
+    return Issue.DETAIL_URL.assign(encodeURIComponent(this.id));
 };
 
 Issue.prototype.loadDetails = function()

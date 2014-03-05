@@ -10,6 +10,9 @@ function User(name, email)
 }
 
 User.CURRENT_USER_URL = "https://codereview.chromium.org/settings";
+User.DETAIL_URL = "https://codereview.chromium.org/user_popup/{1}";
+User.ISSUE_LIST_URL = "https://codereview.chromium.org/user/{1}";
+
 User.EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
 User.ISSUES_OPEN_PATTERN = /issues created: (\d+)/;
 User.ISSUES_REVIEW_PATTERN = /issues reviewed: (\d+)/;
@@ -70,19 +73,19 @@ User.prototype.isCurrentUser = function()
 
 User.prototype.getIssueListUrl = function()
 {
-    return "https://codereview.chromium.org/user/" + encodeURIComponent(this.email || this.name);
+    return User.ISSUE_LIST_URL.assign(encodeURIComponent(this.email || this.name));
 };
 
 User.prototype.getDetailUrl = function()
 {
-    return "https://codereview.chromium.org/user_popup/" + encodeURIComponent(this.email || this.name);
+    return User.DETAIL_URL.assign(encodeURIComponent(this.email || this.name));
 };
 
 User.prototype.loadDetails = function()
 {
     var user = this;
-    return loadDocument(this.getDetailUrl()).then(function(document) {
-        user.parseDetail(document.documentElement.innerText);
+    return loadText(this.getDetailUrl()).then(function(text) {
+        user.parseDetail(text);
         return user;
     });
 };
