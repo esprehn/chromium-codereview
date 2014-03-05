@@ -19,6 +19,8 @@ User.current = null;
 
 User.parseCurrentUser = function(document)
 {
+    if (!document.body)
+        return null;
     var b = document.body.querySelector("div[align=right] b");
     if (!b)
         return null;

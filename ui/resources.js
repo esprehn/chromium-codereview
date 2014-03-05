@@ -25,6 +25,8 @@ function loadText(url)
 function loadDocument(url)
 {
     return loadResource("document", url).then(function(xhr) {
+        if (!xhr.responseXML)
+            throw new Error("Not found");
         return xhr.responseXML;
     });
 }
@@ -32,6 +34,8 @@ function loadDocument(url)
 function loadJSON(url)
 {
     return loadResource("json", url).then(function(xhr) {
+        if (!xhr.response)
+            throw new Error("Not found");
         return xhr.response;
     });
 }

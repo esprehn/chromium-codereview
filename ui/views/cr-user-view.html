@@ -51,6 +51,12 @@
                     return;
                 }
 
+                if (this.username.has("@")) {
+                    window.location.hash = "#/user/" + encodeURIComponent(this.username.split("@")[0]);
+                    this.style.display = 'none';
+                    return;
+                }
+
                 this.user.loadIssues().then(function(issues) {
                     self.issues = issues;
                 }).catch(function(error) {

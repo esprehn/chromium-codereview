@@ -59,6 +59,9 @@ IssueList.prototype.parseDocument = function(document)
 
     var issueList = this;
 
+    if (!document.body)
+        return;
+
     // The current user is embedded inside the issue list document.
     User.parseCurrentUser(document);
 
