@@ -1,4 +1,6 @@
 
+<script src="../ba-linkify.js"></script>
+
 <polymer-element name="cr-linkified-text" attributes="text">
     <template><style>
             a:link {
@@ -11,51 +13,26 @@
             }
     </style><div id="text"></div></template>
     <script>
-    (function() {
-        // FIXME: Do something less crude to identify URLs and email addresses.
-        var LINK_REGEX = /([A-Za-z\d.@:/_-]+\.(org|com)[A-Za-z\d.@:/?=&#%_-]*)/g;
-        var EMAIL_REGEX = /[^:]+@/;
-        var HTTP_REGEX = /[^:]+:\/\//;
+    Polymer("cr-linkified-text", {
+        text: "",
+        textChanged: function(oldValue, newValue) {
+            var root = this.shadowRoot.getElementById('text');
 
-        Polymer("cr-linkified-text", {
-            text: "",
-            textChanged: function(oldValue, newValue) {
-                var root = this.shadowRoot.getElementById('text');
+            root.innerHTML = "";
 
-                root.innerHTML = "";
-
-                var match = newValue.match(LINK_REGEX);
-                if (!match) {
-                    root.appendChild(document.createTextNode(newValue));
-                    return;
-                }
-
-                var currentIndex = 0;
-                match.forEach(function(chunk) {
-                    var index = newValue.indexOf(chunk, currentIndex);
-                    if (index) {
-                        var textBeforeLink = newValue.substring(currentIndex, index);
-                        root.appendChild(document.createTextNode(textBeforeLink));
+            linkify(newValue, {
+                callback: function(text, href) {
+                    if (href) {
+                        var link = document.createElement("a");
+                        link.href = href;
+                        link.textContent = text;
+                        root.appendChild(link);
+                    } else {
+                        root.appendChild(document.createTextNode(text));
                     }
-
-                    var href = chunk;
-                    if (newValue.match(EMAIL_REGEX))
-                        href = "mailto:" + href;
-                    else if (!newValue.match(HTTP_REGEX))
-                        href = "http://" + href;
-
-                    var link = document.createElement("a");
-                    link.href = href;
-                    link.textContent = chunk;
-                    root.appendChild(link);
-
-                    currentIndex = index + chunk.length;
-                });
-
-                if (currentIndex < newValue.length)
-                    root.appendChild(document.createTextNode(newValue.substring(currentIndex)));
-            },
-        });
-  })();
+                }
+            });
+        },
+    });
   </script>
 </polymer-element>
