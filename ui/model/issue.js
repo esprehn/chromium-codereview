@@ -65,3 +65,14 @@ Issue.prototype.parseData = function(data)
     // Overwrite the count in case they differ (ex. new comments were added since the summary list was loaded).
     this.messageCount = this.messages.length;
 };
+
+Issue.prototype.saveMessage = function(text) {
+    return sendFormData("https://codereview.chromium.org/" + encodeURIComponent(this.id) + "/publish", {
+        xsrf_token: User.current.xsrfToken,
+        subject: this.subject,
+        message_only: "1",
+        send_mail: "1",
+        add_as_reviewer: "0",
+        message: text,
+    });
+};

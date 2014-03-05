@@ -40,6 +40,26 @@ function loadJSON(url)
     });
 }
 
+function sendFormData(url, data)
+{
+    return new Promise(function(fulfill, reject) {
+        var formData = Object.keys(data).map(function(key) {
+            return key + "=" + encodeURIComponent(data[key]);
+        }).join("&");
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+        xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        xhr.send(formData);
+        xhr.onload = function() {
+            fulfill(xhr);
+        };
+        xhr.onerror = function() {
+            reject(xhr);
+        };
+    });
+}
+
 function resolveUrl(name)
 {
     return chrome.extension.getURL(name);
