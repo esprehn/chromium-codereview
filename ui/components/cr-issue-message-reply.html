@@ -13,9 +13,16 @@
                 display: inline-block;
             }
 
+            .reply-toolbar {
+                padding-top: 0.5em;
+            }
+
             textarea {
                 width: 500px;
                 font-family: Monaco, monospace;
+                width: 100%;
+                margin: 0;
+                box-sizing: border-box;
             }
         </style>
         <template if="{{ !expanded }}">
@@ -23,7 +30,7 @@
         </template>
         <template if="{{ expanded }}">
             <textarea id="textarea" rows="20" value="{{ value }}"></textarea>
-            <div class="toolbar">
+            <div class="reply-toolbar">
                 <button on-click="{{ sendMessage }}">Send Message</button>
                 <button on-click="{{ discardMessage }}">Discard</button>
             </div>
