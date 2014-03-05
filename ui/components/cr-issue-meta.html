@@ -67,8 +67,6 @@
         Polymer("cr-issue-meta", {
             issue: null,
             formatDate: function(date) {
-                if (!date)
-                    return "";
                 return date.format("{Mon} {ord} {yyyy} {h}:{mm}{tt}");
             },
         });

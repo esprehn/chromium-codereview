@@ -94,8 +94,6 @@
         Polymer("cr-issue-messages", {
             messages: null,
             formatDate: function(date) {
-                if (!date)
-                    return "";
                 return date.relative();
             },
             messagePreview: function(text) {

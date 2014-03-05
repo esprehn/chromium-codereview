@@ -64,8 +64,6 @@
         Polymer("cr-issue-list", {
             issues: null,
             formatDate: function(date) {
-                if (!date)
-                    return "";
                 return date.relative();
             },
         });
