@@ -69,12 +69,17 @@ Issue.prototype.parseData = function(data)
 };
 
 Issue.prototype.saveMessage = function(text) {
-    return sendFormData("https://codereview.chromium.org/" + encodeURIComponent(this.id) + "/publish", {
-        xsrf_token: User.current.xsrfToken,
-        subject: this.subject,
-        message_only: "1",
-        send_mail: "1",
-        add_as_reviewer: "0",
-        message: text,
+    var issue = this;
+    return User.loadCurrentUser(true).then(function(user) {
+        return sendFormData("https://codereview.chromium.org/" + encodeURIComponent(issue.id) + "/publish", {
+            xsrf_token: user.xsrfToken,
+            subject: issue.subject,
+            message_only: "1",
+            send_mail: "1",
+            add_as_reviewer: "0",
+            message: text,
+        }).then(function() {
+            return issue;
+        });
     });
 };
