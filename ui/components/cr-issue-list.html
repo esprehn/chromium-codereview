@@ -7,10 +7,12 @@
             }
 
             a {
-                display: block;
-                color: black;
-                padding: 0.5em 16px;
                 text-decoration: none;
+                color: black;
+            }
+
+            .issue span {
+                padding: 0.5em 16px;
             }
 
             .issues {
@@ -48,20 +50,12 @@
         <template if="{{ issues }}">
             <div class="issues">
                 <template repeat="{{ issue in issues }}">
-                    <div class="issue">
-                        <div class="issue-id issue-data">
-                            <a href="#/issue/{{ issue.id }}">{{ issue.id }}</a>
-                        </div>
-                        <div class="issue-owner issue-data">
-                            <a href="#/issue/{{ issue.id }}">{{ issue.owner.name }}</a>
-                        </div>
-                        <div class="issue-subject issue-data">
-                            <a href="#/issue/{{ issue.id }}">{{ issue.subject }}</a>
-                        </div>
-                        <div class="issue-date issue-data">
-                            <a href="#/issue/{{ issue.id }}">{{ issue.lastModified | formatDate }}</a>
-                        </div>
-                    </div>
+                    <a href="#/issue/{{ issue.id }}" class="issue">
+                        <span class="issue-id issue-data">{{ issue.id }}</span>
+                        <span class="issue-owner issue-data">{{ issue.owner.name }}</span>
+                        <span class="issue-subject issue-data">{{ issue.subject }}</span>
+                        <span class="issue-date issue-data">{{ issue.lastModified | formatDate }}</span>
+                    </a>
                 </template>
             </div>
         </template>
