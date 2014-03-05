@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/polymer-ui-toggle-button/polymer-ui-toggle-button.html">
 
 <link rel="import" href="cr-linkified-text.html">
+<link rel="import" href="cr-issue-message-reply.html">
 
 <polymer-element name="cr-issue-messages" attributes="messages">
     <template>
@@ -63,13 +64,6 @@
                 transition: -webkit-transform 0.5s, opacity 0.5s;
             }
 
-            .message-toolbar span {
-                color: #284D8C;
-                cursor: pointer;
-                padding: 0.5em 16px;
-                display: inline-block;
-            }
-
             .polymer-ui-collapsible-header {
                 cursor: pointer;
                 -webkit-user-select: none;
@@ -105,7 +99,7 @@
                         </div>
                         <div class="message-text"><cr-linkified-text text="{{ message.text }}"></cr-linkified-text></div>
                         <div class="message-toolbar">
-                            <span class="message-reply">Reply</span>
+                            <cr-issue-message-reply message="{{ message }}"></cr-issue-message-reply>
                         </div>
                     </polymer-ui-collapsible>
                 </template>

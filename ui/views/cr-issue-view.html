@@ -28,7 +28,7 @@
             </p>
         </template>
         <template if="{{ issue && !failed }}">
-            <cr-issue issue="{{ issue }}"></cr-issue>
+            <cr-issue issue="{{ issue }}" on-message-save="{{ saveMessage }}"></cr-issue>
         </template>
     </template>
     <script>
@@ -37,8 +37,12 @@
             issueId: 0,
             attached: function() {
                 var self = this;
+                this.loadIssue();
+            },
+            loadIssue: function() {
+                var self = this;
                 var issue = new Issue(this.issueId);
-                issue.loadDetails().then(function() {
+                return issue.loadDetails().then(function() {
                     // FIXME: We should load patchsets on demand.
                     return Promise.all(issue.patchsets.map(function(patchset) {
                         return patchset.loadDetails();
@@ -48,6 +52,19 @@
                 }).catch(function(error) {
                     console.log(error);
                     self.failed = true;
+                });
+            },
+            saveMessage: function(event) {
+                var self = this;
+                var messageText = event.detail.messageText;
+                if (!messageText)
+                    return;
+                this.issue.saveMessage(messageText).then(function() {
+                    // Refresh the issue to show new comments and patchsets.
+                    return self.loadIssue();
+                }).catch(function(e) {
+                    console.log(e);
+                    // FIXME: We should show an error message.
                 });
             },
         });

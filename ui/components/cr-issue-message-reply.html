@@ -1,0 +1,68 @@
+
+<polymer-element name="cr-issue-message-reply" attributes="message expanded value">
+    <template>
+        <style>
+            :host {
+                display: block;
+                padding: 0.5em 16px;
+            }
+
+            .reply-action {
+                color: #284D8C;
+                cursor: pointer;
+                display: inline-block;
+            }
+
+            textarea {
+                width: 500px;
+                font-family: Monaco, monospace;
+            }
+        </style>
+        <template if="{{ !expanded }}">
+            <span on-click="{{ expand }}" class="reply-action">Reply</span>
+        </template>
+        <template if="{{ expanded }}">
+            <textarea id="textarea" rows="20" value="{{ value }}"></textarea>
+            <div class="toolbar">
+                <button on-click="{{ sendMessage }}">Send Message</button>
+                <button on-click="{{ discardMessage }}">Discard</button>
+            </div>
+        </template>
+    </template>
+    <script>
+    Polymer("cr-issue-message-reply", {
+        message: null,
+        expanded: false,
+        value: "",
+        expand: function() {
+            this.expanded = true;
+            this.async(this.showReply);
+        },
+        sendMessage: function() {
+            this.fire('message-save', {
+                messageText: this.value,
+            });
+        },
+        discardMessage: function() {
+            this.expanded = false;
+            this.value = "";
+        },
+        showReply: function() {
+            if (!this.expanded)
+                return;
+            var textarea = this.shadowRoot.getElementById("textarea");
+            textarea.scrollIntoView(true);
+            textarea.focus();
+            if (this.message) {
+                var date = this.message.date.utc(true).format("On {yyyy}/{MM}/{dd} at {HH}:{mm}:{ss}");
+                var value = date + ", " + this.message.author.name + " wrote:\n";
+                this.message.text.split("\n").forEach(function(line) {
+                    value += "> " + line + "\n";
+                });
+                value += "\n";
+                this.value = value;
+            }
+        },
+    });
+    </script>
+</polymer-element>
