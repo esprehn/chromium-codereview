@@ -62,9 +62,6 @@ IssueList.prototype.parseDocument = function(document)
     if (!document.body)
         return;
 
-    // The current user is embedded inside the issue list document.
-    User.parseCurrentUser(document);
-
     var rows = document.querySelectorAll("#queues tr");
     var currentType;
 

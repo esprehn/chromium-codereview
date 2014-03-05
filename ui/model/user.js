@@ -1,19 +1,19 @@
 
-function User(name, email, isCurrentUser)
+function User(name, email)
 {
     this.name = name || "";
     this.email = email || "";
     this.openIssues = 0;
     this.reviewedIssues = 0;
-    if (isCurrentUser || this.isCurrentUser())
-        this.displayName = "me";
-    else
-        this.displayName = this.name;
+    this.xsrfToken = "";
+    this.displayName = name || "";
 }
 
+User.CURRENT_USER_URL = "https://codereview.chromium.org/settings";
 User.EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
 User.ISSUES_OPEN_PATTERN = /issues created: (\d+)/;
 User.ISSUES_REVIEW_PATTERN = /issues reviewed: (\d+)/;
+User.XSRF_TOKEN_PATTERN = /xsrfToken = '([^']+)';/;
 
 User.current = null;
 
@@ -27,8 +27,25 @@ User.parseCurrentUser = function(document)
     var match = User.EMAIL_PATTERN.exec(b.textContent);
     if (!match)
         return null;
-    User.current = new User(match[2], match[1], "me");
-    return User.current;
+    var user = new User(match[2], match[1], "me");
+    user.displayName = "me";
+    var script = document.body.querySelector("script");
+    if (script) {
+        var match = script.textContent.match(User.XSRF_TOKEN_PATTERN);
+        if (match)
+            user.xsrfToken = match[1];
+    }
+    User.current = user;
+    return user;
+};
+
+User.loadCurrentUser = function()
+{
+    if (User.current)
+        return Promise.resolve(User.current);
+    return loadDocument(User.CURRENT_USER_URL).then(function(document) {
+        return User.parseCurrentUser(document);
+    });
 };
 
 User.forName = function(name)
@@ -81,10 +98,6 @@ User.prototype.loadIssues = function()
 
 User.prototype.parseDetail = function(text)
 {
-    var EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
-    var ISSUES_OPEN_PATTERN = /issues created: (\d+)/;
-    var ISSUES_REVIEW_PATTERN = /issues reviewed: (\d+)/;
-
     var match;
 
     match = User.EMAIL_PATTERN.exec(text);

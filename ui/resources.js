@@ -9,7 +9,7 @@ function loadResource(type, url)
         xhr.onload = function() {
             fulfill(xhr);
         };
-        xhr.onerror = function(e) {
+        xhr.onerror = function() {
             reject(xhr);
         };
     });

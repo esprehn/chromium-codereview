@@ -25,12 +25,17 @@
             hashChanged: function() {
                 var self = this;
                 var path = this.parseHash(window.location.hash);
-                this.routes.any(function(route) {
-                    var newView = route.createView(path);
-                    if (!newView)
-                        return false;
-                    self.swapViews(newView);
-                    return true;
+                User.loadCurrentUser().then(function() {
+                    self.routes.any(function(route) {
+                        var newView = route.createView(path);
+                        if (!newView)
+                            return false;
+                        self.swapViews(newView);
+                        return true;
+                    });
+                }).catch(function(e) {
+                    console.log(e);
+                    // FIXME: Handle there not being a current user or an error.
                 });
             },
             childrenChanged: function() {
