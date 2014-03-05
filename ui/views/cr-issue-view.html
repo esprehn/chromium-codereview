@@ -43,7 +43,9 @@
                 var self = this;
                 var issue = new Issue(this.issueId);
                 return issue.loadDetails().then(function() {
-                    // FIXME: We should load patchsets on demand.
+                    // FIXME: We should load patchsets on demand, unfortunately we can't
+                    // get the patchset titles from the JSON we load. We could switch to
+                    // screen scraping the issue page but that would be really slow.
                     return Promise.all(issue.patchsets.map(function(patchset) {
                         return patchset.loadDetails();
                     }));
