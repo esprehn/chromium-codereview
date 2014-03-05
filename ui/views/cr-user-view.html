@@ -40,23 +40,6 @@
             attached: function() {
                 var self = this;
                 this.user = new User(this.username);
-
-                // FIXME: This only partially works, if you go directly to #/user/{me} then
-                // we don't know the current user yet. We could also redirect in that case,
-                // but it'd mean we'd show the "Loading issues for {me}" screen first and also
-                // that loading that page will take twice as long.
-                if (this.user.isCurrentUser()) {
-                    window.location.hash = "#/";
-                    this.style.display = 'none';
-                    return;
-                }
-
-                if (this.username.has("@")) {
-                    window.location.hash = "#/user/" + encodeURIComponent(this.username.split("@")[0]);
-                    this.style.display = 'none';
-                    return;
-                }
-
                 this.user.loadIssues().then(function(issues) {
                     self.issues = issues;
                 }).catch(function(error) {
