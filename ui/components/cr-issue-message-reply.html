@@ -66,6 +66,10 @@
                 value += "\n";
                 this.value = value;
             }
+            this.async(function() {
+                // Need to scroll at raf time to make sure the text area is filled in.
+                textarea.scrollTop = textarea.scrollHeight;
+            });
         },
     });
     </script>
