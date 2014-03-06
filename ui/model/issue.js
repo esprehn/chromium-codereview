@@ -20,7 +20,8 @@ function Issue(id)
     this.id = id || 0;
 }
 
-Issue.DETAIL_URL = "https://codereview.chromium.org/api/{1}?messages=true";;
+Issue.DETAIL_URL = "https://codereview.chromium.org/api/{1}?messages=true";
+Issue.PUBLISH_URL = "https://codereview.chromium.org/{1}/publish";
 
 Issue.prototype.getDetailUrl = function()
 {
@@ -68,18 +69,51 @@ Issue.prototype.parseData = function(data)
     this.messageCount = this.messages.length;
 };
 
-Issue.prototype.saveMessage = function(text) {
+Issue.prototype.getPublishUrl = function()
+{
+    return Issue.PUBLISH_URL.assign(encodeURIComponent(this.id));
+};
+
+Issue.prototype.publish = function(options)
+{
     var issue = this;
-    return User.loadCurrentUser(true).then(function(user) {
-        return sendFormData("https://codereview.chromium.org/" + encodeURIComponent(issue.id) + "/publish", {
-            xsrf_token: user.xsrfToken,
-            subject: issue.subject,
-            message_only: "1",
-            send_mail: "1",
-            add_as_reviewer: "0",
-            message: text,
-        }).then(function() {
+    return this.createPublishData(options).then(function(data) {
+        return sendFormData(issue.getPublishUrl(), data).then(function() {
             return issue;
         });
+    });
+};
+
+Issue.prototype.createPublishData = function(options)
+{
+    var issue = this;
+    return User.loadCurrentUser(true).then(function(user) {
+        var message = options.message || "";
+        var addAsReviewer = options.addAsReviewer;
+        var publishDrafts = options.publishDrafts;
+        var commit = false;
+        var reviewers = issue.reviewers.map(function(user) {
+            return user.email;
+        }).join(", ");
+        var cc = issue.cc.map(function(user) {
+            return user.email;
+        }).join(", ");
+        if (options.lgtm) {
+            message = "lgtm\n\n" + message;
+            addAsReviewer = true;
+            publishDrafts = true;
+            commit = options.commit;
+        }
+        return {
+            subject: issue.subject,
+            xsrf_token: user.xsrfToken,
+            message_only: publishDrafts ? "0" : "1",
+            add_as_reviewer: addAsReviewer ? "1" : "0",
+            commit: commit ? "1" : "0",
+            message: message,
+            send_mail: "1",
+            reviewers: reviewers,
+            cc: cc,
+        };
     });
 };

@@ -28,7 +28,11 @@
             </p>
         </template>
         <template if="{{ issue && !failed }}">
-            <cr-issue issue="{{ issue }}" on-message-save="{{ saveMessage }}"></cr-issue>
+            <cr-issue
+                issue="{{ issue }}"
+                on-message-save="{{ saveMessage }}"
+                on-quick-lgtm="{{ quickLgtm }}"
+                on-quick-lgtm-and-commit="{{ quickLgtmAndCommit }}"></cr-issue>
         </template>
     </template>
     <script>
@@ -59,12 +63,21 @@
                 });
             },
             saveMessage: function(event) {
+                if (event.detail.messageText)
+                    this.publish({message: event.detail.messageText});
+            },
+            quickLgtm: function(options) {
+                this.publish({lgtm: true});
+            },
+            quickLgtmAndCommit: function(options) {
+                this.publish({
+                    lgtm: true,
+                    commit: true,
+                });
+            },
+            publish: function(options) {
                 var self = this;
-                var messageText = event.detail.messageText;
-                if (!messageText)
-                    return;
-                this.issue.saveMessage(messageText).then(function() {
-                    // Refresh the issue to show new comments and patchsets.
+                this.issue.publish(options).then(function() {
                     return self.loadIssue();
                 }).catch(function(e) {
                     console.log(e);
