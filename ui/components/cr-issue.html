@@ -4,8 +4,9 @@
 <link rel="import" href="cr-issue-patchsets.html">
 <link rel="import" href="cr-linkified-text.html">
 
-<polymer-element name="cr-issue" attributes="issue">
+<polymer-element name="cr-issue" attributes="issue" cache-csstext>
     <template>
+        <link rel="stylesheet" href="common.css">
         <link rel="stylesheet" href="cr-issue.css">
 
         <template if="{{ issue }}">

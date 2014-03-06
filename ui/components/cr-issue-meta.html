@@ -1,20 +1,11 @@
 
-<polymer-element name="cr-issue-meta" attributes="issue">
+<polymer-element name="cr-issue-meta" attributes="issue" cache-csstext>
     <template>
+        <link rel="stylesheet" href="common.css">
         <style>
             :host {
                 border: 1px solid #CCC;
                 display: table;
-            }
-
-            a:link,
-            a:visited {
-                color: #284D8C;
-                text-decoration: none;
-            }
-
-            a:hover {
-                text-decoration: underline;
             }
 
             .issue-meta-item {

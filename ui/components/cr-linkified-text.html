@@ -1,18 +1,8 @@
 
 <script src="../ba-linkify.js"></script>
 
-<polymer-element name="cr-linkified-text" attributes="text">
-    <template><style>
-            a:link,
-            a:visited {
-                color: #284D8C;
-                text-decoration: none;
-            }
-
-            a:hover {
-                text-decoration: underline;
-            }
-    </style><div id="text"></div></template>
+<polymer-element name="cr-linkified-text" attributes="text" cache-csstext>
+    <template><link rel="stylesheet" href="common.css"><div id="text"></div></template>
     <script>
     Polymer("cr-linkified-text", {
         text: "",
