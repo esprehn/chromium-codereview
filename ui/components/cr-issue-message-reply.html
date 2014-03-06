@@ -28,7 +28,7 @@
         <template if="{{ expanded }}">
             <textarea id="textarea" rows="20" value="{{ value }}"></textarea>
             <div class="reply-toolbar">
-                <button on-click="{{ sendMessage }}">Send Message</button>
+                <button on-click="{{ sendMessage }}" class="primary-action">Send Message</button>
                 <button on-click="{{ discardMessage }}">Discard</button>
             </div>
         </template>
