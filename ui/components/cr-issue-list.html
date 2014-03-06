@@ -1,52 +1,8 @@
 
 <polymer-element name="cr-issue-list" attributes="issues">
     <template>
-        <style>
-            :host {
-                display: block;
-            }
+        <link rel="stylesheet" href="cr-issue-list.css">
 
-            a {
-                text-decoration: none;
-                color: black;
-            }
-
-            .issue span {
-                padding: 0.5em 16px;
-            }
-
-            .issues {
-                display: table;
-            }
-
-            .issue {
-                border-bottom: 1px solid #E6E6E6;
-                display: table-row;
-                -webkit-user-select: none;
-            }
-
-            .issue:nth-child(2n) {
-                background-color: #F6F6F6;
-            }
-
-            .issue:hover {
-                background-color: #F9F3E4;
-            }
-
-            .issue-data {
-                display: table-cell;
-            }
-
-            .issue-date,
-            .issue-id,
-            .issue-owner {
-                white-space: nowrap;
-            }
-
-            .issue-subject {
-                width: 100%;
-            }
-        </style>
         <template if="{{ issues }}">
             <div class="issues">
                 <template repeat="{{ issue in issues }}">

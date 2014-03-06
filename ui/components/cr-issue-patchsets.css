@@ -1,0 +1,71 @@
+:host { display: block; }
+
+a:link,
+a:visited {
+    color: #284D8C;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.patchset {
+    border-color: #375B9C;
+    border-width: 1px 1px 0 1px;
+    border-style: solid;
+}
+
+.patchset:last-child {
+    border-width: 1px;
+}
+
+.patchset-header {
+    padding: 0.5em 16px;
+    display: flex;
+    background-color: #DFE7F8;
+    border-bottom: 1px solid #ccc;
+}
+
+.patchset-title {
+    flex: 1;
+    font-weight: bold;
+}
+
+.file {
+    padding: 0.25em 16px;
+    display: table-row;
+}
+
+.files {
+    display: table;
+    margin: 0.5em 8px 0.5em 8px;
+}
+
+.file-name {
+    padding: 0.25em 8px;
+    display: table-cell;
+    width: 100%;
+}
+
+.file-messages,
+.file-status,
+.file-added,
+.file-removed {
+    display: table-cell;
+    padding: 0.25em 8px;
+    white-space: nowrap;
+}
+
+.file-added {
+    color: #8fdf5f;
+}
+
+.file-removed {
+    color: #E75D54;
+}
+
+.polymer-ui-collapsible-header {
+    cursor: pointer;
+    -webkit-user-select: none;
+}
