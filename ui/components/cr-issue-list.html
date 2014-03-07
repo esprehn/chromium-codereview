@@ -8,7 +8,7 @@
                 <template repeat="{{ issue in issues }}">
                     <a href="#/issue/{{ issue.id }}" class="issue">
                         <span class="issue-id issue-data">{{ issue.id }}</span>
-                        <span class="issue-owner issue-data">{{ issue.owner.name }}</span>
+                        <span class="issue-owner issue-data">{{ issue.owner.displayName }}</span>
                         <span class="issue-subject issue-data">{{ issue.subject }}</span>
                         <span class="issue-date issue-data">{{ issue.lastModified | formatDate }}</span>
                     </a>

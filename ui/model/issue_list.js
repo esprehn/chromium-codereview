@@ -61,7 +61,7 @@ IssueList.prototype.parseDocument = function(document)
     var h2 = document.querySelector("h2");
     if (h2) {
         var name = h2.textContent.remove("Issues for ");
-        issueList.owner = new User(name);
+        issueList.owner = User.forName(name);
     }
 
     function processHeaderRow(row) {
