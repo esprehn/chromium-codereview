@@ -12,7 +12,7 @@
             <polymer-ui-accordion multi selected="{{ [ messages.length - 1 ] }}">
                 <template repeat="{{ message, i in messages }}">
                     <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval} | tokenList }}">
-                        <div class="message-header polymer-ui-collapsible-header">
+                        <div class="message-header polymer-ui-collapsible-header" on-tap="{{ scrollMessageToVisibleIfNeeded }}">
                             <div class="message-title">
                                 <div class="message-author">{{ message.author.displayName }}</div>
                                 <div class="message-preview">{{ message.text | messagePreview }}</div>
@@ -43,6 +43,16 @@
                 if (!date)
                     return "";
                 return date.relative();
+            },
+            scrollMessageToVisibleIfNeeded: function(event) {
+                // If you click the header then scroll the message until you can read it. This is
+                // racy with the <polymer-ui-collapsible> animation but it's the best we have
+                // until polymer exposes some events. We could listen for on-transitionend but
+                // then expand/collapse all would make us do this for each item.
+                var message = event.currentTarget.parentNode;
+                this.async(function() {
+                    message.scrollIntoViewIfNeeded();
+                }, null, 350);
             },
             messagePreview: function(text) {
                 var lines = text.trim().split("\n");
