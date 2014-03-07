@@ -50,11 +50,11 @@ User.loadCurrentUser = function(refresh)
     });
 };
 
-User.forName = function(name)
+User.forName = function(name, email)
 {
     if (User.current && (name === "me" || name === User.current.name))
         return User.current;
-    return new User(name);
+    return new User(name, email);
 };
 
 User.forMailingListEmail = function(email)
