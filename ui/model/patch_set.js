@@ -13,9 +13,13 @@ function PatchSet(issue, id)
     this.id = id || 0;
 }
 
+PatchSet.DETAIL_URL = "/api/{1}/{2}/?comments=true"
+
 PatchSet.prototype.getDetailUrl = function()
 {
-    return "https://codereview.chromium.org/api/" + this.issue.id + "/" + this.id + "/?comments=true";
+    return PatchSet.DETAIL_URL.assign(
+        encodeURIComponent(this.issue.id),
+        encodeURIComponent(this.id));
 };
 
 PatchSet.prototype.loadDetails = function()

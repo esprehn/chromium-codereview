@@ -9,7 +9,7 @@ function IssueList()
     this.closed = []; // Array<Issue>
 }
 
-IssueList.ISSUE_LIST_URL = "https://codereview.chromium.org/";
+IssueList.ISSUE_LIST_URL = "/";
 
 IssueList.prototype.loadIssues = function()
 {

@@ -15,9 +15,9 @@ function PatchFile(patchset, name)
     this.drafts = [];
 }
 
-PatchFile.DRAFT_URL = "https://codereview.chromium.org/{1}/patch/{2}/{3}?column_width=2000";
-PatchFile.REVIEW_URL = "https://codereview.chromium.org/{1}/diff/{2}/{3}";
-PatchFile.DIFF_URL = "https://codereview.chromium.org/download/issue{1}_{2}_{3}.diff";
+PatchFile.DRAFT_URL = "/{1}/patch/{2}/{3}?column_width=2000";
+PatchFile.REVIEW_URL = "/{1}/diff/{2}/{3}";
+PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
 
 PatchFile.prototype.parseData = function(data)
 {

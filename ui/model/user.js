@@ -9,9 +9,9 @@ function User(name, email, displayName)
     this.displayName = displayName || name || "";
 }
 
-User.CURRENT_USER_URL = "https://codereview.chromium.org/settings";
-User.DETAIL_URL = "https://codereview.chromium.org/user_popup/{1}";
-User.ISSUE_LIST_URL = "https://codereview.chromium.org/user/{1}";
+User.CURRENT_USER_URL = "/settings";
+User.DETAIL_URL = "/user_popup/{1}";
+User.ISSUE_LIST_URL = "/user/{1}";
 
 User.EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
 User.ISSUES_OPEN_PATTERN = /issues created: (\d+)/;

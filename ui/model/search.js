@@ -3,8 +3,8 @@ function Search()
 {
 }
 
-Search.USER_URL = "https://codereview.chromium.org/account?limit={1}&q={2}";
-Search.ISSUE_URL = "https://codereview.chromium.org/search?format=json&closed={1}&owner={2}&reviewer={3}&limit={4}&cursor={5}";
+Search.USER_URL = "/account?limit={1}&q={2}";
+Search.ISSUE_URL = "/search?format=json&closed={1}&owner={2}&reviewer={3}&limit={4}&cursor={5}";
 Search.DEFAULT_LIMIT = 10;
 
 Search.findUsers = function(query, limit)

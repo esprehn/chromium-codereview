@@ -20,8 +20,8 @@ function Issue(id)
     this.id = id || 0;
 }
 
-Issue.DETAIL_URL = "https://codereview.chromium.org/api/{1}?messages=true";
-Issue.PUBLISH_URL = "https://codereview.chromium.org/{1}/publish";
+Issue.DETAIL_URL = "/api/{1}?messages=true";
+Issue.PUBLISH_URL = "/{1}/publish";
 
 Issue.prototype.getDetailUrl = function()
 {
