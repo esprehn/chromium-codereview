@@ -20,7 +20,7 @@
                                     <div class="file-status">{{ file.status }}</div>
                                     <div class="file-removed">-{{ file.removed }}</div>
                                     <div class="file-added">+{{ file.added }}</div>
-                                    <a class="file-name" href="#/issue/{{ patchset.issue.id }}/{{ patchset.id }}/{{ file.name }}">{{ file.name }}</a>
+                                    <a class="file-name" href="https://codereview.chromium.org/{{ patchset.issue.id }}/diff/{{ patchset.id }}/{{ file.name }}" target="_blank">{{ file.name }}</a>
                                     <div class="file-messages">{{ file.messages.length | commentCount }}</div>
                                 </div>
                             </template>
