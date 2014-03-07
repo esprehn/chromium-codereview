@@ -12,22 +12,39 @@
     Polymer("cr-linkified-text", {
         text: "",
         textChanged: function(oldValue, newValue) {
+            var self = this;
             var root = this.shadowRoot.getElementById('text');
 
             root.innerHTML = "";
 
             linkify(newValue, {
                 callback: function(text, href) {
-                    if (href) {
-                        var link = document.createElement("a");
-                        link.href = href;
-                        link.textContent = text;
-                        root.appendChild(link);
-                    } else {
-                        root.appendChild(document.createTextNode(text));
-                    }
+                    if (href)
+                        root.appendChild(createAnchor(href, text));
+                    else
+                        self.appendTextAndBugs(root, text);
                 }
             });
+        },
+        appendTextAndBugs: function(root, text) {
+            var BUG_PATTERN = /^BUG=(\d+|,|\s)+$/m;
+            var BUG_ID = /^(.*?)(\d+)(.*?)$/m;
+
+            for (var match = text.match(BUG_PATTERN); match; match = text.match(BUG_PATTERN)) {
+                var before = text.substring(0, match.index);
+                root.appendChild(document.createTextNode(before));
+                text = text.substring(match.index + match[0].length);
+                var bugText = match[0];
+                for (var bugMatch = bugText.match(BUG_ID); bugMatch; bugMatch = bugText.match(BUG_ID)) {
+                    root.appendChild(document.createTextNode(bugMatch[1]));
+                    var bugId = parseInt(bugMatch[2], 10);
+                    root.appendChild(createAnchor("http://crbug.com/" + bugId, bugId));
+                    bugText = bugMatch[3] || "";
+                }
+            }
+
+            if (text.length)
+                root.appendChild(document.createTextNode(text));
         },
     });
   </script>

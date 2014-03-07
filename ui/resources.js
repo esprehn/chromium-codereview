@@ -86,3 +86,12 @@ function createLink(type, name)
     link.rel = type;
     return link;
 }
+
+function createAnchor(href, text)
+{
+    var a = document.createElement("a");
+    a.href = href;
+    a.textContent = text;
+    a.target = "_blank";
+    return a;
+}
