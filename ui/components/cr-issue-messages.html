@@ -11,8 +11,8 @@
         <template if="{{ messages.length }}">
             <polymer-ui-accordion multi selected="{{ [ messages.length - 1 ] }}">
                 <template repeat="{{ message, i in messages }}">
-                    <polymer-ui-collapsible class="message">
-                        <div class="message-header polymer-ui-collapsible-header {{ {approval: message.approval, disapproval: message.disapproval} | tokenList }}">
+                    <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval} | tokenList }}">
+                        <div class="message-header polymer-ui-collapsible-header">
                             <div class="message-title">
                                 <div class="message-author">{{ message.author.displayName }}</div>
                                 <div class="message-preview">{{ message.text | messagePreview }}</div>
