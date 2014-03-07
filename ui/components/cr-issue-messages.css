@@ -1,7 +1,7 @@
 :host { display: block; }
 
 .message {
-    border-color: #dfdfdf;
+    border-color: #ccc;
     border-width: 1px 1px 0 1px;
     border-style: solid;
 }
@@ -42,8 +42,8 @@
 }
 
 .polymer-ui-collapsible-header {
-    cursor: pointer;
     -webkit-user-select: none;
+    cursor: default;
 }
 
 .message[active] .message-preview {

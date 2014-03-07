@@ -19,6 +19,7 @@ a {
     border-bottom: 1px solid #E6E6E6;
     display: table-row;
     -webkit-user-select: none;
+    cursor: default;
 }
 
 .issue:nth-child(2n) {

@@ -1,7 +1,7 @@
 :host { display: block; }
 
 .patchset {
-    border-color: #375B9C;
+    border-color: #ccc;
     border-width: 1px 1px 0 1px;
     border-style: solid;
 }
@@ -11,10 +11,16 @@
 }
 
 .patchset-header {
-    padding: 0.5em 16px;
+    background: #F6F6F6;
+    border-bottom: 1px solid #ebebeb;
     display: flex;
-    background-color: #DFE7F8;
-    border-bottom: 1px solid #ccc;
+    padding: 0.5em 16px;
+    position: relative;
+}
+
+.patchset:not([active]) .patchset-header:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 }
 
 .patchset-title {
@@ -56,6 +62,6 @@
 }
 
 .polymer-ui-collapsible-header {
-    cursor: pointer;
+    cursor: default;
     -webkit-user-select: none;
 }

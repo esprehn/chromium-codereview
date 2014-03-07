@@ -1,18 +1,5 @@
 :host { display: block; }
 
-h1, h2 {
-    margin: 0;
-    padding: 0.5em 16px;
-}
-
-h1 {
-    font-size: 1.5em;
-}
-
-h2 {
-    font-size: 1.3em;
-}
-
 .issue-subject {
     padding: 0.5em 16px;
 }
