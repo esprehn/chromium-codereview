@@ -1,30 +1,30 @@
 
-<script src="sugar.js"></script>
-<script src="base.js"></script>
+<script src="../lib/sugar.js"></script>
+<script src="../base.js"></script>
 
-<script src="resources.js"></script>
-<script src="model/issue.js"></script>
-<script src="model/issue_list.js"></script>
-<script src="model/issue_message.js"></script>
-<script src="model/patch_file.js"></script>
-<script src="model/patch_file_message.js"></script>
-<script src="model/patch_set.js"></script>
-<script src="model/search.js"></script>
-<script src="model/search_result.js"></script>
-<script src="model/try_job_result.js"></script>
-<script src="model/try_job_result_step.js"></script>
-<script src="model/user.js"></script>
+<script src="../resources.js"></script>
+<script src="../model/issue.js"></script>
+<script src="../model/issue_list.js"></script>
+<script src="../model/issue_message.js"></script>
+<script src="../model/patch_file.js"></script>
+<script src="../model/patch_file_message.js"></script>
+<script src="../model/patch_set.js"></script>
+<script src="../model/search.js"></script>
+<script src="../model/search_result.js"></script>
+<script src="../model/try_job_result.js"></script>
+<script src="../model/try_job_result_step.js"></script>
+<script src="../model/user.js"></script>
 
-<link rel="import" href="components/cr-route.html">
-<link rel="import" href="components/cr-view.html">
+<link rel="import" href="cr-route.html">
+<link rel="import" href="cr-view.html">
 
-<link rel="import" href="views/cr-inbox-view.html">
-<link rel="import" href="views/cr-issue-view.html">
-<link rel="import" href="views/cr-user-view.html">
+<link rel="import" href="../views/cr-inbox-view.html">
+<link rel="import" href="../views/cr-issue-view.html">
+<link rel="import" href="../views/cr-user-view.html">
 
 <polymer-element name="cr-app">
     <template>
-        <link rel="stylesheet" href="components/common.css">
+        <link rel="stylesheet" href="common.css">
         <style>
             :host { display: block; }
 
@@ -51,7 +51,7 @@
         </style>
         <header>
             <a href="{{ homeUrl }}">
-                <img src="images/chromium-logo.png">
+                <img src="../images/chromium-logo.png">
                 <span>Chromium Code Review</span>
             </a>
         </header>

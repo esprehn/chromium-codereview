@@ -15,6 +15,6 @@ onload = function() {
 
     document.documentElement.style.display = '';
     document.head.appendChild(createLink("import", "bower_components/polymer/polymer.html"));
-    document.head.appendChild(createLink("import", "ui/cr-app.html"));
+    document.head.appendChild(createLink("import", "ui/components/cr-app.html"));
     document.head.appendChild(createLink("stylesheet", "ui/style.css"));
 };
