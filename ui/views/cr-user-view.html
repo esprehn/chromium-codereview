@@ -3,18 +3,13 @@
 
 <polymer-element name="cr-user-view" attributes="username">
     <template>
+        <link rel="stylesheet" href="../components/common.css">
         <style>
             :host { display: block; }
 
             p {
                 padding: 1em;
                 font-size: 2em;
-            }
-
-            h1 {
-                margin: 0;
-                padding: 0.5em 16px;
-                font-size: 1.5em;
             }
         </style>
         <template if="{{ !issues && !failed }}">
@@ -28,7 +23,7 @@
             </p>
         </template>
         <template if="{{ issues && !failed }}">
-            <h1>{{ username }}'s Issues</h1>
+            <h1 class="app-header">Issues for {{ username }}</h1>
             <cr-issue-inbox issues="{{ issues }}"></cr-issue-inbox>
         </template>
     </template>

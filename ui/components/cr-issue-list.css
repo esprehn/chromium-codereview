@@ -23,7 +23,7 @@ a {
 }
 
 .issue:nth-child(2n) {
-    background-color: #F6F6F6;
+    background-color: #F8F8F8;
 }
 
 .issue:hover {

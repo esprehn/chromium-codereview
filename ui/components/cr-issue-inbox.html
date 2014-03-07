@@ -8,18 +8,30 @@
         <style>
             :host { display: block; }
 
-            polymer-ui-accordion {
-                border-top: 1px solid #bcbcbc;
-            }
-
             .polymer-ui-collapsible-header {
                 font-size: 1.3em;
                 padding: 0.5em 16px;
-                background-color: #DFE7F8;
-                border-bottom: 1px solid #bcbcbc;
+                background-color: white;
                 font-weight: bold;
                 cursor: default;
                 -webkit-user-select: none;
+            }
+
+            .polymer-ui-collapsible-header::before {
+                content: "";
+                border-width: 5px;
+                border-style: solid;
+                border-color: transparent;
+                border-left-color: black;
+                display: inline-block;
+                margin-right: 4px;
+                transition: border-color 150ms;
+            }
+
+            polymer-ui-collapsible[active] .polymer-ui-collapsible-header::before {
+                border-left-color: transparent;
+                border-top-color: black;
+                transition: border-color 150ms;
             }
         </style>
         <template if="{{ issues }}">

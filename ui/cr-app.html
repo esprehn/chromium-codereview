@@ -24,9 +24,37 @@
 
 <polymer-element name="cr-app">
     <template>
+        <link rel="stylesheet" href="components/common.css">
         <style>
             :host { display: block; }
+
+            header {
+                background-color: #212121;
+                font-size: 1.2em;
+                padding: 0.5em 4px;
+            }
+
+            header a,
+            header img {
+                vertical-align: middle;
+            }
+
+            header a:link,
+            header a:visited {
+                color: white;
+                text-decoration: none;
+            }
+
+            header img {
+                width: 25px;
+            }
         </style>
+        <header>
+            <a href="{{ homeUrl }}">
+                <img src="images/chromium-logo.png">
+                <span>Chromium Code Review</span>
+            </a>
+        </header>
         <cr-view>
             <cr-route path="/" element="cr-inbox-view"></cr-route>
             <cr-route path="/issue/:issueid" element="cr-issue-view"></cr-route>
@@ -35,6 +63,10 @@
     </template>
     <script>
         Polymer("cr-app", {
+            homeUrl: "",
+            created: function() {
+                this.homeUrl = "//{1}{2}#/".assign(window.location.host, window.location.pathname);
+            },
         });
     </script>
 </polymer-element>
