@@ -1,5 +1,10 @@
 :host { display: block; }
 
+h2 {
+    -webkit-user-select: none;
+    cursor: default;
+}
+
 .issue-subject {
     padding: 0.5em 16px;
 }
