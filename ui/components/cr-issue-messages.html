@@ -34,8 +34,8 @@
     </template>
     <script>
     (function() {
-        var REPLY_HEADER = /On \d+\/\d+\/\d+ \d+:\d+:\d+, .*? wrote:/;
-        var FILE_HEADER = /https:\/\/codereview.chromium.org\/\d+\/diff\/\d+\/.*/;
+        var REPLY_HEADER = /^On \d+\/\d+\/\d+ (at )?\d+:\d+:\d+, .*? wrote:$/;
+        var FILE_HEADER = /^https:\/\/codereview.chromium.org\/\d+\/diff\/\d+\/.*$/;
         var MAX_PREVIEW_LENGTH = 300;
 
         Polymer("cr-issue-messages", {
@@ -64,20 +64,20 @@
             messagePreview: function(text) {
                 var lines = text.split("\n");
                 var i = 0;
-                var j = 0;
 
-                do {
-                    j = i;
+                while (i < text.length) {
                     if (lines[i] === "") {
                         ++i;
                     } if (REPLY_HEADER.test(lines[i])) {
                         ++i;
-                        while (lines[i].startsWith(">"))
-                            ++i;
                     } else if (FILE_HEADER.test(lines[i])) {
                         i += 5;
+                    } else if (lines[i] && lines[i].startsWith(">")) {
+                        ++i;
+                    } else {
+                        break;
                     }
-                } while (i != j);
+                }
 
                 // If we hit the end then it's not clear what's in this reply so
                 // just show it all.
