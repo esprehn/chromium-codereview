@@ -12,8 +12,6 @@
 
 .message-text {
     padding: 0.5em 16px;
-    white-space: pre-wrap;
-    font-family: Monaco, monospace;
 }
 
 .message-header {

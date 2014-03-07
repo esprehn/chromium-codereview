@@ -6,32 +6,33 @@
 
 .issue-description {
     margin: 1em 16px;
-    white-space: pre-wrap;
-    font-family: Monaco, monospace;
+}
+
+.issue-content {
     flex: 1;
 }
 
-.issue-details {
+.issue-body {
     display: flex;
-}
-
-.issue-sidebar {
-    order: 2;
-    flex-shrink: 0;
-    max-width: 25em;
-    padding: 1em 16px;
 }
 
 .issue-toolbar {
-    padding: 0.5em 0;
-    display: flex;
+    margin: 0 16px;
+    border-bottom: 1px #e5e5e5 solid;
+    padding: 1em 0;
 }
 
-.issue-toolbar .issue-action-lgtm {
+.issue-toolbar button {
     margin-right: 16px;
 }
 
 cr-issue-patchsets,
 cr-issue-messages {
     padding: 0.5em 16px;
+}
+
+cr-issue-meta {
+    flex-shrink: 0;
+    width: 300px;
+    padding: 1em 16px;
 }

@@ -2,7 +2,12 @@
 <script src="../lib/ba-linkify.js"></script>
 
 <polymer-element name="cr-linkified-text" attributes="text" cache-csstext>
-    <template><link rel="stylesheet" href="common.css"><div id="text"></div></template>
+    <template><link rel="stylesheet" href="common.css"><style>
+        :host([pre]) {
+            white-space: pre-wrap;
+            font-family: Monaco, monospace;
+        }
+    </style><div id="text"></div></template>
     <script>
     Polymer("cr-linkified-text", {
         text: "",

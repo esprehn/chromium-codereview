@@ -21,7 +21,9 @@
                                 {{ message.date | formatDate }}
                             </div>
                         </div>
-                        <div class="message-text"><cr-linkified-text text="{{ message.text }}"></cr-linkified-text></div>
+                        <div class="message-text">
+                            <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
+                        </div>
                         <div class="message-toolbar">
                             <cr-issue-message-reply message="{{ message }}"></cr-issue-message-reply>
                         </div>

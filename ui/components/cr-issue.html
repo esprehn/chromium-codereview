@@ -14,15 +14,19 @@
                 Issue <a href="#/issue/{{ issue.id }}">{{ issue.id }}</a>: {{ issue.subject }} <template if="{{ issue.closed }}">(Closed)</template>
             </h1>
 
-            <div class="issue-details">
-                <div class="issue-sidebar">
-                    <cr-issue-meta issue="{{ issue }}"></cr-issue-meta>
+            <div class="issue-body">
+                <cr-issue-meta issue="{{ issue }}"></cr-issue-meta>
+
+                <div class="issue-content">
                     <div class="issue-toolbar">
                         <button on-click="{{ quickLgtm }}" class="issue-action-lgtm">Quick LGTM</button>
                         <button on-click="{{ quickLgtmAndCommit }}" class="issue-action-lgtm-cq">Quick LGTM + CQ</button>
                     </div>
+
+                    <div class="issue-description">
+                        <cr-linkified-text text="{{ issue.description }}" pre></cr-linkified-text>
+                    </div>
                 </div>
-                <div class="issue-description"><cr-linkified-text text="{{ issue.description }}"></cr-linkified-text></div>
             </div>
 
             <h2>Patchsets</h2>
