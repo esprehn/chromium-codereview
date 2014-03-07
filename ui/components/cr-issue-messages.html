@@ -39,6 +39,12 @@
 
         Polymer("cr-issue-messages", {
             messages: null,
+            toggleAll: function(options) {
+                var messages = toArray(this.shadowRoot.querySelectorAll(".message"));
+                messages.forEach(function(message) {
+                    message.active = options.active;
+                });
+            },
             formatDate: function(date) {
                 if (!date)
                     return "";

@@ -20,12 +20,14 @@ h1.app-header {
     color: #DD4B39;
 }
 
+.ui-action,
 a:link,
 a:visited {
     color: #1155CC;
     text-decoration: none;
 }
 
+.ui-action:hover,
 a:hover {
     text-decoration: underline;
 }

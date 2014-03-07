@@ -32,13 +32,30 @@
             <h2>Patchsets</h2>
             <cr-issue-patchsets patchsets="{{ issue.patchsets }}"></cr-issue-patchsets>
 
-            <h2>Messages</h2>
-            <cr-issue-messages messages="{{ issue.messages }}"></cr-issue-messages>
+            <header>
+                <h2>Messages</h2>
+                <div class="ui-actions">
+                    <span class="ui-action" on-tap="{{ expandAllMessages }}">Expand All</span> /
+                    <span class="ui-action" on-tap="{{ collapseAllMessages }}">Collapse All</span>
+                </div>
+            </header>
+            <cr-issue-messages messages="{{ issue.messages }}" id="messages"></cr-issue-messages>
         </template>
     </template>
     <script>
         Polymer("cr-issue", {
             issue: null,
+            collapseAllMessages: function() {
+                var messages = this.shadowRoot.getElementById("messages");
+                messages.toggleAll({active: false});
+            },
+            expandAllMessages: function() {
+                var messages = this.shadowRoot.getElementById("messages");
+                messages.toggleAll({active: true});
+                this.async(function() {
+                    messages.scrollIntoViewIfNeeded();
+                }, null, 350);
+            },
             quickLgtm: function() {
                 this.fire("quick-lgtm");
             },

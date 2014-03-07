@@ -42,3 +42,17 @@ cr-issue-meta {
     width: 300px;
     padding: 1em 16px;
 }
+
+header {
+    align-items: center;
+    display: flex;
+}
+
+header .ui-actions {
+    padding: 0.5em 16px;
+    flex-shrink: 0;
+}
+
+header h2 {
+    flex: 1;
+}
