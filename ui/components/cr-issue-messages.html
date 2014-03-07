@@ -36,6 +36,7 @@
     (function() {
         var REPLY_HEADER = /On \d+\/\d+\/\d+ \d+:\d+:\d+, .*? wrote:/;
         var FILE_HEADER = /https:\/\/codereview.chromium.org\/\d+\/diff\/\d+\/.*/;
+        var MAX_PREVIEW_LENGTH = 300;
 
         Polymer("cr-issue-messages", {
             messages: null,
@@ -83,7 +84,10 @@
                 if (i >= text.length)
                     return text;
 
-                return lines.slice(i).join("\n");
+                return lines
+                    .slice(i)
+                    .join("\n")
+                    .substr(0, MAX_PREVIEW_LENGTH);
             }
         });
     })();
