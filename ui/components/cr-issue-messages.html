@@ -61,17 +61,27 @@
                 }, null, 350);
             },
             messagePreview: function(text) {
-                var lines = text.trim().split("\n");
+                var lines = text.split("\n");
                 var i = 0;
+                var j = 0;
 
-                if (REPLY_HEADER.test(lines[i])) {
-                    ++i;
-                    while (lines[i].startsWith(">"))
+                do {
+                    j = i;
+                    if (lines[i] === "") {
                         ++i;
-                }
+                    } if (REPLY_HEADER.test(lines[i])) {
+                        ++i;
+                        while (lines[i].startsWith(">"))
+                            ++i;
+                    } else if (FILE_HEADER.test(lines[i])) {
+                        i += 5;
+                    }
+                } while (i != j);
 
-                if (FILE_HEADER.test(lines[i]))
-                    i += 5;
+                // If we hit the end then it's not clear what's in this reply so
+                // just show it all.
+                if (i >= text.length)
+                    return text;
 
                 return lines.slice(i).join("\n");
             }
