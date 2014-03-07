@@ -1,15 +1,5 @@
 :host { display: block; }
 
-a:link,
-a:visited {
-    color: #284D8C;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 .patchset {
     border-color: #375B9C;
     border-width: 1px 1px 0 1px;
