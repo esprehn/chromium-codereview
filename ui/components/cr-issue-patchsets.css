@@ -54,11 +54,11 @@
 }
 
 .file-added {
-    color: #8fdf5f;
+    color: #009933;
 }
 
 .file-removed {
-    color: #E75D54;
+    color: #DD4B39;
 }
 
 .polymer-ui-collapsible-header {

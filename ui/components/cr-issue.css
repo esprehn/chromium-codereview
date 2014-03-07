@@ -24,10 +24,11 @@ h2 {
 .issue-toolbar {
     margin: 0 16px;
     border-bottom: 1px #e5e5e5 solid;
-    padding: 1em 0;
+    padding: 0.5em 0;
 }
 
 .issue-toolbar button {
+    margin: 0.5em 0;
     margin-right: 16px;
 }
 

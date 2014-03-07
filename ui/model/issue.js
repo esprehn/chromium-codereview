@@ -18,6 +18,7 @@ function Issue(id)
     this.closed = false;
     this.commit = false;
     this.id = id || 0;
+    this.scores = {}; // Map<email, (-1, 1)>
 }
 
 Issue.DETAIL_URL = "/api/{1}?messages=true";
@@ -65,8 +66,37 @@ Issue.prototype.parseData = function(data)
         message.parseData(messageData);
         return message;
     });
-    // Overwrite the count in case they differ (ex. new comments were added since the summary list was loaded).
+    this.updateScores();
+    this.reviewers.sort(User.compare);
+    this.cc.sort(User.compare);
+    // Overwrite the count in case they differ (ex. new comments were added since
+    // the summary list was loaded).
     this.messageCount = this.messages.length;
+};
+
+Issue.prototype.updateScores = function() {
+    var issue = this;
+    var reviewerEmails = {};
+    this.reviewers.forEach(function(user) {
+        reviewerEmails[user.email] = true;
+    });
+    this.messages.forEach(function(message) {
+        if (!message.approval && !message.disapproval)
+            return;
+        var email = message.author.email;
+        if (message.approval)
+            issue.scores[email] = 1;
+        else if (message.disapproval)
+            issue.scores[email] = -1;
+        // Rietveld allows removing reviewers even if they lgtm or not lgtm a patch,
+        // but still treats them as a reviewer even though the JSON API won't return
+        // that user anymore. We add them back here to compensate for the JSON API
+        // not having the right users.
+        if (!reviewerEmails[email]) {
+            reviewerEmails[email] = true;
+            issue.reviewers.push(User.forMailingListEmail(email));
+        }
+    });
 };
 
 Issue.prototype.getPublishUrl = function()

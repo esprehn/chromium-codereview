@@ -67,6 +67,14 @@ User.forMailingListEmail = function(email)
     return new User(email.split("@")[0] || "", email);
 };
 
+User.compare = function(userA, userB) {
+    if (userA.displayName === "me")
+        return -1;
+    if (userB.displayName === "me")
+        return 1;
+    return userA.displayName.localeCompare(userB.displayName);
+};
+
 User.prototype.isCurrentUser = function()
 {
     return User.current && this.name === User.current.name;

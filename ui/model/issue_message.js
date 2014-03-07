@@ -16,6 +16,7 @@ IssueMessage.prototype.parseData = function(data)
     this.recipients = (data.recipients || []).map(function(email) {
         return User.forMailingListEmail(email);
     });
+    this.recipients.sort(User.compare);
     this.text = data.text || "";
     this.disapproval = data.disapproval || false;
     this.date = Date.utc.create(data.date);

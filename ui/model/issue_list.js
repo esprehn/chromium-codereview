@@ -42,14 +42,7 @@ IssueList.convertToUsers = function(value)
 {
     return value.split(",").map(function(value) {
         return User.forName(value.trim());
-    }).sort(function(userA, userB) {
-        // Aoways sort yourself first.
-        if (userA.displayName === "me")
-            return -1;
-        if (userB.displayName === "me")
-            return 1;
-        return userA.displayName.localeCompare(userB.displayName);
-    });
+    }).sort(User.compare);
 };
 
 IssueList.prototype.parseDocument = function(document)
