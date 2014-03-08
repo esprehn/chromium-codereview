@@ -30,7 +30,7 @@ Search.findIssues = function(query, limit)
 {
     // 0 = Unknown, 1 = Closed, 2 = Not Closed.
     var closed = 0;
-    if (query.hasOwnProperty('closed'))
+    if (query.hasOwnProperty("closed"))
         closed = query.closed ? 1 : 2;
 
     var url = Search.ISSUE_URL.assign(
