@@ -35,7 +35,7 @@
         <template if="{{ issue }}">
             <div class="issue-author issue-meta-item">
                 <div class="issue-meta-type">Owner</div>
-                <div class="issue-meta-value"><a href="#/user/{{ issue.owner.name }}">{{ issue.owner.displayName }}</a></div>
+                <div class="issue-meta-value"><a href="#/user/{{ issue.owner.email }}">{{ issue.owner.displayName }}</a></div>
             </div>
             <div class="issue-created issue-meta-item">
                 <div class="issue-meta-type">Created</div>

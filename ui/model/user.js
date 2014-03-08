@@ -6,7 +6,7 @@ function User(name, email, displayName)
     this.openIssues = 0;
     this.reviewedIssues = 0;
     this.xsrfToken = "";
-    this.displayName = displayName || name || "";
+    this.displayName = displayName || this.email.split("@")[0] || this.name;
 }
 
 User.CURRENT_USER_URL = "/settings";
