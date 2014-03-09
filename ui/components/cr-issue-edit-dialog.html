@@ -26,6 +26,10 @@
                 color: #959595;
             }
 
+            .issue-edit-field {
+                position: relative;
+            }
+
             .issue-edit-label,
             .issue-edit-field {
                 display: table-cell;
@@ -79,6 +83,29 @@
             .butterbar.visible {
                 display: block;
             }
+
+            .completions {
+                position: absolute;
+                border: 1px solid #ccc;
+                border-top: none;
+                background-color: white;
+                left: 0;
+                right: 0;
+                margin: 0 16px;
+                font-family: Monaco, monospace;
+                font-size: 0.9em;
+                z-index: 1;
+                -webkit-user-select: none;
+                cursor: default;
+            }
+
+            .completion {
+                padding: 0.5em 16px;
+            }
+
+            .completion:hover {
+                background-color: #eee;
+            }
         </style>
 
         <dialog id="dialog">
@@ -90,35 +117,42 @@
 
             <div class="issue-edit-fields">
                 <label>
-                    <span class="issue-edit-label">Title</span>
-                    <span class="issue-edit-field {{ {error: errors.subject} | tokenList }}">
+                    <div class="issue-edit-label">Title</div>
+                    <div class="issue-edit-field {{ {error: errors.subject} | tokenList }}">
                         <input type="text" id="subject" value="{{ subject }}" autocomplete="off">
-                        <span class="issue-edit-error">{{ errors.subject }}</span>
-                    </span>
+                        <div class="issue-edit-error">{{ errors.subject }}</div>
+                    </div>
                 </label>
 
                 <label>
-                    <span class="issue-edit-label">Reviewers</span>
-                    <span class="issue-edit-field {{ {error: errors.reviewers} | tokenList }}">
+                    <div class="issue-edit-label">Reviewers</div>
+                    <div class="issue-edit-field {{ {error: errors.reviewers} | tokenList }}">
                         <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off">
-                        <span class="issue-edit-error">{{ errors.reviewers }}</span>
-                    </span>
+                        <template if="{{ reviewerCompletions.length }}">
+                            <div class="completions" on-tap="{{ selectReviewer }}">
+                                <template repeat="{{ user, i in reviewerCompletions }}">
+                                    <div class="completion">{{ user.email }}</div>
+                                </template>
+                            </div>
+                        </template>
+                        <div class="issue-edit-error">{{ errors.reviewers }}</div>
+                    </div>
                 </label>
 
                 <label>
-                    <span class="issue-edit-label">CC</span>
-                    <span class="issue-edit-field {{ {error: errors.cc} | tokenList }}">
+                    <div class="issue-edit-label">CC</div>
+                    <div class="issue-edit-field {{ {error: errors.cc} | tokenList }}">
                         <input type="text" id="cc" value="{{ cc }}" autocomplete="off">
-                        <span class="issue-edit-error">{{ errors.cc }}</span>
-                    </span>
+                        <div class="issue-edit-error">{{ errors.cc }}</div>
+                    </div>
                 </label>
 
                 <label>
-                    <span class="issue-edit-label">Description</span>
-                    <span class="issue-edit-field {{ {error: errors.description} | tokenList }}">
+                    <div class="issue-edit-label">Description</div>
+                    <div class="issue-edit-field {{ {error: errors.description} | tokenList }}">
                         <textarea id="description" value="{{ description }}" rows="10"></textarea>
-                        <span class="issue-edit-error">{{ errors.description }}</span>
-                    </span>
+                        <div class="issue-edit-error">{{ errors.description }}</div>
+                    </div>
                 </label>
             </div>
 
@@ -137,7 +171,53 @@
             description: "",
             errors: null,
             butterbarMessage: "",
+            reviewersChanged: function(oldValue, newValue) {
+                var NAME_PATTERN = /[a-z0-9.\-_]+/;
+                var WHITESPACE = /\s/;
+                var self = this;
+                if (this.didComplete) {
+                    this.didComplete = false;
+                    return;
+                }
+                this.reviewerCompletions = [];
+                var selectionStart = this.$.reviewers.selectionStart;
+                var end = this.reviewers.indexOf(",", selectionStart);
+                if (end == -1)
+                    end = selectionStart;
+                var start = this.reviewers.lastIndexOf(",", end - 1) + 1;
+                while (WHITESPACE.test(this.reviewers[start]))
+                    start++;
+                var name = this.reviewers.substring(start, end);
+                if (!NAME_PATTERN.test(name))
+                    return;
+                this.completionRange = {
+                    start: start,
+                    end: end,
+                    text: name,
+                };
+                Search.findUsers(name).then(function(users) {
+                    self.reviewerCompletions = users;
+                });
+            },
+            selectReviewer: function(event) {
+                var email = event.target.textContent;
+                var range = this.completionRange;
+                var before = this.reviewers.substring(0, this.completionRange.start);
+                var after = this.reviewers.substring(this.completionRange.end);
+                this.reviewers = (before + email + after).trim();
+                this.resetAutocomplete();
+                this.didComplete = true;
+                this.async(function() {
+                    var position = range.end + email.length - range.text.length;
+                    this.$.reviewers.setSelectionRange(position, position);
+                });
+            },
+            resetAutocomplete: function() {
+                this.reviewerCompletions = [];
+                this.completionRange = {};
+            },
             close: function() {
+                this.reviewers = "";
                 this.reset();
                 this.$.dialog.close();
             },
@@ -172,6 +252,7 @@
             showModal: function() {
                 if (!this.issue)
                     return;
+                this.didComplete = true;
                 this.subject = this.issue.subject;
                 this.description = this.issue.description;
                 this.reviewers = this.issue.reviewers.map(function(user) {

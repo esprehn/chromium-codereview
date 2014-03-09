@@ -35,6 +35,7 @@
     overflow: hidden;
     margin: 0 1em;
     opacity: 1;
+    -webkit-transform: translateZ(0);
     transition: -webkit-transform 0.5s, opacity 0.5s;
 }
 
