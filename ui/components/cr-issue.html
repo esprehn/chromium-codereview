@@ -12,7 +12,7 @@
 
         <template if="{{ issue }}">
             <h1 class="issue-subject">
-                Issue <a href="#/issue/{{ issue.id }}">{{ issue.id }}</a>: {{ issue.subject }} <template if="{{ issue.closed }}">(Closed)</template>
+                Issue <a href="#/issue/{{ issue.id }}">{{ issue.id }}</a><template if="{{ issue.closed }}"> (Closed)</template>: {{ issue.subject }}
             </h1>
 
             <div class="issue-body">
