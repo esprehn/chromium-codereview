@@ -12,18 +12,25 @@
                 color: #222;
             }
 
+            h1 {
+                -webkit-user-select: none;
+                cursor: default;
+            }
+
             .issue-edit-fields {
                 display: table;
                 width: 100%;
             }
 
-            label {
+            .issue-edit-row {
                 display: table-row;
             }
 
             .issue-edit-label {
                 font-weight: bold;
                 color: #959595;
+                -webkit-user-select: none;
+                cursor: default;
             }
 
             .issue-edit-field {
@@ -108,52 +115,52 @@
             }
         </style>
 
-        <dialog id="dialog">
+        <dialog id="dialog" on-cancel="{{ cancelCompletion }}">
             <div class="butterbar {{ {visible: butterbarMessage} | tokenList }}">
                 <span>{{ butterbarMessage }}</span>
             </div>
 
             <h1>Edit Issue</h1>
 
-            <div class="issue-edit-fields">
-                <label>
-                    <div class="issue-edit-label">Title</div>
+            <div class="issue-edit-fields" on-tap="{{ cancelCompletion }}" on-focusin="{{ cancelCompletion }}">
+                <div class="issue-edit-row">
+                    <label class="issue-edit-label" for="subject">Title</label>
                     <div class="issue-edit-field {{ {error: errors.subject} | tokenList }}">
                         <input type="text" id="subject" value="{{ subject }}" autocomplete="off">
                         <div class="issue-edit-error">{{ errors.subject }}</div>
                     </div>
-                </label>
+                </div>
 
-                <label>
-                    <div class="issue-edit-label">Reviewers</div>
+                <div class="issue-edit-row" id="reviewersField">
+                    <label class="issue-edit-label" for="reviewers">Reviewers</label>
                     <div class="issue-edit-field {{ {error: errors.reviewers} | tokenList }}">
                         <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off">
                         <template if="{{ reviewerCompletions.length }}">
                             <div class="completions" on-tap="{{ selectReviewer }}">
                                 <template repeat="{{ user, i in reviewerCompletions }}">
-                                    <div class="completion">{{ user.email }}</div>
+                                    <div class="completion" role="button">{{ user.email }}</div>
                                 </template>
                             </div>
                         </template>
                         <div class="issue-edit-error">{{ errors.reviewers }}</div>
                     </div>
-                </label>
+                </div>
 
-                <label>
-                    <div class="issue-edit-label">CC</div>
+                <div class="issue-edit-row">
+                    <label class="issue-edit-label" for="cc">CC</label>
                     <div class="issue-edit-field {{ {error: errors.cc} | tokenList }}">
                         <input type="text" id="cc" value="{{ cc }}" autocomplete="off">
                         <div class="issue-edit-error">{{ errors.cc }}</div>
                     </div>
-                </label>
+                </div>
 
-                <label>
-                    <div class="issue-edit-label">Description</div>
+                <div class="issue-edit-row">
+                    <label class="issue-edit-label" for="description">Description</label>
                     <div class="issue-edit-field {{ {error: errors.description} | tokenList }}">
                         <textarea id="description" value="{{ description }}" rows="10"></textarea>
                         <div class="issue-edit-error">{{ errors.description }}</div>
                     </div>
-                </label>
+                </div>
             </div>
 
             <div class="issue-edit-toolbar">
@@ -171,6 +178,16 @@
             description: "",
             errors: null,
             butterbarMessage: "",
+            cancelCompletion: function(event) {
+                if (this.reviewerCompletions.length && event.type == "cancel") {
+                    event.preventDefault();
+                    this.reviewerCompletions = [];
+                    return;
+                }
+                if (this.$.reviewersField.contains(event.target))
+                    return;
+                this.resetAutocomplete();
+            },
             reviewersChanged: function(oldValue, newValue) {
                 var NAME_PATTERN = /[a-z0-9.\-_]+/;
                 var WHITESPACE = /\s/;
