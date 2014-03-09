@@ -23,10 +23,21 @@ function Issue(id)
 
 Issue.DETAIL_URL = "/api/{1}?messages=true";
 Issue.PUBLISH_URL = "/{1}/publish";
+Issue.EDIT_URL = "/{1}/edit";
 
 Issue.prototype.getDetailUrl = function()
 {
     return Issue.DETAIL_URL.assign(encodeURIComponent(this.id));
+};
+
+Issue.prototype.getPublishUrl = function()
+{
+    return Issue.PUBLISH_URL.assign(encodeURIComponent(this.id));
+};
+
+Issue.prototype.getEditUrl = function()
+{
+    return Issue.EDIT_URL.assign(encodeURIComponent(this.id));
 };
 
 Issue.prototype.loadDetails = function()
@@ -99,9 +110,27 @@ Issue.prototype.updateScores = function() {
     });
 };
 
-Issue.prototype.getPublishUrl = function()
+Issue.prototype.edit = function(options)
 {
-    return Issue.PUBLISH_URL.assign(encodeURIComponent(this.id));
+    var issue = this;
+    return this.createEditData(options).then(function(data) {
+        return sendFormData(issue.getEditUrl(), data).then(function() {
+            return issue;
+        });
+    });
+};
+
+Issue.prototype.createEditData = function(options)
+{
+    return User.loadCurrentUser(true).then(function(user) {
+        return {
+            xsrf_token: user.xsrfToken,
+            subject: options.subject,
+            description: options.description,
+            reviewers: options.reviewers,
+            cc: options.cc,
+        };
+    });
 };
 
 Issue.prototype.publish = function(options)
@@ -135,8 +164,8 @@ Issue.prototype.createPublishData = function(options)
             commit = options.commit;
         }
         return {
-            subject: issue.subject,
             xsrf_token: user.xsrfToken,
+            subject: issue.subject,
             message_only: publishDrafts ? "0" : "1",
             add_as_reviewer: addAsReviewer ? "1" : "0",
             commit: commit ? "1" : "0",

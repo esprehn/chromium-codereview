@@ -88,6 +88,12 @@
                 this.$.dialog.close();
             },
             save: function() {
+                this.fire("issue-save", {
+                    subject: this.subject,
+                    reviewers: this.reviewerEmails,
+                    cc: this.ccEmails,
+                    description: this.description,
+                });
                 this.$.dialog.close();
             },
             showModal: function() {

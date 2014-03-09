@@ -23,7 +23,7 @@
                         <button on-click="{{ quickLgtm }}" class="issue-action-lgtm">Quick LGTM</button>
                         <button on-click="{{ quickLgtmAndCommit }}" class="issue-action-lgtm-cq">Quick LGTM + CQ</button>
                         <div class="ui-actions">
-                            <span class="ui-action" on-tap="{{ editDetails }}" role="button">Edit</span>
+                            <span class="ui-action" on-tap="{{ showEditDialog }}" role="button">Edit</span>
                         </div>
                     </div>
 
@@ -51,7 +51,7 @@
     <script>
         Polymer("cr-issue", {
             issue: null,
-            editDetails: function() {
+            showEditDialog: function() {
                 this.$.editor.showModal();
             },
             collapseAllMessages: function() {
