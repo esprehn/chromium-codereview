@@ -25,6 +25,7 @@ h2 {
     margin: 0 16px;
     border-bottom: 1px #e5e5e5 solid;
     padding: 0.5em 0;
+    display: flex;
 }
 
 .issue-toolbar button {
@@ -55,4 +56,11 @@ header .ui-actions {
 
 header h2 {
     flex: 1;
+}
+
+.issue-toolbar .ui-actions {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }

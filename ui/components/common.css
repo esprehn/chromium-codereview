@@ -25,11 +25,16 @@ a:link,
 a:visited {
     color: #1155CC;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .ui-action:hover,
 a:hover {
     text-decoration: underline;
+}
+
+input[type=text] {
+  padding: 0.5em;
 }
 
 textarea,
@@ -69,6 +74,7 @@ button {
     height: 29px;
     margin: 0;
     min-width: -webkit-min-content;
+    max-width: -webkit-min-content;
     text-align: center;
     white-space: nowrap;
     padding: 0 16px;

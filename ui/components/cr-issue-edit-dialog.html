@@ -1,0 +1,108 @@
+
+<polymer-element name="cr-issue-edit-dialog" attributes="issue" cache-csstext>
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <style>
+            #dialog {
+                max-width: 80%;
+                padding: 0;
+                border: 1px solid #ccc;
+                box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.2);
+                top: 15%;
+            }
+
+            .issue-edit-fields {
+                display: table;
+                width: 100%;
+            }
+
+            .issue-edit-fields label {
+                display: table-row;
+                padding: 1em 16px;
+            }
+
+            .issue-edit-fields span {
+                vertical-align: top;
+                display: table-cell;
+                padding: 1em 16px;
+            }
+
+            .issue-edit-label {
+                font-size: 1.2em;
+            }
+
+            .issue-edit-field,
+            .issue-edit-field input,
+            .issue-edit-field textarea {
+                width: 100%;
+            }
+
+            .issue-edit-toolbar {
+                padding: 1em 16px;
+            }
+
+            .issue-edit-toolbar button {
+                margin-right: 16px;
+            }
+        </style>
+
+        <dialog id="dialog">
+            <h1>Edit Issue</h1>
+
+            <div class="issue-edit-fields">
+                <label>
+                    <span class="issue-edit-label">Title</span>
+                    <span class="issue-edit-field"><input type="text" value="{{ subject }}"></span>
+                </label>
+
+                <label>
+                    <span class="issue-edit-label">Reviewers</span>
+                    <span class="issue-edit-field"><input type="text" value="{{ reviewerEmails }}"></span>
+                </label>
+
+                <label>
+                    <span class="issue-edit-label">CC</span>
+                    <span class="issue-edit-field"><input type="text" value="{{ ccEmails }}"></span>
+                </label>
+
+                <label>
+                    <span class="issue-edit-label">Description</span>
+                    <span class="issue-edit-field"><textarea value="{{ description }}" rows="10"></textarea></span>
+                </label>
+            </div>
+
+            <div class="issue-edit-toolbar">
+                <button class="primary-action" on-tap="{{ save }}">Save</button>
+                <button on-tap="{{ cancel }}">Cancel</button>
+            </div>
+        </dialog>
+    </template>
+    <script>
+        Polymer("cr-issue-edit-dialog", {
+            issue: null,
+            subject: "",
+            reviewerEmails: "",
+            ccEmails: "",
+            description: "",
+            cancel: function() {
+                this.$.dialog.close();
+            },
+            save: function() {
+                this.$.dialog.close();
+            },
+            showModal: function() {
+                if (!this.issue)
+                    return;
+                this.$.dialog.showModal();
+                this.subject = this.issue.subject;
+                this.description = this.issue.description;
+                this.reviewerEmails = this.issue.reviewers.map(function(user) {
+                    return user.email;
+                }).join(", ");
+                this.ccEmails = this.issue.cc.map(function(user) {
+                    return user.email;
+                }).join(", ");
+            },
+        });
+    </script>
+</polymer-element>
