@@ -30,8 +30,7 @@
         <template if="{{ issue && !failed }}">
             <cr-issue
                 issue="{{ issue }}"
-                on-message-save="{{ saveMessage }}"
-                on-issue-save="{{ saveDetails }}"
+                on-issue-refresh="{{ loadIssue }}"
                 on-quick-lgtm="{{ quickLgtm }}"
                 on-quick-lgtm-and-commit="{{ quickLgtmAndCommit }}"></cr-issue>
         </template>
@@ -61,15 +60,6 @@
                 }).catch(function(error) {
                     console.log(error);
                     self.failed = true;
-                });
-            },
-            saveDetails: function(event) {
-                var self = this;
-                this.issue.edit(event.detail).then(function() {
-                    return self.loadIssue();
-                }).catch(function(e) {
-                    console.log(e);
-                    // FIXME: We should show an error message.
                 });
             },
             saveMessage: function(event) {

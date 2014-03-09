@@ -48,6 +48,7 @@ function sendFormData(url, data)
         }).join("&");
 
         var xhr = new XMLHttpRequest();
+        xhr.responseType = "document";
         xhr.open("POST", url);
         xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
         xhr.send(formData);

@@ -4,11 +4,12 @@
         <link rel="stylesheet" href="common.css">
         <style>
             #dialog {
-                max-width: 80%;
+                max-width: 800px;
                 padding: 0;
                 border: 1px solid #ccc;
                 box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.2);
-                top: 15%;
+                top: 100px;
+                color: #222;
             }
 
             .issue-edit-fields {
@@ -16,19 +17,20 @@
                 width: 100%;
             }
 
-            .issue-edit-fields label {
+            label {
                 display: table-row;
-                padding: 1em 16px;
-            }
-
-            .issue-edit-fields span {
-                vertical-align: top;
-                display: table-cell;
-                padding: 1em 16px;
             }
 
             .issue-edit-label {
-                font-size: 1.2em;
+                font-weight: bold;
+                color: #959595;
+            }
+
+            .issue-edit-label,
+            .issue-edit-field {
+                display: table-cell;
+                padding: 1em 16px;
+                vertical-align: top;
             }
 
             .issue-edit-field,
@@ -44,36 +46,85 @@
             .issue-edit-toolbar button {
                 margin-right: 16px;
             }
+
+            .issue-edit-error {
+                display: block;
+                color: #DD4B39;
+                font-weight: bold;
+                padding-top: 0.5em;
+            }
+
+            .issue-edit-field.error input, 
+            .issue-edit-field.error textarea {
+                border: 1px solid #DD4B39;
+            }
+
+            .butterbar {
+                position: absolute;
+                top: -90px;
+                width: 100%;
+                box-sizing: border-box;
+                text-align: center;
+                display: none;
+            }
+
+            .butterbar span {
+                background-color: #F9EDBE;
+                border: 1px solid #F0C36D;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                border-radius: 2px;
+                padding: 0.25em 16px;
+            }
+
+            .butterbar.visible {
+                display: block;
+            }
         </style>
 
         <dialog id="dialog">
+            <div class="butterbar {{ {visible: butterbarMessage} | tokenList }}">
+                <span>{{ butterbarMessage }}</span>
+            </div>
+
             <h1>Edit Issue</h1>
 
             <div class="issue-edit-fields">
                 <label>
                     <span class="issue-edit-label">Title</span>
-                    <span class="issue-edit-field"><input type="text" value="{{ subject }}"></span>
+                    <span class="issue-edit-field {{ {error: errors.subject} | tokenList }}">
+                        <input type="text" id="subject" value="{{ subject }}" autocomplete="off">
+                        <span class="issue-edit-error">{{ errors.subject }}</span>
+                    </span>
                 </label>
 
                 <label>
                     <span class="issue-edit-label">Reviewers</span>
-                    <span class="issue-edit-field"><input type="text" value="{{ reviewerEmails }}"></span>
+                    <span class="issue-edit-field {{ {error: errors.reviewers} | tokenList }}">
+                        <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off">
+                        <span class="issue-edit-error">{{ errors.reviewers }}</span>
+                    </span>
                 </label>
 
                 <label>
                     <span class="issue-edit-label">CC</span>
-                    <span class="issue-edit-field"><input type="text" value="{{ ccEmails }}"></span>
+                    <span class="issue-edit-field {{ {error: errors.cc} | tokenList }}">
+                        <input type="text" id="cc" value="{{ cc }}" autocomplete="off">
+                        <span class="issue-edit-error">{{ errors.cc }}</span>
+                    </span>
                 </label>
 
                 <label>
                     <span class="issue-edit-label">Description</span>
-                    <span class="issue-edit-field"><textarea value="{{ description }}" rows="10"></textarea></span>
+                    <span class="issue-edit-field {{ {error: errors.description} | tokenList }}">
+                        <textarea id="description" value="{{ description }}" rows="10"></textarea>
+                        <span class="issue-edit-error">{{ errors.description }}</span>
+                    </span>
                 </label>
             </div>
 
             <div class="issue-edit-toolbar">
                 <button class="primary-action" on-tap="{{ save }}">Save</button>
-                <button on-tap="{{ cancel }}">Cancel</button>
+                <button on-tap="{{ close }}">Cancel</button>
             </div>
         </dialog>
     </template>
@@ -81,33 +132,55 @@
         Polymer("cr-issue-edit-dialog", {
             issue: null,
             subject: "",
-            reviewerEmails: "",
-            ccEmails: "",
+            reviewers: "",
+            cc: "",
             description: "",
-            cancel: function() {
+            errors: null,
+            butterbarMessage: "",
+            close: function() {
+                this.reset();
                 this.$.dialog.close();
             },
+            reset: function() {
+                this.butterbarMessage = "";
+                this.errors = {};
+            },
             save: function() {
-                this.fire("issue-save", {
+                var data = {
                     subject: this.subject,
-                    reviewers: this.reviewerEmails,
-                    cc: this.ccEmails,
+                    reviewers: this.reviewers,
+                    cc: this.cc,
                     description: this.description,
-                });
-                this.$.dialog.close();
+                };
+                this.butterbarMessage = "Saving...";
+                this.issue.edit(data)
+                    .then(this.saveSuccess.bind(this))
+                    .catch(this.saveFailure.bind(this));
+            },
+            saveSuccess: function() {
+                this.fire("issue-refresh");
+                this.close();
+            },
+            saveFailure: function(error) {
+                this.reset();
+                if (!error.fieldName) {
+                    // FIXME: Show a better error message, deal with network errors.
+                    return;
+                }
+                this.errors[error.fieldName] = error.message;
             },
             showModal: function() {
                 if (!this.issue)
                     return;
-                this.$.dialog.showModal();
                 this.subject = this.issue.subject;
                 this.description = this.issue.description;
-                this.reviewerEmails = this.issue.reviewers.map(function(user) {
+                this.reviewers = this.issue.reviewers.map(function(user) {
                     return user.email;
                 }).join(", ");
-                this.ccEmails = this.issue.cc.map(function(user) {
+                this.cc = this.issue.cc.map(function(user) {
                     return user.email;
                 }).join(", ");
+                this.$.dialog.showModal();
             },
         });
     </script>

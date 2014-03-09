@@ -114,8 +114,16 @@ Issue.prototype.edit = function(options)
 {
     var issue = this;
     return this.createEditData(options).then(function(data) {
-        return sendFormData(issue.getEditUrl(), data).then(function() {
-            return issue;
+        return sendFormData(issue.getEditUrl(), data).then(function(xhr) {
+            var li = xhr.response.querySelector(".errorlist li")
+            if (!li)
+                return xhr;
+            var input = li.parentNode.parentNode.querySelector("input");
+            if (!input)
+                return xhr;
+            var error = new Error(li.textContent);
+            error.fieldName = input.name;
+            throw error;
         });
     });
 };
