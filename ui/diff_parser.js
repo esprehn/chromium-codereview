@@ -1,6 +1,7 @@
 
-function DiffParser(diff) {
-    this.lines = diff.split('\n');
+function DiffParser(text)
+{
+    this.lines = text.split("\n");
     this.currentLine = 0;
 }
 
@@ -8,6 +9,7 @@ DiffParser.HEADER_BEGIN = "Index: ";
 DiffParser.HEADER_END = "+++ ";
 DiffParser.BINARY_HEADER_END = "Binary files ";
 DiffParser.PNG_SUFFIX = ".png";
+DiffParser.HEADER_PATTERN = /^@@\ \-(\d+),[^+]+\+(\d+)\,\d+\ @@\ ?(.*)/;
 
 DiffParser.prototype.peekLine = function()
 {
@@ -17,7 +19,9 @@ DiffParser.prototype.peekLine = function()
 DiffParser.prototype.takeLine = function(type)
 {
     var line = this.lines[this.currentLine++];
-    if (type == 'add' || type == 'remove' || type == 'both')
+    if (!type)
+        return line;
+    if (type == "add" || type == "remove" || type == "both")
         return line.slice(1);
     return line;
 };
@@ -31,21 +35,21 @@ DiffParser.prototype.nextLineType = function()
 {
     var line = this.peekLine();
     if (!line.length)
-        return 'empty';
+        return "empty";
     var c = line[0];
-    if (c == '@')
-        return 'header';
-    if (c == '+')
-        return 'add';
-    if (c == '-')
-        return 'remove';
-    if (c == 'I')
-        return 'index';
-    if (c == ' ')
-        return 'both';
-    if (c == '\\')
-        return 'empty';
-    throw 'Parse error: Unable to classify line: "' + line + '"';
+    if (c == "@")
+        return "header";
+    if (c == "+")
+        return "add";
+    if (c == "-")
+        return "remove";
+    if (c == "I")
+        return "index";
+    if (c == " ")
+        return "both";
+    if (c == "\\")
+        return "empty";
+    throw new Error("Parse error: Unable to classify line: '{1}'".assign(line));
 };
 
 DiffParser.prototype.parseFile = function()
@@ -57,16 +61,14 @@ DiffParser.prototype.parseFile = function()
     var currentAfterLineNumber = 0;
     while (this.haveLines()) {
         var type = this.nextLineType();
-        if (type == 'index' || type == 'empty')
+        if (type == "index" || type == "empty")
             break; // We're done with this file.
 
         var groupType = type;
-        var line = {
-            type: type
-        };
-        var lineText;
-        if (groupType == 'header') {
-            var matchedHeader = this.takeLine().match(/^@@\ \-(\d+),[^+]+\+(\d+)\,\d+\ @@\ ?(.*)/);
+        var line = {type: type};
+
+        if (groupType == "header") {
+            var matchedHeader = this.takeLine().match(DiffParser.HEADER_PATTERN);
             currentBeforeLineNumber = matchedHeader[1];
             currentAfterLineNumber = matchedHeader[2];
             line.beforeNumber = "@@";
@@ -77,14 +79,14 @@ DiffParser.prototype.parseFile = function()
             line.afterNumber = currentAfterLineNumber;
             line.text = this.takeLine(type);
 
-            if (groupType == 'remove' || groupType == 'both')
+            if (groupType == "remove" || groupType == "both")
                 currentBeforeLineNumber++;
-            if (groupType == 'add' || groupType == 'both')
+            else if (groupType == "add" || groupType == "both")
                 currentAfterLineNumber++;
         }
 
-        if (groupType == 'add' || groupType == 'remove')
-            groupType = 'delta';
+        if (groupType == "add" || groupType == "remove")
+            groupType = "delta";
         if (groupType != currentGroupType) {
             if (currentGroup.length)
                 groups.push(currentGroup);
@@ -107,7 +109,9 @@ DiffParser.prototype.parseHeader = function()
         if (line.startsWith(DiffParser.BINARY_HEADER_END))
             return true;
     }
-    throw 'Parse error: Failed to find "' + DiffParser.HEADER_END + ' or ' + DiffParser.BINARY_HEADER_END + '"';
+    throw new Error("Parse error: Failed to find '{1}' or '{2}'".assign(
+        DiffParser.HEADER_END,
+        DiffParser.BINARY_HEADER_END));
 };
 
 DiffParser.prototype.parse = function()
