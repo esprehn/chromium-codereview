@@ -1,4 +1,5 @@
 
+<link rel="import" href="cr-user-autocomplete.html">
 <link rel="import" href="cr-butterbar.html">
 <link rel="import" href="cr-button.html">
 <link rel="import" href="cr-toolbar.html">
@@ -60,37 +61,14 @@
             .issue-edit-field.error textarea {
                 border: 1px solid #DD4B39;
             }
-
-            .completions {
-                position: absolute;
-                border: 1px solid #ccc;
-                border-top: none;
-                background-color: white;
-                left: 0;
-                right: 0;
-                margin: 0 16px;
-                font-family: Monaco, monospace;
-                font-size: 0.9em;
-                z-index: 1;
-                -webkit-user-select: none;
-                cursor: default;
-            }
-
-            .completion {
-                padding: 0.5em 16px;
-            }
-
-            .completion:hover {
-                background-color: #eee;
-            }
         </style>
 
-        <dialog id="dialog" on-cancel="{{ cancelCompletion }}">
+        <dialog id="dialog" on-cancel="{{ cancel }}">
             <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
 
             <h1>Edit Issue</h1>
 
-            <div class="issue-edit-fields" on-tap="{{ cancelCompletion }}" on-focusin="{{ cancelCompletion }}">
+            <div class="issue-edit-fields">
                 <div class="issue-edit-row">
                     <label class="issue-edit-label" for="subject">Title</label>
                     <div class="issue-edit-field {{ {error: errors.subject} | tokenList }}">
@@ -99,17 +77,12 @@
                     </div>
                 </div>
 
-                <div class="issue-edit-row" id="reviewersField">
+                <div class="issue-edit-row">
                     <label class="issue-edit-label" for="reviewers">Reviewers</label>
                     <div class="issue-edit-field {{ {error: errors.reviewers} | tokenList }}">
-                        <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off">
-                        <template if="{{ reviewerCompletions.length }}">
-                            <div class="completions" on-tap="{{ selectReviewer }}">
-                                <template repeat="{{ user, i in reviewerCompletions }}">
-                                    <div class="completion" role="button">{{ user.email }}</div>
-                                </template>
-                            </div>
-                        </template>
+                        <cr-user-autocomplete id="reviewerAutocomplete" value="{{ reviewers }}">
+                            <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off">
+                        </cr-user-autocomplete>
                         <div class="issue-edit-error">{{ errors.reviewers }}</div>
                     </div>
                 </div>
@@ -133,7 +106,7 @@
 
             <cr-toolbar>
                 <cr-button primary on-tap="{{ save }}">Save</cr-button>
-                <cr-button on-tap="{{ close }}">Cancel</cr-button>
+                <cr-button on-tap="{{ cancel }}">Cancel</cr-button>
             </cr-toolbar>
         </dialog>
     </template>
@@ -146,84 +119,22 @@
             description: "",
             errors: null,
             butterbarMessage: "",
-            reviewerCompletions: [],
-            cancelCompletion: function(event) {
-                if (this.reviewerCompletions.length && event.type == "cancel") {
+            cancel: function(event) {
+                var autocomplete = this.$.reviewerAutocomplete;
+                if (autocomplete.active) {
                     event.preventDefault();
-                    this.reviewerCompletions = [];
+                    autocomplete.resetAutocomplete();
                     return;
                 }
-                if (this.$.reviewersField.contains(event.target))
-                    return;
-                this.resetAutocomplete();
-            },
-            reviewersChanged: function(oldValue, newValue) {
-                var NAME_PATTERN = /[a-z0-9.\-_]+/;
-                var WHITESPACE = /\s/;
-                var self = this;
-                if (this.didComplete) {
-                    this.didComplete = false;
-                    return;
-                }
-                this.reviewerCompletions = [];
-                var selectionStart = this.$.reviewers.selectionStart;
-                var end = this.reviewers.indexOf(",", selectionStart);
-                if (end == -1)
-                    end = selectionStart;
-                var start = this.reviewers.lastIndexOf(",", end - 1) + 1;
-                while (WHITESPACE.test(this.reviewers[start]))
-                    start++;
-                var name = this.reviewers.substring(start, end);
-                if (!NAME_PATTERN.test(name))
-                    return;
-                this.completionRange = {
-                    start: start,
-                    end: end,
-                    text: name,
-                };
-                Search.findUsers(name).then(function(users) {
-                    self.reviewerCompletions = users;
-                });
-            },
-            selectReviewer: function(event) {
-                var email = event.target.textContent;
-                var input = this.$.reviewers;
-                var range = this.completionRange;
-                var value = email.substring(range.text.length);
-                this.didComplete = true;
-
-                // Restore selection to where the autocomplete expects it. This prevents the user from
-                // selecting some random text and then clicking a suggestion which might destroy their
-                // input. We might also dismiss the suggestions if the selection moves but there's no
-                // obvious way to detect that.
-                input.selectionStart = range.end;
-                input.selectionEnd = input.selectionStart;
-
-                // Simulate the user entering the text. This makes undo work properly instead of using
-                // data binding which is like a big "replace" action.
-                var inputEvent = document.createEvent("TextEvent");
-                inputEvent.initTextEvent("textInput", true, true, window, value, 0, "en-US");
-                input.dispatchEvent(inputEvent);
-
-                // Put the caret back at the end of the new input. This also makes sure the input scrolls
-                // to reveal the new text.
-                input.selectionStart = range.end + value.length;
-                input.selectionEnd = input.selectionStart;
-
-                this.resetAutocomplete();
-            },
-            resetAutocomplete: function() {
-                this.reviewerCompletions = [];
-                this.completionRange = {};
-            },
-            close: function() {
-                this.reviewers = "";
-                this.reset();
-                this.$.dialog.close();
+                this.close();
             },
             reset: function() {
                 this.butterbarMessage = "";
                 this.errors = {};
+            },
+            close: function() {
+                this.reset();
+                this.$.dialog.close();
             },
             save: function() {
                 var data = {
@@ -252,7 +163,6 @@
             showModal: function() {
                 if (!this.issue)
                     return;
-                this.didComplete = true;
                 this.subject = this.issue.subject;
                 this.description = this.issue.description;
                 this.reviewers = this.issue.reviewers.map(function(user) {

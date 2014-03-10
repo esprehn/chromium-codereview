@@ -1,0 +1,139 @@
+
+<polymer-element name="cr-user-autocomplete" attributes="value">
+    <template>
+        <style>
+            :host {
+                -webkit-user-select: none;
+            }
+
+            #completions {
+                position: absolute;
+                border: 1px solid #ccc;
+                border-top: none;
+                background-color: white;
+                left: 0;
+                right: 0;
+                margin: 0 16px;
+                font-family: Monaco, monospace;
+                font-size: 0.9em;
+                z-index: 1;
+                cursor: default;
+            }
+
+            .completion {
+                padding: 0.5em 16px;
+            }
+
+            .completion:hover {
+                background-color: #eee;
+            }
+
+            .completion:focus {
+                outline: none;
+            }
+        </style>
+
+        <content on-focusout="{{ dismiss }}"></content>
+
+        <template if="{{ completions.length }}">
+            <div id="completions" on-tap="{{ selectUser }}" on-focusin="{{ preventDismiss }}" on-focusout="{{ allowDismiss }}">
+                <template repeat="{{ user, i in completions }}">
+                    <div class="completion" role="button" tabindex="0">{{ user.email }}</div>
+                </template>
+            </div>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-user-autocomplete", {
+            value: "",
+            termRange: {},
+            completions: [],
+            didComplete: false,
+            shouldDismiss: true,
+            active: false,
+            dismiss: function() {
+                if (!this.shouldDismiss)
+                    return;
+                this.async(function() {
+                    if (this.shouldDismiss)
+                        this.resetAutocomplete();
+                });
+            },
+            preventDismiss: function() {
+                this.shouldDismiss = false;
+            },
+            allowDismiss: function() {
+                this.shouldDismiss = true;
+            },
+            completionsChanged: function(oldValue, newValue) {
+                this.active = newValue.length;
+            },
+            valueChanged: function(oldValue, newValue) {
+                var NAME_PATTERN = /[a-z0-9.\-_]+/;
+                var WHITESPACE = /\s/;
+                var self = this;
+                if (this.didComplete) {
+                    this.didComplete = false;
+                    return;
+                }
+                this.resetAutocomplete();
+                var input = this.querySelector("input");
+                if (!input.matches(":focus"))
+                    return;
+                var selectionStart = input.selectionStart;
+                var end = this.value.indexOf(",", selectionStart);
+                if (end == -1)
+                    end = this.value.length;
+                var start = this.value.lastIndexOf(",", end - 1) + 1;
+                while (WHITESPACE.test(this.value[start]))
+                    start++;
+                var name = this.value.substring(start, end);
+                if (!NAME_PATTERN.test(name))
+                    return;
+                this.termRange = {
+                    start: start,
+                    end: end,
+                    text: name,
+                };
+                Search.findUsers(name).then(function(users) {
+                    self.completions = users;
+                });
+            },
+            selectUser: function(event) {
+                if (!event.target.classList.contains("completion"))
+                    return;
+
+                var email = event.target.textContent;
+                var input = this.querySelector("input");
+                var range = this.termRange;
+                var value = email.substring(range.text.length);
+
+                // Restore selection to where the autocomplete expects it. This prevents the user from
+                // selecting some random text and then clicking a suggestion which might destroy their
+                // input. We might also dismiss the suggestions if the selection moves but there's no
+                // obvious way to detect that.
+                input.selectionStart = range.end;
+                input.selectionEnd = input.selectionStart;
+
+                // Simulate the user entering the text. This makes undo work properly instead of using
+                // data binding which is like a big "replace" action.
+                var inputEvent = document.createEvent("TextEvent");
+                inputEvent.initTextEvent("textInput", true, true, window, value, 0, "en-US");
+                input.dispatchEvent(inputEvent);
+
+                // Put the caret back at the end of the new input. This also makes sure the input scrolls
+                // to reveal the new text.
+                input.selectionStart = range.end + value.length;
+                input.selectionEnd = input.selectionStart;
+
+                this.resetAutocomplete();
+                this.didComplete = true;
+            },
+            resetAutocomplete: function() {
+                this.completions = [];
+                this.termRange = {};
+                this.active = false;
+            },
+        });
+    </script>
+</polymer-element>
