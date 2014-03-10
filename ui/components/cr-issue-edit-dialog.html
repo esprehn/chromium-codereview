@@ -90,7 +90,9 @@
                 <div class="issue-edit-row">
                     <label class="issue-edit-label" for="cc">CC</label>
                     <div class="issue-edit-field {{ {error: errors.cc} | tokenList }}">
-                        <input type="text" id="cc" value="{{ cc }}" autocomplete="off">
+                        <cr-user-autocomplete id="ccAutocomplete" value="{{ cc }}">
+                            <input type="text" id="cc" value="{{ cc }}" autocomplete="off">
+                        </cr-user-autocomplete>
                         <div class="issue-edit-error">{{ errors.cc }}</div>
                     </div>
                 </div>
@@ -120,10 +122,10 @@
             errors: null,
             butterbarMessage: "",
             cancel: function(event) {
-                var autocomplete = this.$.reviewerAutocomplete;
-                if (autocomplete.active) {
+                if (this.$.reviewerAutocomplete.active || this.$.ccAutocomplete.active) {
                     event.preventDefault();
-                    autocomplete.resetAutocomplete();
+                    this.$.reviewerAutocomplete.resetAutocomplete();
+                    this.$.ccAutocomplete.resetAutocomplete();
                     return;
                 }
                 this.close();
