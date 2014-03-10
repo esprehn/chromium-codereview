@@ -30,6 +30,7 @@
         <template if="{{ issue && !failed }}">
             <cr-issue
                 issue="{{ issue }}"
+                on-message-save="{{ saveMessage }}"
                 on-issue-refresh="{{ loadIssue }}"
                 on-quick-lgtm="{{ quickLgtm }}"
                 on-quick-lgtm-and-commit="{{ quickLgtmAndCommit }}"></cr-issue>
