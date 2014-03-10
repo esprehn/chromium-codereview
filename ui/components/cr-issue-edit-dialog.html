@@ -167,12 +167,8 @@
                     return;
                 this.subject = this.issue.subject;
                 this.description = this.issue.description;
-                this.reviewers = this.issue.reviewers.map(function(user) {
-                    return user.email;
-                }).join(", ");
-                this.cc = this.issue.cc.map(function(user) {
-                    return user.email;
-                }).join(", ");
+                this.reviewers = this.issue.reviewerEmails();
+                this.cc = this.issue.ccEmails();
                 this.$.dialog.showModal();
             },
         });

@@ -40,6 +40,20 @@ Issue.prototype.getEditUrl = function()
     return Issue.EDIT_URL.assign(encodeURIComponent(this.id));
 };
 
+Issue.prototype.reviewerEmails = function()
+{
+    return this.reviewers.map(function(user) {
+        return user.email;
+    }).join(", ");
+};
+
+Issue.prototype.ccEmails = function()
+{
+    return this.cc.map(function(user) {
+        return user.email;
+    }).join(", ");
+};
+
 Issue.prototype.loadDetails = function()
 {
     var issue = this;
@@ -159,12 +173,8 @@ Issue.prototype.createPublishData = function(options)
         var addAsReviewer = options.addAsReviewer;
         var publishDrafts = options.publishDrafts;
         var commit = false;
-        var reviewers = issue.reviewers.map(function(user) {
-            return user.email;
-        }).join(", ");
-        var cc = issue.cc.map(function(user) {
-            return user.email;
-        }).join(", ");
+        var reviewers = issue.reviewerEmails();
+        var cc = issue.ccEmails();
         if (options.lgtm) {
             message = "lgtm\n\n" + message;
             addAsReviewer = true;
