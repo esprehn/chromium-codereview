@@ -39,7 +39,12 @@
                 });
             },
             childrenChanged: function() {
-                this.routes = toArray(this.querySelectorAll("cr-route"));
+                var routes = toArray(this.querySelectorAll("cr-route"));
+                // Prevent infinite loop inside Shadow DOM polyfill since out ShadowRoot's children
+                // are also our real children.
+                if (this.routes.intersect(routes).length === routes.length)
+                    return;
+                this.routes = routes;
                 this.async(this.hashChanged);
             },
             swapViews: function(newView) {
