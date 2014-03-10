@@ -1,9 +1,4 @@
 var diff = (function() {
-  var kFileHeaderBegin = 'Index: ';
-  var kFileHeaderEnd = '+++ ';
-  var kBinaryFileHeaderEnd = 'Binary files ';
-  var kPngSuffix = '.png';
-
   function classifyLine(line) {
     if (!line.length)
       return 'empty';
@@ -34,6 +29,11 @@ var diff = (function() {
     this.currentLine = 0;
     this.result = [];
   }
+
+  Parser.HEADER_BEGIN = "Index: ";
+  Parser.HEADER_END = "+++ ";
+  Parser.BINARY_HEADER_END = "Binary files ";
+  Parser.PNG_SUFFIX = ".png";
 
   Parser.prototype.peekLine = function() {
     return this.lines[this.currentLine];
@@ -99,23 +99,23 @@ var diff = (function() {
   Parser.prototype.parseHeader = function() {
     while (this.haveLines()) {
       var line = this.takeLine();
-      if (line.startsWith(kFileHeaderEnd))
+      if (line.startsWith(Parser.HEADER_END))
         return false;
-      if (line.startsWith(kBinaryFileHeaderEnd))
+      if (line.startsWith(Parser.BINARY_HEADER_END))
         return true;
     }
-    throw 'Parse error: Failed to find "' + kFileHeaderEnd + ' or ' + kBinaryFileHeaderEnd + '"';
+    throw 'Parse error: Failed to find "' + Parser.HEADER_END + ' or ' + Parser.BINARY_HEADER_END + '"';
   };
 
   Parser.prototype.parseLine = function() {
     var line = this.takeLine();
-    if (!line.startsWith(kFileHeaderBegin))
+    if (!line.startsWith(Parser.HEADER_BEGIN))
       return;
-    var name = line.slice(kFileHeaderBegin.length);
+    var name = line.slice(Parser.HEADER_BEGIN.length);
     var isBinary = this.parseHeader();
     this.result.push({
       name: name,
-      isImage: isBinary && name.endsWith(kPngSuffix),
+      isImage: isBinary && name.endsWith(Parser.PNG_SUFFIX),
       groups: this.parseFile(),
     })
   };
