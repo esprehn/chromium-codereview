@@ -44,10 +44,9 @@ var diff = (function() {
     return line;
   }
 
-  function Parser(diff, options) {
+  function Parser(diff) {
     this.lines = diff.split('\n');
     this.currentLine = 0;
-    this.metadata = options.metadata;
     this.result = [];
   }
 
@@ -63,42 +62,7 @@ var diff = (function() {
     return this.currentLine != this.lines.length;
   };
 
-  function messagesForLine(line, messages, linesWithMessages) {
-    if (!linesWithMessages[line.beforeNumber] && !linesWithMessages[line.afterNumber])
-      return [];
-
-    var retval = [];
-    function addMessage(message) {
-      if (line.type == 'add' && message.left)
-        return;
-      if (line.type == 'remove' && !message.left)
-        return;
-      if (message.left && message.lineno != line.beforeNumber)
-        return;
-      if (!message.left && message.lineno != line.afterNumber)
-        return;
-      retval.push(message);
-    }
-
-    messages.forEach(addMessage);
-    return retval;
-  }
-
-  Parser.prototype.parseFile = function(metadata) {
-    var linesWithMessages = [];
-    metadata.messages.forEach(function(message) {
-      linesWithMessages[message.lineno] = true;
-    });
-
-    // FIXME: Remove this if-statement once the rietveld server is updated
-    // to always include draft when comments=true.
-    if (metadata.drafts) {
-      var linesWithDrafts = [];
-      metadata.drafts.forEach(function(message) {
-        linesWithDrafts[message.lineno] = true;
-      });
-    }
-
+  Parser.prototype.parseFile = function() {
     var groups = [];
     var currentGroupType = null;
     var currentGroup = [];
@@ -125,25 +89,9 @@ var diff = (function() {
         line.beforeNumber = currentBeforeLineNumber;
         line.afterNumber = currentAfterLineNumber;
         line.text = trimLine(type, this.takeLine());
-        line.messages = messagesForLine(line, metadata.messages, linesWithMessages);
 
-        // FIXME: Remove this if-statement once the rietveld server is updated
-        // to always include draft when comments=true.
-        if (metadata.drafts) {
-          var drafts = messagesForLine(line, metadata.drafts, linesWithDrafts);
-          drafts.forEach(function(draft) {
-            if (draft.left) {
-              line.hasLeftDraft = true;
-              line.leftDraft =draft.text;
-            } else {
-              line.hasRightDraft = true;
-              line.rightDraft =draft.text;
-            }
-          });
-        }
-
-        if (groupType == 'remove' || groupType == 'both'
-)          currentBeforeLineNumber++;
+        if (groupType == 'remove' || groupType == 'both')
+          currentBeforeLineNumber++;
         if (groupType == 'add' || groupType == 'both')
           currentAfterLineNumber++;
       }
@@ -180,15 +128,10 @@ var diff = (function() {
       return;
     var name = line.slice(kFileHeaderBegin.length);
     var isBinary = this.parseHeader();
-    var metadata = this.metadata[name] || {
-      messages: [],
-      drafts: [],
-    };
     this.result.push({
       name: name,
-      metadata: metadata,
       isImage: isBinary && name.endsWith(kPngSuffix),
-      groups: this.parseFile(metadata),
+      groups: this.parseFile(),
     })
   };
 
