@@ -2,7 +2,6 @@
 function DiffParser(diff) {
     this.lines = diff.split('\n');
     this.currentLine = 0;
-    this.result = [];
 }
 
 DiffParser.HEADER_BEGIN = "Index: ";
@@ -111,22 +110,20 @@ DiffParser.prototype.parseHeader = function()
     throw 'Parse error: Failed to find "' + DiffParser.HEADER_END + ' or ' + DiffParser.BINARY_HEADER_END + '"';
 };
 
-DiffParser.prototype.parseLine = function()
-{
-    var line = this.takeLine();
-    if (!line.startsWith(DiffParser.HEADER_BEGIN))
-        return;
-    var name = line.slice(DiffParser.HEADER_BEGIN.length);
-    var isBinary = this.parseHeader();
-    this.result.push({
-        name: name,
-        isImage: isBinary && name.endsWith(DiffParser.PNG_SUFFIX),
-        groups: this.parseFile(),
-    })
-};
-
 DiffParser.prototype.parse = function()
 {
-    while (this.haveLines())
-        this.parseLine();
+    var result = [];
+    while (this.haveLines()) {
+      var line = this.takeLine();
+      if (!line.startsWith(DiffParser.HEADER_BEGIN))
+          continue;
+      var name = line.slice(DiffParser.HEADER_BEGIN.length);
+      var isBinary = this.parseHeader();
+      result.push({
+          name: name,
+          isImage: isBinary && name.endsWith(DiffParser.PNG_SUFFIX),
+          groups: this.parseFile(),
+      });
+    }
+    return result;
 };
