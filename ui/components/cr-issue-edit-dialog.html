@@ -1,4 +1,7 @@
 
+<link rel="import" href="cr-button.html">
+<link rel="import" href="cr-toolbar.html">
+
 <polymer-element name="cr-issue-edit-dialog" attributes="issue" cache-csstext>
     <template>
         <link rel="stylesheet" href="common.css">
@@ -34,6 +37,7 @@
             }
 
             .issue-edit-field {
+                width: 100%;
                 position: relative;
             }
 
@@ -42,20 +46,6 @@
                 display: table-cell;
                 padding: 1em 16px;
                 vertical-align: top;
-            }
-
-            .issue-edit-field,
-            .issue-edit-field input,
-            .issue-edit-field textarea {
-                width: 100%;
-            }
-
-            .issue-edit-toolbar {
-                padding: 1em 16px;
-            }
-
-            .issue-edit-toolbar button {
-                margin-right: 16px;
             }
 
             .issue-edit-error {
@@ -163,10 +153,10 @@
                 </div>
             </div>
 
-            <div class="issue-edit-toolbar">
-                <button class="primary-action" on-tap="{{ save }}">Save</button>
-                <button on-tap="{{ close }}">Cancel</button>
-            </div>
+            <cr-toolbar>
+                <cr-button primary on-tap="{{ save }}">Save</cr-button>
+                <cr-button on-tap="{{ close }}">Cancel</cr-button>
+            </cr-toolbar>
         </dialog>
     </template>
     <script>

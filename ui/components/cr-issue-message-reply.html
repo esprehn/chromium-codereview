@@ -1,36 +1,30 @@
 
+<link rel="import" href="cr-toolbar.html">
+<link rel="import" href="cr-button.html">
+
 <polymer-element name="cr-issue-message-reply" attributes="message expanded value" cache-csstext>
     <template>
         <link rel="stylesheet" href="common.css">
         <style>
             :host {
                 display: block;
-                padding: 0.5em 16px;
             }
 
-            .reply-action {
-                color: #284D8C;
-                cursor: pointer;
-                display: inline-block;
-            }
-
-            .reply-toolbar {
-                padding: 0.5em 0;
-            }
-
-            #textarea {
-                width: 100%;
+            textarea {
+                margin: 0.5em 16px 0 16px;
             }
         </style>
         <template if="{{ !expanded }}">
-            <span on-click="{{ expand }}" class="reply-action">Reply</span>
+            <cr-toolbar>
+                <span on-click="{{ expand }}" class="ui-action">Reply</span>
+            </cr-toolbar>
         </template>
         <template if="{{ expanded }}">
             <textarea id="textarea" rows="20" value="{{ value }}"></textarea>
-            <div class="reply-toolbar">
-                <button on-click="{{ sendMessage }}" class="primary-action">Send Message</button>
-                <button on-click="{{ discardMessage }}">Discard</button>
-            </div>
+            <cr-toolbar>
+                <cr-button primary on-click="{{ sendMessage }}">Send Message</cr-button>
+                <cr-button on-click="{{ discardMessage }}">Discard</cr-button>
+            </cr-toolbar>
         </template>
     </template>
     <script>
