@@ -19,16 +19,6 @@ var diff = (function() {
     tick();
   }
 
-  function startsWith(string, text) {
-    return string.slice(0, text.length) == text;
-  }
-
-  function endsWith(string, text) {
-    if (string.length < text.length)
-      return false;
-    return string.slice(string.length - text.length) == text;
-  }
-
   function classifyLine(line) {
     if (!line.length)
       return 'empty';
@@ -176,9 +166,9 @@ var diff = (function() {
   Parser.prototype.parseHeader = function() {
     while (this.haveLines()) {
       var line = this.takeLine();
-      if (startsWith(line, kFileHeaderEnd))
+      if (line.startsWith(kFileHeaderEnd))
         return false;
-      if (startsWith(line, kBinaryFileHeaderEnd))
+      if (line.startsWith(kBinaryFileHeaderEnd))
         return true;
     }
     throw 'Parse error: Failed to find "' + kFileHeaderEnd + ' or ' + kBinaryFileHeaderEnd + '"';
@@ -186,7 +176,7 @@ var diff = (function() {
 
   Parser.prototype.parseLine = function() {
     var line = this.takeLine();
-    if (!startsWith(line, kFileHeaderBegin))
+    if (!line.startsWith(kFileHeaderBegin))
       return;
     var name = line.slice(kFileHeaderBegin.length);
     var isBinary = this.parseHeader();
@@ -197,7 +187,7 @@ var diff = (function() {
     this.result.push({
       name: name,
       metadata: metadata,
-      isImage: isBinary && endsWith(name, kPngSuffix),
+      isImage: isBinary && name.endsWith(kPngSuffix),
       groups: this.parseFile(metadata),
     })
   };
