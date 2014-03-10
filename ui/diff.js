@@ -4,21 +4,6 @@ var diff = (function() {
   var kBinaryFileHeaderEnd = 'Binary files ';
   var kPngSuffix = '.png';
 
-  function chunkWork(work) {
-    var kChunkSizeMS = 20;
-    function tick() {
-      var id = window.setTimeout(tick, kChunkSizeMS);
-      var start = performance.now();
-      while (performance.now() - start < kChunkSizeMS) {
-        if (!work()) {
-          window.clearTimeout(id);
-          return;
-        }
-      }
-    }
-    tick();
-  }
-
   function classifyLine(line) {
     if (!line.length)
       return 'empty';
@@ -133,15 +118,6 @@ var diff = (function() {
       isImage: isBinary && name.endsWith(kPngSuffix),
       groups: this.parseFile(),
     })
-  };
-
-  Parser.prototype.parseAsync = function () {
-    chunkWork(function() {
-      if (!this.haveLines())
-        return false;
-      this.parseLine();
-      return true;
-    }.bind(this));
   };
 
   Parser.prototype.parseSync = function() {
