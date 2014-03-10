@@ -60,3 +60,8 @@ input[type=text]:focus {
     border: 1px solid #4d90fe;
     outline: none;
 }
+
+input.invalid,
+textarea.invalid {
+    border: 1px solid #DD4B39;
+}

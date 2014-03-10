@@ -57,10 +57,6 @@
                 padding-top: 0.5em;
             }
 
-            .issue-edit-field.error input, 
-            .issue-edit-field.error textarea {
-                border: 1px solid #DD4B39;
-            }
         </style>
 
         <dialog id="dialog" on-cancel="{{ cancel }}">
@@ -71,17 +67,17 @@
             <div class="issue-edit-fields">
                 <div class="issue-edit-row">
                     <label class="issue-edit-label" for="subject">Title</label>
-                    <div class="issue-edit-field {{ {error: errors.subject} | tokenList }}">
-                        <input type="text" id="subject" value="{{ subject }}" autocomplete="off">
+                    <div class="issue-edit-field">
+                        <input type="text" id="subject" value="{{ subject }}" autocomplete="off" class="{{ {invalid: errors.subject} | tokenList }}">
                         <div class="issue-edit-error">{{ errors.subject }}</div>
                     </div>
                 </div>
 
                 <div class="issue-edit-row">
                     <label class="issue-edit-label" for="reviewers">Reviewers</label>
-                    <div class="issue-edit-field {{ {error: errors.reviewers} | tokenList }}">
+                    <div class="issue-edit-field">
                         <cr-user-autocomplete id="reviewerAutocomplete" value="{{ reviewers }}">
-                            <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off">
+                            <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off" class="{{ {invalid: errors.reviewers} | tokenList }}">
                         </cr-user-autocomplete>
                         <div class="issue-edit-error">{{ errors.reviewers }}</div>
                     </div>
@@ -89,9 +85,9 @@
 
                 <div class="issue-edit-row">
                     <label class="issue-edit-label" for="cc">CC</label>
-                    <div class="issue-edit-field {{ {error: errors.cc} | tokenList }}">
+                    <div class="issue-edit-field">
                         <cr-user-autocomplete id="ccAutocomplete" value="{{ cc }}">
-                            <input type="text" id="cc" value="{{ cc }}" autocomplete="off">
+                            <input type="text" id="cc" value="{{ cc }}" autocomplete="off" class="{{ {invalid: errors.cc} | tokenList }}">
                         </cr-user-autocomplete>
                         <div class="issue-edit-error">{{ errors.cc }}</div>
                     </div>
@@ -99,8 +95,8 @@
 
                 <div class="issue-edit-row">
                     <label class="issue-edit-label" for="description">Description</label>
-                    <div class="issue-edit-field {{ {error: errors.description} | tokenList }}">
-                        <textarea id="description" value="{{ description }}" rows="10"></textarea>
+                    <div class="issue-edit-field">
+                        <textarea id="description" value="{{ description }}" rows="10" class="{{ {invalid: errors.description} | tokenList }}"></textarea>
                         <div class="issue-edit-error">{{ errors.description }}</div>
                     </div>
                 </div>
