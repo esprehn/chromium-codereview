@@ -1,0 +1,30 @@
+
+<polymer-element name="cr-butterbar" attributes="message">
+    <template>
+        <style>
+            span {
+                background-color: #F9EDBE;
+                border: 1px solid #F0C36D;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                border-radius: 2px;
+                padding: 0.25em 16px;
+                display: block;
+                position: absolute;
+                margin: 0 auto;
+                right: 0;
+                left: 0;
+                top: 0.5em;
+                max-width: -webkit-min-content;
+                white-space: nowrap;
+            }
+        </style>
+        <template if="{{ message }}">
+            <span>{{ message }}</span>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-butterbar", {
+           message: "",
+        });
+    </script>
+</polymer-element>
