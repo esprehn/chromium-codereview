@@ -17,14 +17,14 @@
         </style>
         <template if="{{ !expanded }}">
             <cr-toolbar>
-                <cr-action on-click="{{ expand }}">Reply</cr-action>
+                <cr-action on-tap="{{ expand }}">Reply</cr-action>
             </cr-toolbar>
         </template>
         <template if="{{ expanded }}">
             <textarea id="textarea" rows="20" value="{{ value }}"></textarea>
             <cr-toolbar>
-                <cr-button primary on-click="{{ sendMessage }}">Send Message</cr-button>
-                <cr-button on-click="{{ discardMessage }}">Discard</cr-button>
+                <cr-button primary on-tap="{{ sendMessage }}">Send Message</cr-button>
+                <cr-button on-tap="{{ discardMessage }}">Discard</cr-button>
             </cr-toolbar>
         </template>
     </template>

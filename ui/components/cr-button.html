@@ -1,5 +1,5 @@
 
-<polymer-element name="cr-button" cache-csstext noscript>
+<polymer-element name="cr-button" cache-csstext>
     <template>
         <style>
             :ancestor(cr-toolbar) {
@@ -67,6 +67,15 @@
               border: 1px solid #2f5bb7;
             }
         </style>
-        <button><content></content></button>
+        <button on-keypress="{{ handleKeypress }}"><content></content></button>
     </template>
+    <script>
+      Polymer("cr-button", {
+        handleKeypress: function(event) {
+          // Space key
+          if (event.keyCode == 32)
+            this.fire("tap");
+        },
+      });
+    </script>
 </ploymer-element>

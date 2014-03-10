@@ -1,5 +1,5 @@
 
-<polymer-element name="cr-action" cache-csstext noscript>
+<polymer-element name="cr-action" cache-csstext>
     <template>
         <style>
           span {
@@ -12,6 +12,15 @@
             text-decoration: underline;
           }
         </style>
-        <span role="button"><content></content></span>
+        <span role="link" tabindex="0" on-keypress="{{ handleKeypress }}"><content></content></span>
     </template>
+    <script>
+      Polymer("cr-action", {
+        handleKeypress: function(event) {
+          // Enter key
+          if (event.keyCode == 13)
+            this.fire("tap");
+        },
+      });
+    </script>
 </ploymer-element>
