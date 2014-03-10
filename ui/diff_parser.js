@@ -10,10 +10,6 @@ DiffParser.HEADER_END = "+++ ";
 DiffParser.BINARY_HEADER_END = "Binary files ";
 DiffParser.PNG_SUFFIX = ".png";
 
-DiffParser.trimLine = function(type, line) {
-  
-};
-
 DiffParser.prototype.peekLine = function()
 {
   return this.lines[this.currentLine];
