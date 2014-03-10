@@ -61,10 +61,10 @@ User.forMailingListEmail = function(email)
 {
     // Lots of people use a + url for auto-cc lists, remove it since they
     // often use their normal user name just with the + part added.
-    email = email.remove(/\+[^@]+/);
     if (User.current && User.current.email === email)
         return User.current;
-    return new User(email.split("@")[0] || "", email);
+    var name = email.remove(/(\+[^@]+)?@.*/);
+    return new User(name, email, name);
 };
 
 User.compare = function(userA, userB) {
