@@ -1,11 +1,12 @@
 
-<link rel="import" href="cr-toolbar.html">
+<link rel="import" href="cr-action.html">
 <link rel="import" href="cr-button.html">
+<link rel="import" href="cr-issue-edit-dialog.html">
 <link rel="import" href="cr-issue-messages.html">
 <link rel="import" href="cr-issue-meta.html">
 <link rel="import" href="cr-issue-patchsets.html">
 <link rel="import" href="cr-linkified-text.html">
-<link rel="import" href="cr-issue-edit-dialog.html">
+<link rel="import" href="cr-toolbar.html">
 
 <polymer-element name="cr-issue" attributes="issue" cache-csstext>
     <template>
@@ -25,7 +26,7 @@
                         <cr-button on-click="{{ quickLgtm }}">Quick LGTM</cr-button>
                         <cr-button on-click="{{ quickLgtmAndCommit }}">Quick LGTM + CQ</cr-button>
                         <div class="ui-actions">
-                            <span class="ui-action" on-tap="{{ showEditDialog }}" role="button">Edit</span>
+                            <cr-action on-tap="{{ showEditDialog }}">Edit</cr-action>
                         </div>
                     </cr-toolbar>
 
@@ -41,8 +42,8 @@
             <header>
                 <h2>Messages</h2>
                 <div class="ui-actions">
-                    <span class="ui-action" on-tap="{{ expandAllMessages }}" role="button">Expand All</span> /
-                    <span class="ui-action" on-tap="{{ collapseAllMessages }}" role="button">Collapse All</span>
+                    <cr-action on-tap="{{ expandAllMessages }}">Expand All</cr-action> /
+                    <cr-action on-tap="{{ collapseAllMessages }}">Collapse All</cr-action>
                 </div>
             </header>
             <cr-issue-messages messages="{{ issue.messages }}" id="messages"></cr-issue-messages>
