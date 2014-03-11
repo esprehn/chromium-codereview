@@ -13,41 +13,40 @@
         <link rel="stylesheet" href="common.css">
         <link rel="stylesheet" href="cr-issue.css">
 
-        <template if="{{ issue }}">
-            <h1 class="issue-subject">
-                Issue <a href="#/issue/{{ issue.id }}">{{ issue.id }}</a><template if="{{ issue.closed }}"> (Closed)</template>: {{ issue.subject }}
-            </h1>
+        <h1 class="issue-subject">
+            Issue <a href="#/issue/{{ issue.id }}">{{ issue.id }}</a><template if="{{ issue.closed }}"> (Closed)</template>: {{ issue.subject }}
+        </h1>
 
-            <div class="issue-body">
-                <cr-issue-meta issue="{{ issue }}" editing="{{ editing }}"></cr-issue-meta>
+        <div class="issue-body">
+            <cr-issue-meta issue="{{ issue }}" editing="{{ editing }}"></cr-issue-meta>
 
-                <div class="issue-content">
-                    <cr-toolbar class="issue-toolbar">
-                        <cr-button on-tap="{{ quickLgtm }}">Quick LGTM</cr-button>
-                        <cr-button on-tap="{{ quickLgtmAndCommit }}">Quick LGTM + CQ</cr-button>
-                        <div class="ui-actions">
-                            <cr-action on-tap="{{ showEditDialog }}">Edit</cr-action>
-                        </div>
-                    </cr-toolbar>
-
-                    <div class="issue-description">
-                        <cr-linkified-text text="{{ issue.description }}" pre></cr-linkified-text>
+            <div class="issue-content">
+                <cr-toolbar class="issue-toolbar">
+                    <cr-button on-tap="{{ quickLgtm }}">Quick LGTM</cr-button>
+                    <cr-button on-tap="{{ quickLgtmAndCommit }}">Quick LGTM + CQ</cr-button>
+                    <div class="ui-actions">
+                        <cr-action on-tap="{{ showEditDialog }}">Edit</cr-action>
                     </div>
+                </cr-toolbar>
+
+                <div class="issue-description">
+                    <cr-linkified-text text="{{ issue.description }}" pre></cr-linkified-text>
                 </div>
             </div>
+        </div>
 
-            <h2>Patchsets</h2>
-            <cr-issue-patchsets patchsets="{{ issue.patchsets }}"></cr-issue-patchsets>
+        <h2>Patchsets</h2>
+        <cr-issue-patchsets patchsets="{{ issue.patchsets }}"></cr-issue-patchsets>
 
-            <header>
-                <h2>Messages</h2>
-                <div class="ui-actions">
-                    <cr-action on-tap="{{ expandAllMessages }}">Expand All</cr-action> /
-                    <cr-action on-tap="{{ collapseAllMessages }}">Collapse All</cr-action>
-                </div>
-            </header>
-            <cr-issue-messages messages="{{ issue.messages }}" id="messages"></cr-issue-messages>
-        </template>
+        <header>
+            <h2>Messages</h2>
+            <div class="ui-actions">
+                <cr-action on-tap="{{ expandAllMessages }}">Expand All</cr-action> /
+                <cr-action on-tap="{{ collapseAllMessages }}">Collapse All</cr-action>
+            </div>
+        </header>
+
+        <cr-issue-messages messages="{{ issue.messages }}" id="messages"></cr-issue-messages>
 
         <cr-issue-edit-dialog id="editor" issue="{{ issue }}"></cr-issue-edit-dialog>
     </template>
@@ -58,14 +57,12 @@
                 this.$.editor.showModal();
             },
             collapseAllMessages: function() {
-                var messages = this.shadowRoot.getElementById("messages");
-                messages.toggleAll({active: false});
+                this.$.messages.toggleAll({active: false});
             },
             expandAllMessages: function() {
-                var messages = this.shadowRoot.getElementById("messages");
-                messages.toggleAll({active: true});
+                this.$.messages.toggleAll({active: true});
                 this.async(function() {
-                    messages.scrollIntoViewIfNeeded();
+                    this.$.messages.scrollIntoViewIfNeeded();
                 }, null, 350);
             },
             quickLgtm: function() {
