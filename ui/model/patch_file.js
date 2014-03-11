@@ -77,7 +77,14 @@ PatchFile.prototype.loadDrafts = function()
 
 PatchFile.prototype.loadDiff = function()
 {
-    return loadText(this.getDiffUrl());
+    var file = this;
+    return loadText(this.getDiffUrl()).then(function(text) {
+        var parser = new DiffParser(text);
+        var result = parser.parse();
+        if (result[0] && result[0].name == file.name)
+            return result[0];
+        throw new Error("No diff available");
+    });
 };
 
 PatchFile.prototype.parseDraftsDocument = function(document)
