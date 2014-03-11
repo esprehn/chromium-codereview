@@ -11,7 +11,7 @@
                 display: block;
             }
 
-            textarea {
+            .reply-input {
                 margin: 0.5em 16px 0 16px;
             }
         </style>
@@ -21,7 +21,9 @@
             </cr-toolbar>
         </template>
         <template if="{{ expanded }}">
-            <textarea id="textarea" rows="20" value="{{ value }}"></textarea>
+            <div class="reply-input">
+                <textarea id="textarea" rows="20" value="{{ value }}"></textarea>
+            </div>
             <cr-toolbar>
                 <cr-button primary on-tap="{{ sendMessage }}">Send Message</cr-button>
                 <cr-button on-tap="{{ discardMessage }}">Discard</cr-button>
