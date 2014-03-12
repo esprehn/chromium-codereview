@@ -1,5 +1,7 @@
 
-<polymer-element name="cr-diff" attributes="value">
+<link rel="import" href="cr-patch-file-message.html">
+
+<polymer-element name="cr-diff" attributes="value messages">
     <template>
         <style>
             :host {
@@ -36,6 +38,19 @@
                 color: #444;
                 margin-right: 16px;
             }
+
+            .messages {
+                border-top: 1px solid #ccc;
+                border-bottom: 1px solid #ccc;
+            }
+
+            cr-patch-file-message {
+                border-bottom: 1px solid #ccc;
+            }
+
+            cr-patch-file-message:last-child {
+                border-bottom: none;
+            }
         </style>
         <div id="output">
         </div>
@@ -43,7 +58,9 @@
     <script>
         Polymer("cr-diff", {
             value: null,
+            messages: {},
             valueChanged: function(oldValue, newValue) {
+                var self = this;
                 var output = this.$.output;
 
                 output.innerHTML = "";
@@ -60,22 +77,56 @@
                         row.className = "row " + line.type;
                         section.appendChild(row);
 
+                        var beforeMessages;
                         var before = row.appendChild(document.createElement("div"));
                         before.className = "line-number";
-                        if (line.type == "both" || line.type == "remove" || line.type == "header")
+                        if (line.type == "both" || line.type == "remove" || line.type == "header") {
+                            beforeMessages = self.messages[line.beforeNumber];
                             before.textContent = line.beforeNumber;
+                        }
                         row.appendChild(before);
 
+                        var afterMessages;
                         var after = row.appendChild(document.createElement("div"));
                         after.className = "line-number";
-                        if (line.type == "both" || line.type == "add" || line.type == "header")
+                        if (line.type == "both" || line.type == "add" || line.type == "header") {
+                            afterMessages = self.messages[line.afterNumber];
                             after.textContent = line.afterNumber;
+                        }
                         row.appendChild(after);
 
                         var text = row.appendChild(document.createElement("div"));
                         text.className = "text";
                         text.textContent = line.text;
                         row.appendChild(text);
+
+                        if (!beforeMessages && !afterMessages)
+                            return;
+
+                        var messages = document.createElement("div");
+                        messages.className = "messages";
+                        section.appendChild(messages);
+
+                        if (beforeMessages) {
+                            beforeMessages.forEach(function(message) {
+                                if (!message.left)
+                                    return;
+                                var fileMessage = document.createElement("cr-patch-file-message");
+                                fileMessage.message = message;
+                                fileMessage.innerHTML = JSON.stringify(message);
+                                messages.appendChild(fileMessage);
+                            });
+                        }
+
+                        if (afterMessages) {
+                            afterMessages.forEach(function(message) {
+                                if (message.left)
+                                    return;
+                                var fileMessage = document.createElement("cr-patch-file-message");
+                                fileMessage.message = message;
+                                messages.appendChild(fileMessage);
+                            });
+                        }
                     });
                 });
             }

@@ -23,10 +23,10 @@
                                     <div class="file-removed">-{{ file.removed }}</div>
                                     <div class="file-added">+{{ file.added }}</div>
                                     <div class="file-name"><cr-action on-tap="{{ toggleDiff }}">{{ file.name }}</cr-action></div>
-                                    <div class="file-messages">{{ file.messages.length | commentCount }}</div>
+                                    <div class="file-messages">{{ file.messageCount | commentCount }}</div>
                                 </div>
                                 <template if="{{ file.diff }}">
-                                    <cr-diff value="{{ file.diff }}"></cr-diff>
+                                    <cr-diff value="{{ file.diff }}" messages="{{ file.messages }}"></cr-diff>
                                 </template>
                             </template>
                         </div>

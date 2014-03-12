@@ -11,7 +11,8 @@ function PatchFile(patchset, name)
     this.id = 0;
     this.patchset = patchset || null; // PatchSet
     this.isBinary = false;
-    this.messages = []; // Array<PatchFileMessage>
+    this.messages = {}; // Map<line number, Array<PatchFileMessage>>
+    this.messageCount = 0;
     this.drafts = [];
 }
 
@@ -30,14 +31,20 @@ PatchFile.prototype.parseData = function(data)
     this.id = data.id || 0;
     this.isBinary = data.is_binary || false;
 
-    this.messages = (data.messages || []).map(function(messageData) {
+    var self = this;
+    (data.messages || []).forEach(function(messageData) {
         var message = new PatchFileMessage();
         message.parseData(messageData);
-        return message;
-    }).sort(function(messageA, messageB) {
-        if (messageA.line == messageB.line)
+        if (!self.messages[message.line])
+            self.messages[message.line] = [];
+        self.messages[message.line].push(message);
+        self.messageCount++;
+    });
+
+    Object.each(this.messages, function(line, messages) {
+        messages.sort(function(messageA, messageB) {
             return messageA.date - messageB.date;
-        return messageA.line - messageB.line;
+        });
     });
 };
 

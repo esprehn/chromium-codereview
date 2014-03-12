@@ -1,0 +1,53 @@
+
+<link rel="import" href="cr-linkified-text.html">
+
+<polymer-element name="cr-patch-file-message" attributes="message">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            .message-text {
+                padding: 0.5em 16px;
+            }
+
+            .message-header {
+                padding: 0.5em 16px;
+                display: flex;
+            }
+
+            .message-title {
+                flex: 1;
+                display: flex;
+            }
+
+            .message-author {
+                flex-shrink: 0;
+                font-weight: bold;
+            }
+        </style>
+
+        <div class="message-header">
+            <div class="message-title">
+                <div class="message-author">{{ message.author.displayName }}</div>
+            </div>
+            <div class="message-date">
+                {{ message.date | formatDate }}
+            </div>
+        </div>
+        <div class="message-text">
+            <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
+        </div>
+    </template>
+    <script>
+        Polymer("cr-patch-file-message", {
+            message: null,
+            formatDate: function(date) {
+                if (!date)
+                    return "";
+                return date.relative();
+            },
+        });
+    </script>
+</polymer-element>

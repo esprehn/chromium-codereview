@@ -33,12 +33,12 @@
 }
 
 .file {
-    padding: 0.25em 16px;
+    padding: 0 16px;
     display: flex;
 }
 
 .file-name {
-    padding: 0.25em 8px;
+    padding: 0.25em 4px;
     flex: 1;
 }
 
@@ -47,6 +47,7 @@
 .file-removed {
     white-space: nowrap;
     flex-shrink: 0;
+    padding: 0.25em 0;
 }
 
 .file-status {
