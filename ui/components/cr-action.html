@@ -2,17 +2,18 @@
 <polymer-element name="cr-action" cache-csstext>
     <template>
         <style>
-          span {
+          a {
             color: #1155CC;
             cursor: pointer;
             display: inline-block;
+            text-decoration: none;
           }
 
-          span:hover {
+          a:hover {
             text-decoration: underline;
           }
         </style>
-        <span role="link" tabindex="0" on-keypress="{{ handleKeypress }}"><content></content></span>
+        <a href="#{{ _void_ }}" on-keypress="{{ handleKeypress }}" on-click="{{ handleClick }}" on-tap="{{ handleTap }}"><content></content></a>
     </template>
     <script>
       Polymer("cr-action", {
@@ -20,6 +21,14 @@
           // Enter key
           if (event.keyCode == 13)
             this.fire("tap");
+        },
+        handleTap: function(event) {
+          event.preventDefault();
+          return false;
+        },
+        handleClick: function(event) {
+          event.preventDefault();
+          return false;
         },
       });
     </script>
