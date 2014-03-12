@@ -28,6 +28,10 @@
     font-weight: bold;
 }
 
+.patchset-comments {
+    padding: 0 16px;
+}
+
 .files {
     margin: 0.5em 8px 0.5em 8px;
 }
