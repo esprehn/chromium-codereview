@@ -1,7 +1,7 @@
 
 <link rel="import" href="cr-patch-file-message.html">
 
-<polymer-element name="cr-diff" attributes="value messages">
+<polymer-element name="cr-diff" attributes="file active">
     <template>
         <style>
             :host {
@@ -57,18 +57,34 @@
     </template>
     <script>
         Polymer("cr-diff", {
-            value: null,
-            messages: {},
-            valueChanged: function(oldValue, newValue) {
-                var self = this;
+            file: null,
+            active: false,
+            diff: null,
+            fileChanged: function(oldValue, newValue) {
                 var output = this.$.output;
-
                 output.innerHTML = "";
-
-                if (!newValue)
+            },
+            activeChanged: function(oldValue, newValue) {
+                if (!this.file)
                     return;
-
-                newValue.groups.forEach(function(group) {
+                var self = this;
+                if (newValue && !this.diff) {
+                    this.file.loadDiff().then(function(diff) {
+                        self.diff = diff;
+                        self.createDiff();
+                    }).catch(function(e) {
+                        console.log(e);
+                    });
+                } else if (newValue) {
+                    this.createDiff();
+                } else {
+                    this.$.output.innerHTML = "";
+                }
+            },
+            createDiff: function() {
+                var output = this.$.output;
+                var file = this.file;
+                this.diff.groups.forEach(function(group) {
                     var section = document.createElement("div");
                     output.appendChild(section);
 
@@ -81,7 +97,7 @@
                         var before = row.appendChild(document.createElement("div"));
                         before.className = "line-number";
                         if (line.type == "both" || line.type == "remove" || line.type == "header") {
-                            beforeMessages = self.messages[line.beforeNumber];
+                            beforeMessages = file.messages[line.beforeNumber];
                             before.textContent = line.beforeNumber;
                         }
                         row.appendChild(before);
@@ -90,7 +106,7 @@
                         var after = row.appendChild(document.createElement("div"));
                         after.className = "line-number";
                         if (line.type == "both" || line.type == "add" || line.type == "header") {
-                            afterMessages = self.messages[line.afterNumber];
+                            afterMessages = file.messages[line.afterNumber];
                             after.textContent = line.afterNumber;
                         }
                         row.appendChild(after);

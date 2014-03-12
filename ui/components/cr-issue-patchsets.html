@@ -26,9 +26,7 @@
                                     <div class="file-name"><cr-action on-tap="{{ toggleDiff }}">{{ file.name }}</cr-action></div>
                                     <div class="file-messages">{{ file.messageCount | commentCount }}</div>
                                 </div>
-                                <template if="{{ file.diff }}">
-                                    <cr-diff value="{{ file.diff }}" messages="{{ file.messages }}"></cr-diff>
-                                </template>
+                                <cr-diff file="{{ file }}" active="{{ file.diffActive }}"></cr-diff>
                             </template>
                         </div>
                     </polymer-ui-collapsible>
@@ -39,19 +37,9 @@
     <script>
         Polymer("cr-issue-patchsets", {
             patchsets: null,
-            diff: null,
-            json: function(o) { return JSON.stringify(o); },
             toggleDiff: function(event) {
                 var file = event.target.templateInstance.model.file;
-                if (file.diff) {
-                    file.diff = null;
-                    return;
-                }
-                file.loadDiff().then(function(diff) {
-                    file.diff = diff;
-                }).catch(function(e) {
-                    console.log(e);
-                });
+                file.diffActive = !file.diffActive;
             },
             formatDate: function(date) {
                 if (!date)

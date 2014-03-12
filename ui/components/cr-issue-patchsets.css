@@ -76,6 +76,6 @@
     -webkit-user-select: none;
 }
 
-cr-diff {
+cr-diff[active] {
     border-bottom: 1px solid #ccc;
 }
