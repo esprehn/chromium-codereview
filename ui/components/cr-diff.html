@@ -41,8 +41,8 @@
             }
 
             .messages {
-                border-top: 1px solid #ccc;
-                border-bottom: 1px solid #ccc;
+                border: 1px solid #ccc;
+                margin-left: calc(6em + 32px);
             }
 
             cr-patch-file-message {
@@ -125,7 +125,6 @@
 
                         var messages = document.createElement("div");
                         messages.className = "messages";
-                        section.appendChild(messages);
 
                         if (beforeMessages) {
                             beforeMessages.forEach(function(message) {
@@ -147,6 +146,9 @@
                                 messages.appendChild(fileMessage);
                             });
                         }
+
+                        if (messages.firstChild)
+                            section.appendChild(messages);
                     });
                 });
             }
