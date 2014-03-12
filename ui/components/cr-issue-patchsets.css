@@ -28,29 +28,34 @@
     font-weight: bold;
 }
 
-.file {
-    padding: 0.25em 16px;
-    display: table-row;
+.files {
+    margin: 0.5em 8px 0.5em 8px;
 }
 
-.files {
-    display: table;
-    margin: 0.5em 8px 0.5em 8px;
+.file {
+    padding: 0.25em 16px;
+    display: flex;
 }
 
 .file-name {
     padding: 0.25em 8px;
-    display: table-cell;
-    width: 100%;
+    flex: 1;
 }
 
-.file-messages,
 .file-status,
 .file-added,
 .file-removed {
-    display: table-cell;
-    padding: 0.25em 8px;
     white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.file-status {
+    min-width: 2em;
+}
+
+.file-added,
+.file-removed {
+    min-width: 3em;
 }
 
 .file-added {
@@ -64,4 +69,8 @@
 .polymer-ui-collapsible-header {
     cursor: default;
     -webkit-user-select: none;
+}
+
+cr-diff {
+    border-bottom: 1px solid #ccc;
 }

@@ -81,7 +81,7 @@ DiffParser.prototype.parseFile = function()
 
             if (groupType == "remove" || groupType == "both")
                 currentBeforeLineNumber++;
-            else if (groupType == "add" || groupType == "both")
+            if (groupType == "add" || groupType == "both")
                 currentAfterLineNumber++;
         }
 

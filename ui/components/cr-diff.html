@@ -1,0 +1,85 @@
+
+<polymer-element name="cr-diff" attributes="value">
+    <template>
+        <style>
+            :host {
+                display: block;
+                padding: 0.25em 16px;
+            }
+
+            .remove {
+                background-color: #fdd;
+            }
+
+            .add {
+                background-color: #dfd;
+            }
+
+            .row {
+                display: flex;
+            }
+
+            .text {
+                flex: 1;
+            }
+
+            .line-number,
+            .text {
+                white-space: pre-wrap;
+                font-family: Monaco, monospace;
+                flex-shrink: 0;
+            }
+
+            .line-number {
+                width: 3em;
+                text-align: right;
+                color: #444;
+                margin-right: 16px;
+            }
+        </style>
+        <div id="output">
+        </div>
+    </template>
+    <script>
+        Polymer("cr-diff", {
+            value: null,
+            valueChanged: function(oldValue, newValue) {
+                var output = this.$.output;
+
+                output.innerHTML = "";
+
+                if (!newValue)
+                    return;
+
+                newValue.groups.forEach(function(group) {
+                    var section = document.createElement("div");
+                    output.appendChild(section);
+
+                    group.forEach(function(line) {
+                        var row = document.createElement("div");
+                        row.className = "row " + line.type;
+                        section.appendChild(row);
+
+                        var before = row.appendChild(document.createElement("div"));
+                        before.className = "line-number";
+                        if (line.type == "both" || line.type == "removed" || line.type == "header")
+                            before.textContent = line.beforeNumber;
+                        row.appendChild(before);
+
+                        var after = row.appendChild(document.createElement("div"));
+                        after.className = "line-number";
+                        if (line.type == "both" || line.type == "added" || line.type == "header")
+                            after.textContent = line.afterNumber;
+                        after.textContent = line.afterNumber;
+                        row.appendChild(after);
+
+                        var text = row.appendChild(document.createElement("div"));
+                        text.className = "text";
+                        text.textContent = line.text;
+                        row.appendChild(text);
+                    });
+                });
+            }
+        });
+    </script>
+</ploymer-element>

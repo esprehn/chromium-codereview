@@ -1,4 +1,6 @@
 
+<link rel="import" href="cr-diff.html">
+
 <polymer-element name="cr-issue-patchsets" attributes="patchsets" cache-csstext>
     <template>
         <link rel="stylesheet" href="common.css">
@@ -20,9 +22,12 @@
                                     <div class="file-status">{{ file.status }}</div>
                                     <div class="file-removed">-{{ file.removed }}</div>
                                     <div class="file-added">+{{ file.added }}</div>
-                                    <a class="file-name" href="https://codereview.chromium.org/{{ patchset.issue.id }}/diff/{{ patchset.id }}/{{ file.name }}" target="_blank">{{ file.name }}</a>
+                                    <div class="file-name"><cr-action on-tap="{{ toggleDiff }}">{{ file.name }}</cr-action></div>
                                     <div class="file-messages">{{ file.messages.length | commentCount }}</div>
                                 </div>
+                                <template if="{{ file.diff }}">
+                                    <cr-diff value="{{ file.diff }}"></cr-diff>
+                                </template>
                             </template>
                         </div>
                     </polymer-ui-collapsible>
@@ -33,6 +38,20 @@
     <script>
         Polymer("cr-issue-patchsets", {
             patchsets: null,
+            diff: null,
+            json: function(o) { return JSON.stringify(o); },
+            toggleDiff: function(event) {
+                var file = event.target.templateInstance.model.file;
+                if (file.diff) {
+                    file.diff = null;
+                    return;
+                }
+                file.loadDiff().then(function(diff) {
+                    file.diff = diff;
+                }).catch(function(e) {
+                    console.log(e);
+                });
+            },
             formatDate: function(date) {
                 if (!date)
                     return "";
