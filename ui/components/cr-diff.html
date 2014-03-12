@@ -62,15 +62,14 @@
 
                         var before = row.appendChild(document.createElement("div"));
                         before.className = "line-number";
-                        if (line.type == "both" || line.type == "removed" || line.type == "header")
+                        if (line.type == "both" || line.type == "remove" || line.type == "header")
                             before.textContent = line.beforeNumber;
                         row.appendChild(before);
 
                         var after = row.appendChild(document.createElement("div"));
                         after.className = "line-number";
-                        if (line.type == "both" || line.type == "added" || line.type == "header")
+                        if (line.type == "both" || line.type == "add" || line.type == "header")
                             after.textContent = line.afterNumber;
-                        after.textContent = line.afterNumber;
                         row.appendChild(after);
 
                         var text = row.appendChild(document.createElement("div"));
