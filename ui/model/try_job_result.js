@@ -16,6 +16,8 @@ function TryJobResult()
     this.revision = ""; // Number or HEAD
 }
 
+TryJobResult.URL = "http://build.chromium.org/p/tryserver.chromium/builders/{1}/builds/{2}";
+
 TryJobResult.RESULT = {
     "-1": "pending",
     "0": "success",
@@ -40,7 +42,6 @@ TryJobResult.prototype.parseData = function(data)
         return new TryJobResultStep(result, name);
     });
     this.slave = data.slave || "";
-    this.url = data.url || "";
     this.timestamp = Date.utc.create(data.timestamp);
     this.builder = data.builder || "";
     this.clobber = data.clobber || false;
@@ -50,4 +51,5 @@ TryJobResult.prototype.parseData = function(data)
     this.requester = new User(data.requester);
     this.buildnumber = parseInt(data.buildnumber, 10) || 0;
     this.revision = data.revision || "";
+    this.url = TryJobResult.URL.assign(this.builder, this.buildnumber);
 };

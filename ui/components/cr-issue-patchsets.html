@@ -29,6 +29,14 @@
                                 <cr-diff file="{{ file }}" active="{{ file.diffActive }}"></cr-diff>
                             </template>
                         </div>
+                        <template if="{{ patchset.tryJobResults.length }}">
+                            <h2>Try Job Results</h2>
+                            <div class="try-jobs">
+                                <template repeat="{{ job in patchset.tryJobResults }}">
+                                    <a class="try-job {{ job.result }}" href="{{ job.url }}" target="_blank">{{ job.builder }}</a>
+                                </template>
+                            </div>
+                        </template>
                     </polymer-ui-collapsible>
                 </template>
             </polymer-ui-accordion>
