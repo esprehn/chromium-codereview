@@ -82,6 +82,8 @@
                 }
             },
             createDiff: function() {
+                if (!this.active)
+                    return;
                 var output = this.$.output;
                 var file = this.file;
                 this.diff.groups.forEach(function(group) {
