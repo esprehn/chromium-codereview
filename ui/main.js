@@ -8,6 +8,7 @@ onload = function() {
     document.write(
         "<!DOCTYPE html>" +
         "<meta name=viewport content='width=device-width, user-scalable=no'>" +
+        "<title>Chromium Code Review</title>" +
         "<script src='" + resolveUrl("bower_components/platform/platform.js") + "'></script>" +
         "<cr-app></cr-app>"
     );
