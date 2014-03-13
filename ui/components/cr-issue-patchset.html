@@ -1,13 +1,24 @@
 
+<link rel="import" href="cr-action.html">
 <link rel="import" href="cr-issue-patchfile.html">
+<link rel="import" href="cr-toolbar.html">
 
 <polymer-element name="cr-issue-patchset" attributes="patchset" cache-csstext>
     <template>
         <link rel="stylesheet" href="common.css">
         <link rel="stylesheet" href="cr-issue-patchset.css">
+        <template if="{{ patchset.files.length }}">
+            <header>
+                <h2>Files</h2>
+                <div class="ui-actions">
+                    <cr-action on-tap="{{ expandAllDiffs }}">Show Diffs</cr-action> /
+                    <cr-action on-tap="{{ collapseAllDiffs }}">Hide Diffs</cr-action>
+                </div>
+            </header>
+        </template>
         <div class="files">
             <template repeat="{{ file in patchset.files }}">
-                <cr-issue-patchfile file="{{ file }}"></cr-issue-patchfile>
+                <cr-issue-patchfile file="{{ file }}" diff="{{ file.diffActive }}"></cr-issue-patchfile>
             </template>
         </div>
         <template if="{{ patchset.tryJobResults.length }}">
@@ -22,6 +33,16 @@
     <script>
         Polymer("cr-issue-patchset", {
             patchset: null,
+            expandAllDiffs: function() {
+                this.patchset.files.forEach(function(file) {
+                    file.diffActive = true;
+                });
+            },
+            collapseAllDiffs: function() {
+                this.patchset.files.forEach(function(file) {
+                    file.diffActive = false;
+                });
+            },
         });
     </script>
 </polymer-element>

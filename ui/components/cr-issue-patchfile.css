@@ -1,4 +1,6 @@
 
+:host { display: block; }
+
 .file {
     padding: 0 16px;
     display: flex;

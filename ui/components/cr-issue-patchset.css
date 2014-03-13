@@ -1,9 +1,5 @@
 :host { display: block; }
 
-.files {
-    margin: 0.5em 8px 0.5em 8px;
-}
-
 .try-jobs {
     display: flex;
     flex-wrap: wrap;
@@ -12,7 +8,7 @@
 
 .try-job:link,
 .try-job:visited {
-    margin: 0.5em 4px;
+    margin: 0.5em 8px 0.5em 0;
     padding: 0.25em 16px;
     color: black;
 }
@@ -42,4 +38,18 @@ h2 {
     padding-top: 0;
     -webkit-user-select: none;
     cursor: default;
+}
+
+header {
+    padding-top: 0.5em;
+    display: flex;
+}
+
+header h2 {
+    flex: 1;
+}
+
+header .ui-actions {
+    padding: 0 16px;
+    flex-shrink: 0;
 }
