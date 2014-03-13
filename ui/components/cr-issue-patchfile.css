@@ -1,0 +1,39 @@
+
+.file {
+    padding: 0 16px;
+    display: flex;
+}
+
+.file-name {
+    padding: 0.25em 4px;
+    flex: 1;
+}
+
+.file-status,
+.file-added,
+.file-removed {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0.25em 0;
+}
+
+.file-status {
+    min-width: 2em;
+}
+
+.file-added,
+.file-removed {
+    min-width: 3em;
+}
+
+.file-added {
+    color: #009933;
+}
+
+.file-removed {
+    color: #DD4B39;
+}
+
+cr-diff[active] {
+    border-bottom: 1px solid #ccc;
+}

@@ -1,0 +1,36 @@
+
+<link rel="import" href="cr-action.html">
+<link rel="import" href="cr-diff.html">
+
+<polymer-element name="cr-issue-patchfile" attributes="file" cache-csstext>
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <link rel="stylesheet" href="cr-issue-patchfile.css">
+
+        <div class="file">
+            <div class="file-status">{{ file.status }}</div>
+            <div class="file-removed">-{{ file.removed }}</div>
+            <div class="file-added">+{{ file.added }}</div>
+            <div class="file-name"><cr-action on-tap="{{ toggleDiff }}">{{ file.name }}</cr-action></div>
+            <div class="file-messages">{{ file.messageCount | commentCount }}</div>
+        </div>
+
+        <cr-diff file="{{ file }}" active="{{ diffActive }}"></cr-diff>
+    </template>
+    <script>
+        Polymer("cr-issue-patchfile", {
+            file: null,
+            diffActive: false,
+            toggleDiff: function() {
+                this.diffActive = !this.diffActive;
+            },
+            commentCount: function(messageCount) {
+                if (!messageCount)
+                    return "";
+                if (messageCount == 1)
+                    return messageCount + " comment";
+                return messageCount + " comments";
+            },
+        });
+    </script>
+</polymer-element>

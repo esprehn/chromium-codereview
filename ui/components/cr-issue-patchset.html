@@ -1,0 +1,27 @@
+
+<link rel="import" href="cr-issue-patchfile.html">
+
+<polymer-element name="cr-issue-patchset" attributes="patchset" cache-csstext>
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <link rel="stylesheet" href="cr-issue-patchset.css">
+        <div class="files">
+            <template repeat="{{ file in patchset.files }}">
+                <cr-issue-patchfile file="{{ file }}"></cr-issue-patchfile>
+            </template>
+        </div>
+        <template if="{{ patchset.tryJobResults.length }}">
+            <h2>Try Job Results</h2>
+            <div class="try-jobs">
+                <template repeat="{{ job in patchset.tryJobResults }}">
+                    <a class="try-job {{ job.result }}" href="{{ job.url }}" title="{{ job.result }}" target="_blank">{{ job.builder }}</a>
+                </template>
+            </div>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-issue-patchset", {
+            patchset: null,
+        });
+    </script>
+</polymer-element>

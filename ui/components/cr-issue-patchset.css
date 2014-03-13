@@ -1,0 +1,45 @@
+:host { display: block; }
+
+.files {
+    margin: 0.5em 8px 0.5em 8px;
+}
+
+.try-jobs {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 16px 0.5em 16px;
+}
+
+.try-job:link,
+.try-job:visited {
+    margin: 0.5em 4px;
+    padding: 0.25em 16px;
+    color: black;
+}
+
+.try-job {
+    background-color: #E0E0E0;
+}
+
+.try-job.success {
+    background-color: #8fdf5f;
+    color: #222121;
+}
+
+.try-job.warnings {
+    background-color: #F9EDBE;
+}
+
+.try-hob.exception,
+.try-job.failure {
+    background-color: #E75D54;
+    color: #F4F4F4;
+}
+
+h2 {
+    font-size: 1em;
+    margin-top: 0;
+    padding-top: 0;
+    -webkit-user-select: none;
+    cursor: default;
+}

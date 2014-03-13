@@ -1,10 +1,48 @@
 
-<link rel="import" href="cr-diff.html">
+<link rel="import" href="cr-issue-patchset.html">
 
-<polymer-element name="cr-issue-patchsets" attributes="patchsets" cache-csstext>
+<polymer-element name="cr-issue-patchsets" attributes="patchsets">
     <template>
-        <link rel="stylesheet" href="common.css">
-        <link rel="stylesheet" href="cr-issue-patchsets.css">
+        <style>
+            :host { display: block; }
+
+            .patchset {
+                border-color: #ccc;
+                border-width: 1px 1px 0 1px;
+                border-style: solid;
+            }
+
+            .patchset:last-child {
+                border-width: 1px;
+            }
+
+            .patchset-header {
+                background: #F6F6F6;
+                border-bottom: 1px solid #ebebeb;
+                display: flex;
+                padding: 0.5em 16px;
+                position: relative;
+            }
+
+            .patchset-title {
+                flex: 1;
+                font-weight: bold;
+            }
+
+            .patchset-comments {
+                padding: 0 16px;
+            }
+
+            .patchset:not([active]) .patchset-header:hover {
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+                z-index: 1;
+            }
+
+            .polymer-ui-collapsible-header {
+                cursor: default;
+                -webkit-user-select: none;
+            }
+        </style>
 
         <template if="{{ patchsets }}">           
             <polymer-ui-accordion multi selected="{{ [ patchsets.length - 1 ] }}">
@@ -17,26 +55,7 @@
                             <div class="patchset-comments">{{ patchset.commentCount | commentCount }}</div>
                             <div class="patchset-date">{{ patchset.created | formatDate }}</div>
                         </div>
-                        <div class="files">
-                            <template repeat="{{ file in patchset.files }}">
-                                <div class="file">
-                                    <div class="file-status">{{ file.status }}</div>
-                                    <div class="file-removed">-{{ file.removed }}</div>
-                                    <div class="file-added">+{{ file.added }}</div>
-                                    <div class="file-name"><cr-action on-tap="{{ toggleDiff }}">{{ file.name }}</cr-action></div>
-                                    <div class="file-messages">{{ file.messageCount | commentCount }}</div>
-                                </div>
-                                <cr-diff file="{{ file }}" active="{{ file.diffActive }}"></cr-diff>
-                            </template>
-                        </div>
-                        <template if="{{ patchset.tryJobResults.length }}">
-                            <h2>Try Job Results</h2>
-                            <div class="try-jobs">
-                                <template repeat="{{ job in patchset.tryJobResults }}">
-                                    <a class="try-job {{ job.result }}" href="{{ job.url }}" target="_blank">{{ job.builder }}</a>
-                                </template>
-                            </div>
-                        </template>
+                        <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
                     </polymer-ui-collapsible>
                 </template>
             </polymer-ui-accordion>
@@ -45,10 +64,6 @@
     <script>
         Polymer("cr-issue-patchsets", {
             patchsets: null,
-            toggleDiff: function(event) {
-                var file = event.target.templateInstance.model.file;
-                file.diffActive = !file.diffActive;
-            },
             formatDate: function(date) {
                 if (!date)
                     return "";
