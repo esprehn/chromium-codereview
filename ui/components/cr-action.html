@@ -2,35 +2,38 @@
 <polymer-element name="cr-action" cache-csstext>
     <template>
         <style>
-          a {
-            color: #1155CC;
-            cursor: pointer;
-            display: inline-block;
-            text-decoration: none;
-            -webkit-user-select: none;
-          }
+            a {
+                color: #1155CC;
+                cursor: pointer;
+                display: inline-block;
+                text-decoration: none;
+                -webkit-user-select: none;
+            }
 
-          a:hover {
-            text-decoration: underline;
-          }
+            a:hover {
+                text-decoration: underline;
+            }
         </style>
-        <a href="#{{ _void_ }}" on-keypress="{{ handleKeypress }}" on-click="{{ handleClick }}" on-tap="{{ handleTap }}"><content></content></a>
+        <a href="#{{ _void_ }}"
+            on-keypress="{{ handleKeypress }}"
+            on-click="{{ handleClick }}"
+            on-tap="{{ handleTap }}"><content></content></a>
     </template>
     <script>
-      Polymer("cr-action", {
-        handleKeypress: function(event) {
-          // Enter key
-          if (event.keyCode == 13)
-            this.fire("tap");
-        },
-        handleTap: function(event) {
-          event.preventDefault();
-          return false;
-        },
-        handleClick: function(event) {
-          event.preventDefault();
-          return false;
-        },
-      });
+        Polymer("cr-action", {
+            handleKeypress: function(event) {
+                // Enter key
+                if (event.keyCode == 13)
+                    this.fire("tap");
+            },
+            handleTap: function(event) {
+                event.preventDefault();
+                return false;
+            },
+            handleClick: function(event) {
+                event.preventDefault();
+                return false;
+            },
+        });
     </script>
 </ploymer-element>
