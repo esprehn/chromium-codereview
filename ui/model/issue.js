@@ -24,6 +24,7 @@ function Issue(id)
 Issue.DETAIL_URL = "/api/{1}?messages=true";
 Issue.PUBLISH_URL = "/{1}/publish";
 Issue.EDIT_URL = "/{1}/edit";
+Issue.COMMIT_URL = "/{1}/edit_flags";
 
 Issue.prototype.getDetailUrl = function()
 {
@@ -38,6 +39,11 @@ Issue.prototype.getPublishUrl = function()
 Issue.prototype.getEditUrl = function()
 {
     return Issue.EDIT_URL.assign(encodeURIComponent(this.id));
+};
+
+Issue.prototype.getCommitUrl = function()
+{
+    return Issue.COMMIT_URL.assign(encodeURIComponent(this.id));
 };
 
 Issue.prototype.reviewerEmails = function()
@@ -191,6 +197,27 @@ Issue.prototype.createPublishData = function(options)
             send_mail: "1",
             reviewers: reviewers,
             cc: cc,
+        };
+    });
+};
+
+Issue.prototype.setCommit = function(status)
+{
+    var issue = this;
+    return createCommitQueueStatusData(status).then(function(data) {
+        return sendFormData(issue.getCommitUrl(), data).then(function() {
+            return issue;
+        });
+    });
+};
+
+Issue.prototype.createCommitData = function(status)
+{
+    return User.loadCurrentUser(true).then(function(user) {
+        return {
+            xsrf_token: user.xsrfToken,
+            last_patchset: 1,
+            commit: status ? 1 : 0,
         };
     });
 };
