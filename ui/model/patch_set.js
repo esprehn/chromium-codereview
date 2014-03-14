@@ -45,7 +45,6 @@ PatchSet.prototype.parseData = function(data)
     this.lastModified = Date.utc.create(data.modified);
     this.commentCount = data.num_comments || 0;
     this.created = Date.utc.create(data.created);
-    this.files = {};
 
     var files = data.files || {};
     this.files = Object.keys(files).sort().map(function(name) {
