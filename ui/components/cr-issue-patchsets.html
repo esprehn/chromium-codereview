@@ -44,22 +44,20 @@
             }
         </style>
 
-        <template if="{{ patchsets }}">           
-            <polymer-ui-accordion multi selected="{{ [ patchsets.length - 1 ] }}">
-                <template repeat="{{ patchset, i in patchsets }}">
-                    <polymer-ui-collapsible class="patchset">
-                        <div class="patchset-header polymer-ui-collapsible-header">
-                            <div class="patchset-title">
-                                Patch set {{ i + 1 }}<template if="{{ patchset.message }}">: {{ patchset.message }}</template>
-                            </div>
-                            <div class="patchset-comments">{{ patchset.commentCount | commentCount }}</div>
-                            <div class="patchset-date">{{ patchset.created | formatDate }}</div>
+        <polymer-ui-accordion multi selected="{{ [ patchsets.length - 1 ] }}">
+            <template repeat="{{ patchset, i in patchsets }}">
+                <polymer-ui-collapsible class="patchset">
+                    <div class="patchset-header polymer-ui-collapsible-header">
+                        <div class="patchset-title">
+                            Patch set {{ i + 1 }}<template if="{{ patchset.message }}">: {{ patchset.message }}</template>
                         </div>
-                        <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
-                    </polymer-ui-collapsible>
-                </template>
-            </polymer-ui-accordion>
-        </template>
+                        <div class="patchset-comments">{{ patchset.commentCount | commentCount }}</div>
+                        <div class="patchset-date">{{ patchset.created | formatDate }}</div>
+                    </div>
+                    <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
+                </polymer-ui-collapsible>
+            </template>
+        </polymer-ui-accordion>
     </template>
     <script>
         Polymer("cr-issue-patchsets", {
