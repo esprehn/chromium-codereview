@@ -47,7 +47,7 @@
             </div>
         </header>
 
-        <cr-issue-messages messages="{{ issue.messages }}" id="messages"></cr-issue-messages>
+        <cr-issue-messages messages="{{ issue.messages }}" id="messages" on-message-save="{{ saveMessage }}"></cr-issue-messages>
 
         <cr-issue-edit-dialog id="editor" issue="{{ issue }}"></cr-issue-edit-dialog>
     </template>
@@ -74,11 +74,27 @@
                     this.$.messages.scrollIntoViewIfNeeded();
                 }, null, 350);
             },
-            quickLgtm: function() {
-                this.fire("quick-lgtm");
+            saveMessage: function(event) {
+                if (event.detail.messageText)
+                    this.publish({message: event.detail.messageText});
             },
-            quickLgtmAndCommit: function() {
-                this.fire("quick-lgtm-and-commit");
+            quickLgtm: function(options) {
+                this.publish({lgtm: true});
+            },
+            quickLgtmAndCommit: function(options) {
+                this.publish({
+                    lgtm: true,
+                    commit: true,
+                });
+            },
+            publish: function(options) {
+                var self = this;
+                this.issue.publish(options).then(function() {
+                    self.fire("issue-refresh");
+                }).catch(function(e) {
+                    console.log(e);
+                    // FIXME: We should show an error message.
+                });
             },
         });
     </script>

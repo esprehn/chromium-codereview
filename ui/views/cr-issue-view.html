@@ -30,10 +30,7 @@
         <template if="{{ issue && !failed }}">
             <cr-issue
                 issue="{{ issue }}"
-                on-message-save="{{ saveMessage }}"
-                on-issue-refresh="{{ loadIssue }}"
-                on-quick-lgtm="{{ quickLgtm }}"
-                on-quick-lgtm-and-commit="{{ quickLgtmAndCommit }}"></cr-issue>
+                on-issue-refresh="{{ loadIssue }}"></cr-issue>
         </template>
     </template>
     <script>
@@ -61,28 +58,6 @@
                 }).catch(function(error) {
                     console.log(error);
                     self.failed = true;
-                });
-            },
-            saveMessage: function(event) {
-                if (event.detail.messageText)
-                    this.publish({message: event.detail.messageText});
-            },
-            quickLgtm: function(options) {
-                this.publish({lgtm: true});
-            },
-            quickLgtmAndCommit: function(options) {
-                this.publish({
-                    lgtm: true,
-                    commit: true,
-                });
-            },
-            publish: function(options) {
-                var self = this;
-                this.issue.publish(options).then(function() {
-                    return self.loadIssue();
-                }).catch(function(e) {
-                    console.log(e);
-                    // FIXME: We should show an error message.
                 });
             },
         });
