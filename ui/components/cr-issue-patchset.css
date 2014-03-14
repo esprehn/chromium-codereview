@@ -17,15 +17,16 @@
     background-color: #E0E0E0;
 }
 
+.try-job.pending {
+    background-color: #F9EDBE;
+}
+
 .try-job.success {
     background-color: #8fdf5f;
     color: #222121;
 }
 
-.try-job.warnings {
-    background-color: #F9EDBE;
-}
-
+.try-job.warnings,
 .try-hob.exception,
 .try-job.failure {
     background-color: #E75D54;
