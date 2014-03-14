@@ -24,6 +24,7 @@
                 <cr-toolbar class="issue-toolbar">
                     <cr-button on-tap="{{ quickLgtm }}">Quick LGTM</cr-button>
                     <cr-button on-tap="{{ quickLgtmAndCommit }}">Quick LGTM + CQ</cr-button>
+                    <cr-button on-tap="{{ toggleCommit }}"><template if="{{ issue.commit }}">Cancel</template> Commit</cr-button>
                     <div class="ui-actions">
                         <cr-action on-tap="{{ showEditDialog }}">Edit</cr-action>
                     </div>
@@ -53,6 +54,14 @@
     <script>
         Polymer("cr-issue", {
             issue: null,
+            toggleCommit: function() {
+                var self = this;
+                this.issue.setCommit(!this.issue.commit).then(function() {
+                    self.fire("issue-refresh");
+                }).catch(function(e) {
+                    console.log(e);
+                });
+            },
             showEditDialog: function() {
                 this.$.editor.showModal();
             },

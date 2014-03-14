@@ -204,7 +204,7 @@ Issue.prototype.createPublishData = function(options)
 Issue.prototype.setCommit = function(status)
 {
     var issue = this;
-    return createCommitQueueStatusData(status).then(function(data) {
+    return this.createCommitData(status).then(function(data) {
         return sendFormData(issue.getCommitUrl(), data).then(function() {
             return issue;
         });
