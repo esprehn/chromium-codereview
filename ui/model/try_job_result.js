@@ -16,7 +16,7 @@ function TryJobResult()
     this.revision = ""; // Number or HEAD
 }
 
-TryJobResult.URL = "http://build.chromium.org/p/tryserver.chromium/builders/{1}/builds/{2}";
+TryJobResult.URL = "http://build.chromium.org/p/tryserver.blink/builders/{1}/builds/{2}";
 
 TryJobResult.RESULT = {
     "-1": "pending",
