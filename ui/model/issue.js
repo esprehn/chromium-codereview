@@ -213,10 +213,11 @@ Issue.prototype.setCommit = function(status)
 
 Issue.prototype.createCommitData = function(status)
 {
+    var lastPatchsetId = this.patchsets.last().id;
     return User.loadCurrentUser(true).then(function(user) {
         return {
             xsrf_token: user.xsrfToken,
-            last_patchset: 1,
+            last_patchset: lastPatchsetId,
             commit: status ? 1 : 0,
         };
     });
