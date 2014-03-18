@@ -1,67 +1,23 @@
 
-<link rel="import" href="../../bower_components/polymer-ui-accordion/polymer-ui-accordion.html">
-
 <link rel="import" href="cr-issue-list.html">
 
-<polymer-element name="cr-issue-inbox" attributes="issues">
+<polymer-element name="cr-issue-inbox" attributes="issues" noscript>
     <template>
-        <style>
-            :host { display: block; }
+        <link rel="stylesheet" href="common.css">
 
-            .polymer-ui-collapsible-header {
-                font-size: 1.3em;
-                padding: 0.5em 16px;
-                background-color: white;
-                font-weight: bold;
-                cursor: default;
-                -webkit-user-select: none;
-            }
+        <h1>Incoming</h2>
+        <cr-issue-list issues="{{ issues.incoming }}"></cr-issue-list>
 
-            .polymer-ui-collapsible-header::before {
-                content: "";
-                border-width: 5px;
-                border-style: solid;
-                border-color: transparent;
-                border-left-color: black;
-                display: inline-block;
-                margin-right: 4px;
-                transition: border-color 150ms;
-            }
+        <h1>Outgoing</h2>
+        <cr-issue-list issues="{{ issues.outgoing }}"></cr-issue-list>
 
-            polymer-ui-collapsible[active] .polymer-ui-collapsible-header::before {
-                border-left-color: transparent;
-                border-top-color: black;
-                transition: border-color 150ms;
-            }
-        </style>
-        <template if="{{ issues }}">
-            <polymer-ui-accordion selected="0" multi>
-                <polymer-ui-collapsible>
-                    <div class="polymer-ui-collapsible-header">Incoming</div>
-                    <cr-issue-list issues="{{ issues.incoming }}"></cr-issue-list>
-                </polymer-ui-collapsible>
-                <polymer-ui-collapsible>
-                    <div class="polymer-ui-collapsible-header">Outgoing</div>
-                    <cr-issue-list issues="{{ issues.outgoing }}"></cr-issue-list>
-                </polymer-ui-collapsible>
-                <polymer-ui-collapsible>
-                    <div class="polymer-ui-collapsible-header">Unsent</div>
-                    <cr-issue-list issues="{{ issues.unsent }}"></cr-issue-list>
-                </polymer-ui-collapsible>
-                <polymer-ui-collapsible>
-                    <div class="polymer-ui-collapsible-header">CCed</div>
-                    <cr-issue-list issues="{{ issues.cc }}"></cr-issue-list>
-                </polymer-ui-collapsible>
-                <polymer-ui-collapsible>
-                    <div class="polymer-ui-collapsible-header">Recently Closed</div>
-                    <cr-issue-list issues="{{ issues.closed }}"></cr-issue-list>
-                </polymer-ui-collapsible>
-            </polymer-ui-accordion>
-        </template>
+        <h1>Unsent</h2>
+        <cr-issue-list issues="{{ issues.unsent }}"></cr-issue-list>
+
+        <h1>CCed</h2>
+        <cr-issue-list issues="{{ issues.cc }}"></cr-issue-list>
+
+        <h1>Recently Closed</h2>
+        <cr-issue-list issues="{{ issues.closed }}"></cr-issue-list>
     </template>
-    <script>
-        Polymer("cr-issue-inbox", {
-            issues: null,
-        });
-    </script>
 </polymer-element>
