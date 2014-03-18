@@ -60,7 +60,7 @@
     color: #222121;
 }
 
-.disapproval {
+.disapproval .message-header {
     background-color: #E75D54;
 }
 
