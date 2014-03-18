@@ -1,19 +1,50 @@
 
 <polymer-element name="cr-issue-list" attributes="issues">
     <template>
-        <link rel="stylesheet" href="cr-issue-list.css">
+        <style>
+            :host {
+                display: table;
+            }
 
-        <template if="{{ issues }}">
-            <div class="issues">
-                <template repeat="{{ issue in issues }}">
-                    <a href="#/issue/{{ issue.id }}" class="issue">
-                        <span class="issue-id issue-data">{{ issue.id }}</span>
-                        <span class="issue-owner issue-data">{{ issue.owner.displayName }}</span>
-                        <span class="issue-subject issue-data">{{ issue.subject }}</span>
-                        <span class="issue-date issue-data">{{ issue.lastModified | formatDate }}</span>
-                    </a>
-                </template>
-            </div>
+            .issue {
+                border-bottom: 1px solid #E6E6E6;
+                display: table-row;
+                text-decoration: none;
+                color: black;
+                -webkit-user-select: none;
+                cursor: default;
+            }
+
+            .issue:nth-child(2n) {
+                background-color: #F8F8F8;
+            }
+
+            .issue:hover {
+                background-color: #F9F3E4;
+            }
+
+            .issue-data {
+                display: table-cell;
+                padding: 0.5em 16px;
+            }
+
+            .issue-date,
+            .issue-id,
+            .issue-owner {
+                white-space: nowrap;
+            }
+
+            .issue-subject {
+                width: 100%;
+            }
+        </style>
+        <template repeat="{{ issue in issues }}">
+            <a href="#/issue/{{ issue.id }}" class="issue">
+                <span class="issue-id issue-data">{{ issue.id }}</span>
+                <span class="issue-owner issue-data">{{ issue.owner.displayName }}</span>
+                <span class="issue-subject issue-data">{{ issue.subject }}</span>
+                <span class="issue-date issue-data">{{ issue.lastModified | formatDate }}</span>
+            </a>
         </template>
     </template>
     <script>
