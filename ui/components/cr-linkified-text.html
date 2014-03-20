@@ -15,7 +15,8 @@
             var self = this;
             var root = this.shadowRoot.getElementById("text");
 
-            root.innerHTML = "";
+            while (root.firstChild)
+                root.firstChild.remove();
 
             linkify(newValue, {
                 callback: function(text, href) {
