@@ -9,13 +9,17 @@
                 border-radius: 2px;
                 padding: 0.25em 16px;
                 display: block;
-                position: absolute;
+                position: fixed;
                 margin: 0 auto;
                 right: 0;
                 left: 0;
                 top: 0.5em;
                 max-width: -webkit-min-content;
                 white-space: nowrap;
+            }
+
+            :ancestor(dialog) span {
+                position: absolute;
             }
         </style>
         <template if="{{ message }}">

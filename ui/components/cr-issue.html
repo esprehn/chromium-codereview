@@ -1,6 +1,7 @@
 
 <link rel="import" href="cr-action.html">
 <link rel="import" href="cr-button.html">
+<link rel="import" href="cr-butterbar.html">
 <link rel="import" href="cr-issue-edit-dialog.html">
 <link rel="import" href="cr-issue-messages.html">
 <link rel="import" href="cr-issue-meta.html">
@@ -12,6 +13,8 @@
     <template>
         <link rel="stylesheet" href="common.css">
         <link rel="stylesheet" href="cr-issue.css">
+
+        <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
 
         <h1 class="issue-subject">
             Issue <a href="#/issue/{{ issue.id }}">{{ issue.id }}</a><template if="{{ issue.closed }}"> (Closed)</template>: {{ issue.subject }}
@@ -54,6 +57,7 @@
     <script>
         Polymer("cr-issue", {
             issue: null,
+            butterbarMessage: "",
             toggleCommit: function() {
                 var self = this;
                 this.issue.setCommit(!this.issue.commit).then(function() {
@@ -75,6 +79,7 @@
                 }, null, 350);
             },
             saveMessage: function(event) {
+                this.butterbarMessage = "Saving...";
                 if (event.detail.messageText)
                     this.publish({message: event.detail.messageText});
             },
@@ -90,8 +95,10 @@
             publish: function(options) {
                 var self = this;
                 this.issue.publish(options).then(function() {
+                    self.butterbarMessage = "";
                     self.fire("issue-refresh");
                 }).catch(function(e) {
+                    self.butterbarMessage = "";
                     console.log(e);
                     // FIXME: We should show an error message.
                 });
