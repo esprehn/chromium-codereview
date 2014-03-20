@@ -18,6 +18,7 @@ function PatchFile(patchset, name)
 
 PatchFile.REVIEW_URL = "/{1}/diff/{2}/{3}";
 PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
+PatchFile.CONTEXT_URL = "/{1}/diff_skipped_lines/{2}/{3}/{4}/{5}/a/2000";
 
 PatchFile.prototype.parseData = function(data)
 {
@@ -67,6 +68,16 @@ PatchFile.prototype.getDiffUrl = function()
         encodeURIComponent(this.id));
 };
 
+PatchFile.prototype.getContextUrl = function(start, end)
+{
+    return PatchFile.CONTEXT_URL.assign(
+        encodeURIComponent(this.patchset.issue.id),
+        encodeURIComponent(this.patchset.id),
+        encodeURIComponent(this.id),
+        encodeURIComponent(start),
+        encodeURIComponent(end));
+};
+
 PatchFile.prototype.loadDiff = function()
 {
     var file = this;
@@ -77,4 +88,26 @@ PatchFile.prototype.loadDiff = function()
             return result[0];
         throw new Error("No diff available");
     });
+};
+
+PatchFile.prototype.loadContext = function(start, end)
+{
+    var file = this;
+    return loadJSON(this.getContextUrl(start, end)).then(function(data) {
+        return file.parseContext(data);
+    });
+};
+
+PatchFile.prototype.parseContext = function(data)
+{
+    var lines = [];
+    for (var i = 0; i < data.length; i += 2) {
+        var text = data[i][1][1][1];
+        var index = text.indexOf(" ", 4);
+        lines.push({
+            lineNumber: text.substring(4, index),
+            text: text.from(index + 1),
+        });
+    }
+    return lines;
 };
