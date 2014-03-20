@@ -11,7 +11,7 @@ function PatchFileMessage()
 
 PatchFileMessage.prototype.parseData = function(data)
 {
-    this.author = new User(data.author, data.author_email);
+    this.author = User.forName(data.author, data.author_email);
     this.text = data.text || "";
     this.draft = data.draft || false;
     this.line = data.lineno || 0;

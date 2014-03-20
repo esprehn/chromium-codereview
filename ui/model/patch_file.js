@@ -13,10 +13,9 @@ function PatchFile(patchset, name)
     this.isBinary = false;
     this.messages = {}; // Map<line number, Array<PatchFileMessage>>
     this.messageCount = 0;
-    this.drafts = [];
+    this.draftCount = 0;
 }
 
-PatchFile.DRAFT_URL = "/{1}/patch/{2}/{3}?column_width=2000";
 PatchFile.REVIEW_URL = "/{1}/diff/{2}/{3}";
 PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
 
@@ -38,7 +37,10 @@ PatchFile.prototype.parseData = function(data)
         if (!self.messages[message.line])
             self.messages[message.line] = [];
         self.messages[message.line].push(message);
-        self.messageCount++;
+        if (message.draft)
+            self.draftCount++;
+        else
+            self.messageCount++;
     });
 
     Object.each(this.messages, function(line, messages) {
@@ -57,29 +59,12 @@ PatchFile.prototype.getReviewUrl = function()
         this.name);
 };
 
-PatchFile.prototype.getDraftsUrl = function()
-{
-    return PatchFile.DRAFT_URL.assign(
-        encodeURIComponent(this.patchset.issue.id),
-        encodeURIComponent(this.patchset.id),
-        encodeURIComponent(this.id));
-};
-
 PatchFile.prototype.getDiffUrl = function()
 {
     return PatchFile.DIFF_URL.assign(
         encodeURIComponent(this.patchset.issue.id),
         encodeURIComponent(this.patchset.id),
         encodeURIComponent(this.id));
-};
-
-PatchFile.prototype.loadDrafts = function()
-{
-    var patchFile = this;
-    return loadDocument(this.getDraftsUrl()).then(function(document) {
-        patchFile.parseDraftsDocument(document);
-        return patchFile;
-    });
 };
 
 PatchFile.prototype.loadDiff = function()
@@ -92,38 +77,4 @@ PatchFile.prototype.loadDiff = function()
             return result[0];
         throw new Error("No diff available");
     });
-};
-
-PatchFile.prototype.parseDraftsDocument = function(document)
-{
-    this.drafts = [];
-
-    var nodes = document.querySelectorAll(".comment-border");
-
-    for (var i = 0; i < nodes.length; ++i) {
-        var node = nodes[i];
-
-        var title = node.querySelector(".inline-comment-title b");
-        var parentId = node.parentNode.id;
-        var text = node.querySelector(".comment-text");
-
-        if (!title || !parentId || !text)
-            continue;
-
-        var from = title.textContent;
-        if (from !== "(Draft)")
-            continue;
-
-        var idParts = parentId.split("-");
-
-        var message = new PatchFileMessage();
-        message.author = User.forName("me");
-        message.text = text.textContent;
-        message.draft = true;
-        message.line = Number(idParts[2]) || 0;
-        message.date = Date.utc.create(title.nextSibling.textContent.trim());
-        message.left = (idParts[0] === "old");
-
-        this.drafts.push(message);
-    }
 };

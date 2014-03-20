@@ -30,7 +30,12 @@
 
         <div class="message-header">
             <div class="message-title">
-                <div class="message-author">{{ message.author.displayName }}</div>
+                <div class="message-author">
+                    <template if="{{ message.draft }}">
+                        (Draft)
+                    </template>
+                    {{ message.author.displayName }}
+                </div>
             </div>
             <div class="message-date">
                 {{ message.date | formatDate }}

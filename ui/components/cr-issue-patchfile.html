@@ -12,7 +12,12 @@
             <div class="file-removed">-{{ file.removed }}</div>
             <div class="file-added">+{{ file.added }}</div>
             <div class="file-name"><cr-action on-tap="{{ toggleDiff }}">{{ file.name }}</cr-action></div>
-            <div class="file-messages">{{ file.messageCount | commentCount }}</div>
+            <div class="file-messages">
+                {{ file.messageCount | pluralize("comment") }}
+                <template if="{{ file.draftCount }}">
+                    , {{ file.draftCount | pluralize("draft") }}
+                </template>
+            </div>
         </div>
 
         <cr-diff file="{{ file }}" active="{{ diff }}"></cr-diff>
@@ -24,12 +29,12 @@
             toggleDiff: function() {
                 this.diff = !this.diff;
             },
-            commentCount: function(messageCount) {
-                if (!messageCount)
+            pluralize: function(count, text) {
+                if (!count)
                     return "";
-                if (messageCount == 1)
-                    return messageCount + " comment";
-                return messageCount + " comments";
+                if (count == 1)
+                    return count + " " + text;
+                return count + " " + text.pluralize();
             },
         });
     </script>
