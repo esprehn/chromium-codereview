@@ -38,12 +38,15 @@
                 text-align: right;
                 color: #444;
                 margin-right: 16px;
-                cursor: pointer;
+                cursor: default;
             }
 
-            .line-number:hover {
+            .add .line-number:hover,
+            .remove .line-number:hover,
+            .both .line-number:hover {
                 text-decoration: underline;
                 color: #1155CC;
+                cursor: pointer;
             }
 
             .messages {
