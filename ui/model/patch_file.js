@@ -81,21 +81,38 @@ PatchFile.prototype.getContextUrl = function(start, end)
 
 PatchFile.prototype.saveDraft = function(message)
 {
+    var data = this.createDraftData(message);
+    return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
+        message.parseDraftDocument(xhr.response);
+        return message;
+    });
+};
+
+PatchFile.prototype.discardDraft = function(message)
+{
+    var data = this.createDraftData(message);
+    data.old_text = message.text;
+    data.text = "";
+    data.file = "";
+    return sendFormData(PatchFile.COMMENT_URL, data).then(function() {
+        return true;
+    });
+};
+
+PatchFile.prototype.createDraftData = function(message)
+{
     var data = {
         snapshot: "new",
         lineno: message.line,
-        side: message.left ? "b" : "a",
+        side: message.left ? "a" : "b",
         issue: this.patchset.issue.id,
         patchset: this.patchset.id,
         patch: this.id,
         text: message.text,
     };
     if (message.messageId)
-        data.mesage_id = message.messageId;
-    return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
-        message.parseDraftDocument(xhr.response);
-        return message;
-    });
+        data.message_id = message.messageId;
+    return data;
 };
 
 PatchFile.prototype.loadDiff = function()
