@@ -1,0 +1,63 @@
+:host {
+    display: block;
+    padding: 0.25em 16px;
+}
+
+.remove .text {
+    background-color: #fdd;
+}
+
+.add .text {
+    background-color: #dfd;
+}
+
+.row {
+    display: flex;
+}
+
+.text {
+    flex: 1;
+}
+
+.line-number,
+.text {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: Monaco, monospace;
+    flex-shrink: 0;
+}
+
+.line-number {
+    width: 3em;
+    text-align: right;
+    color: #444;
+    padding-right: 16px;
+    cursor: default;
+}
+
+.add .line-number:hover,
+.remove .line-number:hover,
+.both .line-number:hover {
+    text-decoration: underline;
+    color: #1155CC;
+    cursor: pointer;
+}
+
+.messages {
+    border: 1px solid #ccc;
+    margin-left: calc(6em + 32px);
+}
+
+cr-patch-file-message {
+    background-color: #ffd;
+    border-bottom: 1px solid #ccc;
+}
+
+cr-patch-file-message:last-child {
+    border-bottom: none;
+}
+
+/* FIXME: This selector is bad, we shouldn't use it. */
+.messages:empty {
+    display: none;
+}
