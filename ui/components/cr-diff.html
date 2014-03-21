@@ -90,6 +90,19 @@
                 var row = element.parentNode;
                 if (row.classList.contains("header"))
                     return;
+                if (!row.nextSibling || !row.nextSibling.classList.contains("messages")) {
+                    var messages = document.createElement("div");
+                    messages.className = "messages";
+                    row.parentNode.insertBefore(messages, row.nextSibling);
+                }
+                var messages = toArray(row.nextSibling.querySelectorAll("cr-patch-file-message"));
+                var existingDraft = messages.find(function(fileMessage) {
+                    return !fileMessage.message.date;
+                });
+                if (existingDraft) {
+                    existingDraft.focusInput();
+                    return;
+                }
                 var numbers = row.querySelectorAll(".line-number");
                 var message = PatchFileMessage.createDraft();
                 if (row.classList.contains("remove")) {
@@ -101,11 +114,6 @@
                 var fileMessage = document.createElement("cr-patch-file-message");
                 fileMessage.message = message;
                 fileMessage.expanded = true;
-                if (!row.nextSibling || !row.nextSibling.classList.contains("messages")) {
-                    var messages = document.createElement("div");
-                    messages.className = "messages";
-                    row.parentNode.insertBefore(messages, row.nextSibling);
-                }
                 row.nextSibling.appendChild(fileMessage);
             },
             saveDraft: function(event) {

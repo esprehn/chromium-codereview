@@ -84,9 +84,9 @@
                 this.expanded = true;
             },
             expandedChanged: function() {
-                this.async(this.showInput);
+                this.async(this.focusInput);
             },
-            showInput: function() {
+            focusInput: function() {
                 if (!this.expanded)
                     return;
                 this.scrollIntoViewIfNeeded();
