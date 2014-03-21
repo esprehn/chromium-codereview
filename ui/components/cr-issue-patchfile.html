@@ -15,7 +15,8 @@
             <div class="file-messages">
                 {{ file.messageCount | pluralize("comment") }}
                 <template if="{{ file.draftCount }}">
-                    , {{ file.draftCount | pluralize("draft") }}
+                    <template if="{{ file.messageCount }}">,</template>
+                    {{ file.draftCount | pluralize("draft") }}
                 </template>
             </div>
         </div>
