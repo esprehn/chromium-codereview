@@ -19,6 +19,7 @@ function PatchFile(patchset, name)
 PatchFile.REVIEW_URL = "/{1}/diff/{2}/{3}";
 PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
 PatchFile.CONTEXT_URL = "/{1}/diff_skipped_lines/{2}/{3}/{4}/{5}/a/2000";
+PatchFile.COMMENT_URL = "/inline_draft";
 
 PatchFile.prototype.parseData = function(data)
 {
@@ -76,6 +77,25 @@ PatchFile.prototype.getContextUrl = function(start, end)
         encodeURIComponent(this.id),
         encodeURIComponent(start),
         encodeURIComponent(end));
+};
+
+PatchFile.prototype.saveDraft = function(message)
+{
+    var data = {
+        snapshot: "new",
+        lineno: message.line,
+        side: message.left ? "b" : "a",
+        issue: this.patchset.issue.id,
+        patchset: this.patchset.id,
+        patch: this.id,
+        text: message.text,
+    };
+    if (message.messageId)
+        data.mesage_id = message.messageId;
+    return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
+        message.parseDraftDocument(xhr.response);
+        return message;
+    });
 };
 
 PatchFile.prototype.loadDiff = function()
