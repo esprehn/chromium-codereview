@@ -21,16 +21,20 @@ PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
 PatchFile.CONTEXT_URL = "/{1}/diff_skipped_lines/{2}/{3}/{4}/{5}/a/2000";
 PatchFile.COMMENT_URL = "/inline_draft";
 
+// FIXME: This is a terrible hack to get the message that matches a saved draft,
+// instead the API should give you back the messageId and have a real JSON response.
 PatchFile.findDraftInDocument = function(document, text)
 {
+    var trimmedText = text.compact().replace(/\n/g, "");
     var comments = document.querySelectorAll(".comment-border");
     for (var i = 0; i < comments.length; ++i) {
         var message = new PatchFileMessage();
         message.parseDraftElement(comments[i]);
         if (!message.draft)
             continue;
-        if (message.text != text)
+        if (message.text.compact().replace(/\n/g, "") != trimmedText)
             continue;
+        message.text = text;
         return message;
     }
     return null;
