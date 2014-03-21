@@ -24,13 +24,12 @@ PatchFile.COMMENT_URL = "/inline_draft";
 PatchFile.findDraftInDocument = function(document, text)
 {
     var comments = document.querySelectorAll(".comment-border");
-    var trimmedText = text.trimRight();
     for (var i = 0; i < comments.length; ++i) {
         var message = new PatchFileMessage();
         message.parseDraftElement(comments[i]);
         if (!message.draft)
             continue;
-        if (message.text.trimRight() != trimmedText)
+        if (message.text != text)
             continue;
         return message;
     }

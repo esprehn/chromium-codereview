@@ -94,6 +94,10 @@
                 textarea.focus();
             },
             save: function() {
+                if (!this.text.trim()) {
+                    this.discard();
+                    return;
+                }
                 this.fire("file-message-save", {
                     text: this.text,
                     message: this.message,
@@ -108,6 +112,9 @@
                     this.remove();
             },
             discard: function() {
+                if (!this.message.date) {
+                    this.cancel();
+                }
                 this.fire("file-message-discard", {
                     message: this.message,
                 });
