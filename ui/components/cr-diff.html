@@ -54,7 +54,7 @@
                 border-bottom: none;
             }
         </style>
-        <div id="output">
+        <div id="output" on-file-message-save="{{ saveDraft }}">
         </div>
     </template>
     <script>
@@ -65,6 +65,23 @@
             fileChanged: function(oldValue, newValue) {
                 var output = this.$.output;
                 output.innerHTML = "";
+            },
+            saveDraft: function(event) {
+                var self = this;
+                var message = event.detail.message;
+                var text = event.detail.text;
+                var target = event.target;
+                this.fire("butterbar-update", {
+                    message: "Saving..."
+                });
+                this.file.saveDraft(message, text).then(function(savedMessage) {
+                    self.fire("butterbar-update");
+                    target.message = savedMessage;
+                    target.expanded = false;
+                }).catch(function(e) {
+                    self.fire("butterbar-update");
+                    console.log(e);
+                });
             },
             activeChanged: function(oldValue, newValue) {
                 if (!this.file)

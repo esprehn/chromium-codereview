@@ -9,7 +9,7 @@
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-toolbar.html">
 
-<polymer-element name="cr-issue" attributes="issue" cache-csstext>
+<polymer-element name="cr-issue" attributes="issue" on-butterbar-update="{{ updateButterbar }}">
     <template>
         <link rel="stylesheet" href="common.css">
         <link rel="stylesheet" href="cr-issue.css">
@@ -58,6 +58,9 @@
         Polymer("cr-issue", {
             issue: null,
             butterbarMessage: "",
+            updateButterbar: function(event) {
+                this.butterbarMessage = event.detail.message;
+            },
             toggleCommit: function() {
                 var self = this;
                 this.butterbarMessage = "Saving...";

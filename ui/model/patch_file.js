@@ -21,6 +21,22 @@ PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
 PatchFile.CONTEXT_URL = "/{1}/diff_skipped_lines/{2}/{3}/{4}/{5}/a/2000";
 PatchFile.COMMENT_URL = "/inline_draft";
 
+PatchFile.findDraftInDocument = function(document, text)
+{
+    var comments = document.querySelectorAll(".comment-border");
+    var trimmedText = text.trimRight();
+    for (var i = 0; i < comments.length; ++i) {
+        var message = new PatchFileMessage();
+        message.parseDraftElement(comments[i]);
+        if (!message.draft)
+            continue;
+        if (message.text.trimRight() != trimmedText)
+            continue;
+        return message;
+    }
+    return null;
+};
+
 PatchFile.prototype.parseData = function(data)
 {
     this.status = data.status || "";
@@ -79,30 +95,41 @@ PatchFile.prototype.getContextUrl = function(start, end)
         encodeURIComponent(end));
 };
 
-PatchFile.prototype.saveDraft = function(message)
+PatchFile.prototype.createDraft = function(message)
 {
-    var data = this.createDraftData(message);
-    return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
-        message.parseDraftDocument(xhr.response);
-        return message;
+    return this.createDraftData(message).then(function(data) {
+        return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
+            return true;
+        });
+    });
+};
+
+PatchFile.prototype.saveDraft = function(message, newText)
+{
+    return this.createDraftData(message, true).then(function(data) {
+        data.text = newText;
+        return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
+            return PatchFile.findDraftInDocument(xhr.response, newText);
+        });
     });
 };
 
 PatchFile.prototype.discardDraft = function(message)
 {
-    var data = this.createDraftData(message);
-    data.old_text = message.text;
-    data.text = "";
-    data.file = "";
-    return sendFormData(PatchFile.COMMENT_URL, data).then(function() {
-        return true;
+    this.createDraftData(message, true).then(function(data) {
+        data.old_text = message.text;
+        data.text = "";
+        data.file = "";
+        return sendFormData(PatchFile.COMMENT_URL, data).then(function() {
+            return true;
+        });
     });
 };
 
-PatchFile.prototype.createDraftData = function(message)
+PatchFile.prototype.createDraftData = function(message, loadMessageId)
 {
-    return {
-        snapshot: "new",
+    var data = {
+        snapshot: message.left ? "old" : "new",
         lineno: message.line,
         side: message.left ? "a" : "b",
         issue: this.patchset.issue.id,
@@ -111,6 +138,31 @@ PatchFile.prototype.createDraftData = function(message)
         text: message.text,
         message_id: message.messageId,
     };
+    if (message.messageId || !loadMessageId)
+        return Promise.resolve(data);
+    return this.loadDraftMessageId(message).then(function(messageId) {
+        data.message_id = messageId;
+        return data;
+    });
+};
+
+PatchFile.prototype.loadDraftMessageId = function(message)
+{
+    var data = {
+        snapshot: message.left ? "old" : "new",
+        lineno: message.line,
+        side: message.left ? "a" : "b",
+        issue: this.patchset.issue.id,
+        patchset: this.patchset.id,
+        patch: this.id,
+        text: "",
+    };
+    return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
+        var draft = PatchFile.findDraftInDocument(xhr.response, message.text);
+        if (draft)
+            return draft.messageId;
+        return "";
+    });
 };
 
 PatchFile.prototype.loadDiff = function()

@@ -20,28 +20,37 @@ PatchFileMessage.prototype.parseData = function(data)
     this.left = data.left || false;
 };
 
-PatchFileMessage.prototype.parseDraftDocument = function(document)
+PatchFileMessage.prototype.parseDraftElement = function(element)
 {
-    this.author = User.current;
-    this.draft = true;
+    var b = element.querySelector("b");
+    if (!b || !b.nextSibling)
+        return;
 
-    var text = document.querySelector(".comment-text");
+    var text = element.querySelector(".comment-text");
     if (text)
         this.text = text.textContent;
 
-    var b = document.querySelector("b");
-    if (b && b.nextSibling)
-        this.date = Date.create();
+    var userName = b.textContent;
+    if (userName == "(Draft)") {
+        this.author = User.current;
+        this.draft = true;
+    } else {
+        this.author = User.forName(userName);
+    }
 
-    var lineno = document.querySelector("input[name=lineno]");
+    var date = b.nextSibling.nodeValue;
+    if (date)
+        this.date = Date.create(date + " GMT");
+
+    var lineno = element.querySelector("input[name=lineno]");
     if (lineno)
         this.line = parseInt(lineno.value, 10);
 
-    var messageId = document.querySelector("input[name=message_id]");
+    var messageId = element.querySelector("input[name=message_id]");
     if (lineno)
         this.messageId = messageId.value;
 
-    var side = document.querySelector("input[name=side]");
+    var side = element.querySelector("input[name=side]");
     if (side && side.value == "a")
         this.left = true;
 };

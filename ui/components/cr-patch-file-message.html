@@ -1,11 +1,19 @@
 
+<link rel="import" href="cr-action.html">
+<link rel="import" href="cr-button.html">
 <link rel="import" href="cr-linkified-text.html">
+<link rel="import" href="cr-toolbar.html">
 
 <polymer-element name="cr-patch-file-message" attributes="message">
     <template>
+        <link rel="stylesheet" href="common.css">
         <style>
             :host {
                 display: block;
+            }
+
+            .message-edit {
+                margin: 0.5em 16px 0 16px;
             }
 
             .message-text {
@@ -41,13 +49,50 @@
                 {{ message.date | formatDate }}
             </div>
         </div>
-        <div class="message-text">
-            <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
-        </div>
+        <template if="{{ !expanded }}">
+            <div class="message-text">
+                <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
+            </div>
+        </template>
+        <template if="{{ message.draft }}">
+            <template if="{{ !expanded }}">
+                <cr-toolbar>
+                    <cr-action on-tap="{{ expand }}">Edit</cr-action>
+                </cr-toolbar>
+            </template>
+            <template if="{{ expanded }}">
+                <div class="message-edit">
+                    <textarea id="textarea" rows="10" value="{{ text }}" autofocus></textarea>
+                </div>
+                <cr-toolbar>
+                    <cr-button primary on-tap="{{ save }}">Save</cr-button>
+                    <cr-button on-tap="{{ cancel }}">Cancel</cr-button>
+                    <cr-button on-tap="{{ discard }}">Discard</cr-button>
+                </cr-toolbar>
+            </template>
+        </template>
     </template>
     <script>
         Polymer("cr-patch-file-message", {
             message: null,
+            expanded: false,
+            text: "",
+            expand: function() {
+                this.text = this.message.text;
+                this.expanded = true;
+            },
+            save: function() {
+                this.fire("file-message-save", {
+                    text: this.text,
+                    message: this.message,
+                });
+            },
+            cancel: function() {
+                this.text = "";
+                this.expanded = "";
+            },
+            discard: function() {
+            },
             formatDate: function(date) {
                 if (!date)
                     return "";
