@@ -92,6 +92,9 @@
                 this.expanded = "";
             },
             discard: function() {
+                this.fire("file-message-discard", {
+                    message: this.message,
+                });
             },
             formatDate: function(date) {
                 if (!date)

@@ -116,7 +116,7 @@ PatchFile.prototype.saveDraft = function(message, newText)
 
 PatchFile.prototype.discardDraft = function(message)
 {
-    this.createDraftData(message, true).then(function(data) {
+    return this.createDraftData(message, true).then(function(data) {
         data.old_text = message.text;
         data.text = "";
         data.file = "";

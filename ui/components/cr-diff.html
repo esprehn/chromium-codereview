@@ -54,7 +54,9 @@
                 border-bottom: none;
             }
         </style>
-        <div id="output" on-file-message-save="{{ saveDraft }}">
+        <div id="output"
+            on-file-message-save="{{ saveDraft }}"
+            on-file-message-discard="{{ discardDraft }}">
         </div>
     </template>
     <script>
@@ -78,6 +80,21 @@
                     self.fire("butterbar-update");
                     target.message = savedMessage;
                     target.expanded = false;
+                }).catch(function(e) {
+                    self.fire("butterbar-update");
+                    console.log(e);
+                });
+            },
+            discardDraft: function(event) {
+                var self = this;
+                var message = event.detail.message;
+                var target = event.target;
+                this.fire("butterbar-update", {
+                    message: "Saving..."
+                });
+                this.file.discardDraft(message).then(function() {
+                    self.fire("butterbar-update");
+                    target.remove();
                 }).catch(function(e) {
                     self.fire("butterbar-update");
                     console.log(e);
