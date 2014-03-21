@@ -101,7 +101,7 @@ PatchFile.prototype.discardDraft = function(message)
 
 PatchFile.prototype.createDraftData = function(message)
 {
-    var data = {
+    return {
         snapshot: "new",
         lineno: message.line,
         side: message.left ? "a" : "b",
@@ -109,10 +109,8 @@ PatchFile.prototype.createDraftData = function(message)
         patchset: this.patchset.id,
         patch: this.id,
         text: message.text,
+        message_id: message.messageId,
     };
-    if (message.messageId)
-        data.message_id = message.messageId;
-    return data;
 };
 
 PatchFile.prototype.loadDiff = function()
