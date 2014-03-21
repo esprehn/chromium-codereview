@@ -10,6 +10,14 @@ function PatchFileMessage()
     this.messageId = "";
 }
 
+PatchFileMessage.createDraft = function()
+{
+    var message = new PatchFileMessage();
+    message.draft = true;
+    message.author = User.current;
+    return message;
+};
+
 PatchFileMessage.prototype.parseData = function(data)
 {
     this.author = User.forName(data.author, data.author_email);

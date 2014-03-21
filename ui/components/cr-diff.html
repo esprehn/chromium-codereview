@@ -38,6 +38,12 @@
                 text-align: right;
                 color: #444;
                 margin-right: 16px;
+                cursor: pointer;
+            }
+
+            .line-number:hover {
+                text-decoration: underline;
+                color: #1155CC;
             }
 
             .messages {
@@ -53,10 +59,16 @@
             cr-patch-file-message:last-child {
                 border-bottom: none;
             }
+
+            /* FIXME: This selector is bad, we shouldn't use it. */
+            .messages:empty {
+                display: none;
+            }
         </style>
         <div id="output"
             on-file-message-save="{{ saveDraft }}"
-            on-file-message-discard="{{ discardDraft }}">
+            on-file-message-discard="{{ discardDraft }}"
+            on-tap="{{ handleTap }}">
         </div>
     </template>
     <script>
@@ -67,6 +79,31 @@
             fileChanged: function(oldValue, newValue) {
                 var output = this.$.output;
                 output.innerHTML = "";
+            },
+            handleTap: function(event) {
+                var element = event.target;
+                if (!element.classList.contains("line-number"))
+                    return;
+                var row = element.parentNode;
+                if (row.classList.contains("header"))
+                    return;
+                var numbers = row.querySelectorAll(".line-number");
+                var message = PatchFileMessage.createDraft();
+                if (row.classList.contains("remove")) {
+                    message.line = numbers[0].textContent.toNumber();
+                    message.left = true;
+                } else {
+                    message.line = numbers[1].textContent.toNumber();
+                }
+                var fileMessage = document.createElement("cr-patch-file-message");
+                fileMessage.message = message;
+                fileMessage.expanded = true;
+                if (!row.nextSibling || !row.nextSibling.classList.contains("messages")) {
+                    var messages = document.createElement("div");
+                    messages.className = "messages";
+                    row.parentNode.insertBefore(messages, row.nextSibling);
+                }
+                row.nextSibling.appendChild(fileMessage);
             },
             saveDraft: function(event) {
                 var self = this;

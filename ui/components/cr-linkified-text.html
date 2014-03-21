@@ -18,6 +18,9 @@
             while (root.firstChild)
                 root.firstChild.remove();
 
+            if (!newValue)
+                return;
+
             linkify(newValue, {
                 callback: function(text, href) {
                     if (href)

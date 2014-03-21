@@ -95,18 +95,9 @@ PatchFile.prototype.getContextUrl = function(start, end)
         encodeURIComponent(end));
 };
 
-PatchFile.prototype.createDraft = function(message)
-{
-    return this.createDraftData(message).then(function(data) {
-        return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
-            return true;
-        });
-    });
-};
-
 PatchFile.prototype.saveDraft = function(message, newText)
 {
-    return this.createDraftData(message, true).then(function(data) {
+    return this.createDraftData(message, message.date).then(function(data) {
         data.text = newText;
         return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
             return PatchFile.findDraftInDocument(xhr.response, newText);

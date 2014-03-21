@@ -4,7 +4,7 @@
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-toolbar.html">
 
-<polymer-element name="cr-patch-file-message" attributes="message">
+<polymer-element name="cr-patch-file-message" attributes="message expanded">
     <template>
         <link rel="stylesheet" href="common.css">
         <style>
@@ -17,7 +17,7 @@
             }
 
             .message-text {
-                padding: 0.5em 16px;
+                padding: 0.5em 16px 0 16px;
             }
 
             .message-header {
@@ -62,12 +62,14 @@
             </template>
             <template if="{{ expanded }}">
                 <div class="message-edit">
-                    <textarea id="textarea" rows="10" value="{{ text }}" autofocus></textarea>
+                    <textarea id="textarea" rows="10" value="{{ text }}"></textarea>
                 </div>
                 <cr-toolbar>
                     <cr-button primary on-tap="{{ save }}">Save</cr-button>
                     <cr-button on-tap="{{ cancel }}">Cancel</cr-button>
-                    <cr-button on-tap="{{ discard }}">Discard</cr-button>
+                    <template if="{{ message.date }}">
+                        <cr-button on-tap="{{ discard }}">Discard</cr-button>
+                    </template>
                 </cr-toolbar>
             </template>
         </template>
@@ -81,6 +83,16 @@
                 this.text = this.message.text;
                 this.expanded = true;
             },
+            expandedChanged: function() {
+                this.async(this.showInput);
+            },
+            showInput: function() {
+                if (!this.expanded)
+                    return;
+                this.scrollIntoViewIfNeeded();
+                var textarea = this.shadowRoot.getElementById("textarea");
+                textarea.focus();
+            },
             save: function() {
                 this.fire("file-message-save", {
                     text: this.text,
@@ -90,6 +102,10 @@
             cancel: function() {
                 this.text = "";
                 this.expanded = "";
+                // FIXME: This is a terrible hack, we probably want to dispatch an event
+                // and let the owner remove us.
+                if (!this.message.date)
+                    this.remove();
             },
             discard: function() {
                 this.fire("file-message-discard", {
