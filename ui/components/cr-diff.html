@@ -126,6 +126,8 @@
                 });
                 this.file.saveDraft(message, text).then(function(savedMessage) {
                     self.fire("butterbar-update");
+                    if (!message.date)
+                        self.file.addMessage(message);
                     target.message = savedMessage;
                     target.expanded = false;
                 }).catch(function(e) {
@@ -142,6 +144,7 @@
                 });
                 this.file.discardDraft(message).then(function() {
                     self.fire("butterbar-update");
+                    self.file.removeMessage(message);
                     target.remove();
                 }).catch(function(e) {
                     self.fire("butterbar-update");

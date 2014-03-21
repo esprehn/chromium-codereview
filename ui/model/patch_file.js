@@ -40,6 +40,29 @@ PatchFile.findDraftInDocument = function(document, text)
     return null;
 };
 
+PatchFile.prototype.addMessage = function(message)
+{
+    if (!this.messages[message.line])
+        this.messages[message.line] = [];
+    this.messages[message.line].push(message);
+    if (message.draft)
+        this.draftCount++;
+    else
+        this.messageCount++;
+};
+
+PatchFile.prototype.removeMessage = function(message)
+{
+    var messages = this.messages[message.line];
+    if (!messages || !messages.find(message))
+        return;
+    messages.remove(message);
+    if (message.draft)
+        this.draftCount--;
+    else
+        this.messageCount--;
+};
+
 PatchFile.prototype.parseData = function(data)
 {
     this.status = data.status || "";
@@ -55,13 +78,7 @@ PatchFile.prototype.parseData = function(data)
     (data.messages || []).forEach(function(messageData) {
         var message = new PatchFileMessage();
         message.parseData(messageData);
-        if (!self.messages[message.line])
-            self.messages[message.line] = [];
-        self.messages[message.line].push(message);
-        if (message.draft)
-            self.draftCount++;
-        else
-            self.messageCount++;
+        self.addMessage(message);
     });
 
     Object.each(this.messages, function(line, messages) {
