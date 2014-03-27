@@ -5,6 +5,9 @@
     <template>
         <link rel="stylesheet" href="common.css">
 
+        <h1>Issues with Drafts</h2>
+        <cr-issue-list issues="{{ issues.draft }}"></cr-issue-list>
+
         <h1>Incoming</h2>
         <cr-issue-list issues="{{ issues.incoming }}"></cr-issue-list>
 

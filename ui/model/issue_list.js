@@ -6,6 +6,7 @@ function IssueList()
     this.outgoing = []; // Array<Issue>
     this.unsent = []; // Array<Issue>
     this.cc = []; // Array<Issue>
+    this.draft = []; // Array<Issue>
     this.closed = []; // Array<Issue>
 }
 
