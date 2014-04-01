@@ -39,3 +39,7 @@
 cr-diff[active] {
     border-bottom: 1px solid #ccc;
 }
+
+:host(:last-child) cr-diff[active] {
+    border-bottom: none;
+}
