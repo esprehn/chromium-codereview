@@ -8,8 +8,8 @@
     "**/.*"
   ],
   "dependencies": {
-    "polymer": "~0.2.0",
-    "polymer-elements": "~0.2.0",
-    "polymer-ui-elements": "~0.2.0"
+    "polymer": "master",
+    "polymer-elements": "master",
+    "polymer-ui-elements": "master"
   }
 }
