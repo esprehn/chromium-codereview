@@ -105,11 +105,10 @@
             },
             cancel: function() {
                 this.text = "";
-                this.expanded = "";
-                // FIXME: This is a terrible hack, we probably want to dispatch an event
-                // and let the owner remove us.
-                if (!this.message.date)
-                    this.remove();
+                this.expanded = false;
+                this.fire("file-message-cancel", {
+                    message: this.message,
+                });
             },
             discard: function() {
                 if (!this.message.date) {

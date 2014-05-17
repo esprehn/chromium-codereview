@@ -7,6 +7,7 @@
         <div id="output"
             on-file-message-save="{{ saveDraft }}"
             on-file-message-discard="{{ discardDraft }}"
+            on-file-message-cancel="{{ cancelDraft }}"
             on-tap="{{ handleTap }}">
         </div>
     </template>
@@ -70,6 +71,12 @@
                     self.fire("butterbar-update");
                     console.log(e);
                 });
+            },
+            cancelDraft: function(event) {
+                var message = event.detail.message;
+                var target = event.target;
+                if (!message.date)
+                    target.remove();
             },
             discardDraft: function(event) {
                 var self = this;
