@@ -1,9 +1,13 @@
 
 <link rel="import" href="cr-patch-file-message.html">
 
+<script src="../lib/highlight/highlight.pack.js"></script>
+
 <polymer-element name="cr-diff" attributes="file active">
     <template>
         <link rel="stylesheet" href="cr-diff.css">
+        <link rel="stylesheet" href="../lib/highlight/styles/default.css">
+        <link rel="stylesheet" href="../lib/highlight/styles/googlecode.css">
         <div id="output"
             on-file-message-save="{{ saveDraft }}"
             on-file-message-discard="{{ discardDraft }}"
@@ -116,6 +120,7 @@
                     return;
                 var output = this.$.output;
                 var file = this.file;
+                var language = file.language;
                 this.diff.groups.forEach(function(group) {
                     var section = document.createElement("div");
                     output.appendChild(section);
@@ -143,10 +148,19 @@
                         }
                         row.appendChild(after);
 
+                        if (language != file.language && file.shouldResetEmbeddedLanguage(language, line.text))
+                            language = file.language;
+
                         var text = row.appendChild(document.createElement("div"));
                         text.className = "text";
-                        text.textContent = line.text;
+                        if (language)
+                            text.innerHTML = hljs.highlight(language, line.text).value;
+                        else
+                            text.textContent = line.text;
                         row.appendChild(text);
+
+                        if (language == file.language)
+                            language = file.selectEmbeddedLanguage(line.text);
 
                         if (!beforeMessages && !afterMessages)
                             return;

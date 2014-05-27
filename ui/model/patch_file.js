@@ -2,6 +2,8 @@
 function PatchFile(patchset, name)
 {
     this.name = name || "";
+    this.language = PatchFile.computeLanguage(name);
+    this.containsEmbeddedLanguages = PatchFile.MIXED_LANGUAGES[this.language];
     this.status = "";
     this.chunks = 0;
     this.missingBaseFile = false;
@@ -21,6 +23,40 @@ PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
 PatchFile.CONTEXT_URL = "/{1}/diff_skipped_lines/{2}/{3}/{4}/{5}/a/2000";
 PatchFile.COMMENT_URL = "/inline_draft";
 
+PatchFile.MIXED_LANGUAGES = {
+    "html": true,
+    "svg": true,
+    "xhtml": true,
+    "xml": true,
+};
+
+PatchFile.computeLanguage = function(name)
+{
+    if (!name)
+        return "";
+    if (name.endsWith(/\.(cpp|h)$/))
+        return "cpp";
+    if (name.endsWith(/\.(html|xhtml)$/))
+        return "html";
+    if (name.endsWith(".js"))
+        return "javascript";
+    if (name.endsWith(".css"))
+        return "css";
+    if (name.endsWith(/\.(xml|svg)$/))
+        return "xml";
+    if (name.endsWith(/\.(pl|pm|cgi)$/))
+        return "perl";
+    if (name.endsWith(".py"))
+        return "python";
+    if (name.endsWith(".rb"))
+        return "ruby";
+    if (name.endsWith(".mm"))
+        return "objectivec";
+    if (name.endsWith(".json"))
+        return "json";
+    return "";
+};
+
 // FIXME: This is a terrible hack to get the message that matches a saved draft,
 // instead the API should give you back the messageId and have a real JSON response.
 PatchFile.findDraftInDocument = function(document, text)
@@ -38,6 +74,30 @@ PatchFile.findDraftInDocument = function(document, text)
         return message;
     }
     return null;
+};
+
+PatchFile.prototype.shouldResetEmbeddedLanguage = function(language, text)
+{
+    if (!this.containsEmbeddedLanguages)
+        return false;
+    if (language == "javascript" && text.startsWith("<\/script"))
+        return true;
+    if (language == "css" && text.startsWith("<\/style"))
+        return true;
+    return false;
+};
+
+// FIXME: This isn't perfect, you can easily confuse it with multiple script
+// or style tags on the same line. It's good enough for most reviews though.
+PatchFile.prototype.selectEmbeddedLanguage = function(text)
+{
+    if (!this.containsEmbeddedLanguages)
+        return this.language;
+    if (text.startsWith("<script") && !text.contains("<\/script"))
+        return "javascript";
+    if (text.startsWith("<style") && !text.contains("<\/style"))
+        return "css";
+    return this.language;
 };
 
 PatchFile.prototype.addMessage = function(message)
