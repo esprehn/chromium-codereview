@@ -24,6 +24,7 @@ function Issue(id)
 Issue.DETAIL_URL = "/api/{1}?messages=true";
 Issue.PUBLISH_URL = "/{1}/publish";
 Issue.EDIT_URL = "/{1}/edit";
+Issue.CLOSE_URL = "/{1}/close";
 Issue.COMMIT_URL = "/{1}/edit_flags";
 
 Issue.prototype.getDetailUrl = function()
@@ -44,6 +45,11 @@ Issue.prototype.getEditUrl = function()
 Issue.prototype.getCommitUrl = function()
 {
     return Issue.COMMIT_URL.assign(encodeURIComponent(this.id));
+};
+
+Issue.prototype.getCloseUrl = function()
+{
+    return Issue.CLOSE_URL.assign(encodeURIComponent(this.id));
 };
 
 Issue.prototype.reviewerEmails = function()
@@ -127,6 +133,26 @@ Issue.prototype.updateScores = function() {
             reviewerEmails[email] = true;
             issue.reviewers.push(User.forMailingListEmail(email));
         }
+    });
+};
+
+Issue.prototype.toggleClosed = function()
+{
+    // If we're already closed the only way to reopen is to edit().
+    if (this.closed) {
+        return this.edit({
+            subject: this.subject,
+            description: this.description,
+            reviewers: this.reviewerEmails(),
+            cc: this.ccEmails(),
+            closed: false,
+        });
+    }
+    var issue = this;
+    return User.loadCurrentUser(true).then(function(user) {
+        return sendFormData(issue.getCloseUrl(), {
+            xsrf_token: user.xsrfToken,
+        });
     });
 };
 

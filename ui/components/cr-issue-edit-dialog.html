@@ -100,13 +100,6 @@
                         <div class="issue-edit-error">{{ errors.description }}</div>
                     </div>
                 </div>
-
-                <div class="issue-edit-row">
-                    <label class="issue-edit-label" for="closed">Closed</label>
-                    <div class="issue-edit-field">
-                        <input type="checkbox" id="closed" checked="{{ closed }}">
-                    </div>
-                </div>
             </div>
 
             <cr-toolbar>
@@ -122,7 +115,6 @@
             reviewers: "",
             cc: "",
             description: "",
-            closed: false,
             errors: null,
             butterbarMessage: "",
             cancel: function(event) {
@@ -148,7 +140,7 @@
                     reviewers: this.reviewers,
                     cc: this.cc,
                     description: this.description,
-                    closed: this.closed,
+                    closed: this.issue.closed,
                 };
                 this.butterbarMessage = "Saving...";
                 this.issue.edit(data)
@@ -174,7 +166,6 @@
                 this.description = this.issue.description;
                 this.reviewers = this.issue.reviewerEmails();
                 this.cc = this.issue.ccEmails();
-                this.closed = this.issue.closed;
                 this.$.dialog.showModal();
             },
         });
