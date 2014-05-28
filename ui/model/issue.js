@@ -157,6 +157,7 @@ Issue.prototype.createEditData = function(options)
             description: options.description,
             reviewers: options.reviewers,
             cc: options.cc,
+            closed: options.closed ? "on" : "",
         };
     });
 };
