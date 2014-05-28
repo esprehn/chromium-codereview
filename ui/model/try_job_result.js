@@ -55,7 +55,6 @@ TryJobResult.CHROMIUM_TRY_JOBS = [
     "android_x86_dbg",
     "blink_android_compile_dbg",
     "blink_android_compile_rel",
-    "blink_presubmit",
     "chromium_presubmit",
     "cros_amd64",
     "cros_amd64_telemetry",
