@@ -49,7 +49,7 @@
                 <div class="issue-meta-type">CQ</div>
                 <div class="issue-meta-value">
                     <template if="{{ issue.commit }}">
-                        <a href="https://chromium-status.appspot.com/cq/{{ issue.author.email }}">Yes</a>
+                        <a href="https://chromium-status.appspot.com/cq/{{ issue.author.email }}" target="_blank">Yes</a>
                     </template>
                     <template if="{{ !issue.commit }}">
                         No
