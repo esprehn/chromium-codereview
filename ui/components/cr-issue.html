@@ -25,9 +25,11 @@
 
             <div class="issue-content">
                 <cr-toolbar class="issue-toolbar">
-                    <cr-button on-tap="{{ quickLgtm }}">Quick LGTM</cr-button>
-                    <cr-button on-tap="{{ quickLgtmAndCommit }}">Quick LGTM + CQ</cr-button>
-                    <cr-button on-tap="{{ toggleCommit }}"><template if="{{ issue.commit }}">Cancel</template> Commit</cr-button>
+                    <template if="{{ !issue.closed }}">
+                        <cr-button on-tap="{{ quickLgtm }}">Quick LGTM</cr-button>
+                        <cr-button on-tap="{{ quickLgtmAndCommit }}">Quick LGTM + CQ</cr-button>
+                        <cr-button on-tap="{{ toggleCommit }}"><template if="{{ issue.commit }}">Cancel</template> Commit</cr-button>
+                    </template>
                     <div class="ui-actions">
                         <cr-action on-tap="{{ showEditDialog }}">Edit</cr-action>
                     </div>
