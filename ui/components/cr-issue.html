@@ -26,6 +26,7 @@
             <div class="issue-content">
                 <cr-toolbar class="issue-toolbar">
                     <template if="{{ !issue.closed }}">
+                        <cr-button on-tap="{{ publishDrafts }}" create>Publish</cr-button>
                         <cr-button on-tap="{{ quickLgtm }}">Quick LGTM</cr-button>
                         <cr-button on-tap="{{ quickLgtmAndCommit }}">Quick LGTM + CQ</cr-button>
                         <cr-button on-tap="{{ toggleCommit }}"><template if="{{ issue.commit }}">Cancel</template> Commit</cr-button>
@@ -113,6 +114,12 @@
                 this.publish({
                     lgtm: true,
                     commit: true,
+                });
+            },
+            publishDrafts: function() {
+                this.publish({
+                    addAsReviewer: true,
+                    publishDrafts: true,
                 });
             },
             publish: function(options) {
