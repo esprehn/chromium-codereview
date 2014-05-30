@@ -65,15 +65,26 @@ DiffParser.prototype.parseFile = function()
             break; // We're done with this file.
 
         var groupType = type;
-        var line = {type: type};
+        var line = {
+            type: type,
+            beforeNumber: 0,
+            afterNumber: 0,
+            contextLinesStart: 0,
+            contextLinesEnd: 0,
+            text: "",
+        };
 
         if (groupType == "header") {
             var matchedHeader = this.takeLine().match(DiffParser.HEADER_PATTERN);
-            currentBeforeLineNumber = matchedHeader[1];
-            currentAfterLineNumber = matchedHeader[2];
+            var beforeLineNumber = parseInt(matchedHeader[1], 10);
+            var afterLineNumber = parseInt(matchedHeader[2], 10);
+            line.contextLinesStart = currentAfterLineNumber;
+            line.contextLinesEnd = afterLineNumber - 1;
             line.beforeNumber = "@@";
             line.afterNumber = "@@";
             line.text = matchedHeader[3];
+            currentBeforeLineNumber = beforeLineNumber;
+            currentAfterLineNumber = afterLineNumber;
         } else {
             line.beforeNumber = currentBeforeLineNumber;
             line.afterNumber = currentAfterLineNumber;
