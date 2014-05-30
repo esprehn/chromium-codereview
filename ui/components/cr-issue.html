@@ -103,7 +103,6 @@
                 }, null, 350);
             },
             saveMessage: function(event) {
-                this.butterbarMessage = "Saving...";
                 if (event.detail.messageText)
                     this.publish({message: event.detail.messageText});
             },
@@ -123,6 +122,7 @@
                 });
             },
             publish: function(options) {
+                this.butterbarMessage = "Saving...";
                 var self = this;
                 this.issue.publish(options).then(function() {
                     self.butterbarMessage = "";
