@@ -261,10 +261,15 @@ PatchFile.prototype.parseContext = function(data)
     var lines = [];
     for (var i = 0; i < data.length; i += 2) {
         var text = data[i][1][1][1];
-        var index = text.indexOf(" ", 4);
+        var numberStart = 0;
+        while (text[numberStart] == " " && numberStart < text.length)
+            ++numberStart;
+        var numberEnd = numberStart;
+        while (text[numberEnd] != " " && numberEnd < text.length)
+            ++numberEnd;
         lines.push({
-            lineNumber: text.substring(4, index),
-            text: text.from(index + 1),
+            lineNumber: parseInt(text.substring(numberStart, numberEnd), 10),
+            text: text.from(numberEnd + 1),
         });
     }
     return lines;
