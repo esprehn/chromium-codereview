@@ -5,11 +5,20 @@
     "Elliott Sprehn"
   ],
   "ignore": [
-    "**/.*"
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
   ],
+  "homepage": "https://github.com/esprehn/chromium-codereview",
+  "license": "MIT",
   "dependencies": {
-    "polymer": "master",
-    "polymer-elements": "master",
-    "polymer-ui-elements": "master"
+    "polymer": "Polymer/polymer#0.2.3",
+    "polymer-elements": "Polymer/polymer-elements#0.2.3",
+    "polymer-ui-elements": "Polymer/polymer-ui-elements#0.2.3"
+  },
+  "resolutions": {
+    "core-action-icons": "0.2.3"
   }
 }
