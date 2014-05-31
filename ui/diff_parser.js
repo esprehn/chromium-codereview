@@ -71,6 +71,7 @@ DiffParser.prototype.parseFile = function()
             afterNumber: 0,
             contextLinesStart: 0,
             contextLinesEnd: 0,
+            context: false,
             text: "",
         };
 
@@ -80,6 +81,7 @@ DiffParser.prototype.parseFile = function()
             var afterLineNumber = parseInt(matchedHeader[2], 10);
             line.contextLinesStart = currentAfterLineNumber;
             line.contextLinesEnd = afterLineNumber - 1;
+            line.context = (line.contextLinesEnd - line.contextLinesStart) > 0;
             line.beforeNumber = "@@";
             line.afterNumber = "@@";
             line.text = matchedHeader[3];

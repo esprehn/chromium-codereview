@@ -260,17 +260,31 @@ PatchFile.prototype.parseContext = function(data)
 {
     var lines = [];
     for (var i = 0; i < data.length; i += 2) {
-        var text = data[i][1][1][1];
-        var numberStart = 0;
-        while (text[numberStart] == " " && numberStart < text.length)
-            ++numberStart;
-        var numberEnd = numberStart;
-        while (text[numberEnd] != " " && numberEnd < text.length)
-            ++numberEnd;
+        var newLine = PatchFile.parseContextLine(data[i][1][1][1]);
+        var oldLine = PatchFile.parseContextLine(data[i][1][0][1]);
         lines.push({
-            lineNumber: parseInt(text.substring(numberStart, numberEnd), 10),
-            text: text.from(numberEnd + 1),
+            type: "both",
+            beforeNumber: oldLine.lineNumber,
+            afterNumber: newLine.lineNumber,
+            contextLinesStart: 0,
+            contextLinesEnd: 0,
+            context: false,
+            text: newLine.text,
         });
     }
     return lines;
+};
+
+PatchFile.parseContextLine = function(text)
+{
+    var numberStart = 0;
+    while (text[numberStart] == " " && numberStart < text.length)
+        ++numberStart;
+    var numberEnd = numberStart;
+    while (text[numberEnd] != " " && numberEnd < text.length)
+        ++numberEnd;
+    return {
+        lineNumber: parseInt(text.substring(numberStart, numberEnd), 10),
+        text: text.from(numberEnd + 1),
+    };
 };

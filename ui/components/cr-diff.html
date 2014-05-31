@@ -121,78 +121,98 @@
                 var output = this.$.output;
                 var file = this.file;
                 var language = file.language;
+                var self = this;
                 this.diff.groups.forEach(function(group) {
                     var section = document.createElement("div");
                     output.appendChild(section);
 
                     group.forEach(function(line) {
-                        var row = document.createElement("div");
-                        row.className = "row " + line.type;
-                        section.appendChild(row);
-
-                        var beforeMessages;
-                        var before = row.appendChild(document.createElement("div"));
-                        before.className = "line-number";
-                        if (line.type == "both" || line.type == "remove" || line.type == "header") {
-                            beforeMessages = file.messages[line.beforeNumber];
-                            before.textContent = line.beforeNumber;
-                        }
-                        row.appendChild(before);
-
-                        var afterMessages;
-                        var after = row.appendChild(document.createElement("div"));
-                        after.className = "line-number";
-                        if (line.type == "both" || line.type == "add" || line.type == "header") {
-                            afterMessages = file.messages[line.afterNumber];
-                            after.textContent = line.afterNumber;
-                        }
-                        row.appendChild(after);
-
                         if (language != file.language && file.shouldResetEmbeddedLanguage(language, line.text))
                             language = file.language;
-
-                        var text = row.appendChild(document.createElement("div"));
-                        text.className = "text";
-                        if (language)
-                            text.innerHTML = hljs.highlight(language, line.text).value;
-                        else
-                            text.textContent = line.text;
-                        row.appendChild(text);
-
+                        self.emitLine(section, line, language);
                         if (language == file.language)
                             language = file.selectEmbeddedLanguage(line.text);
-
-                        if (!beforeMessages && !afterMessages)
-                            return;
-
-                        var messages = document.createElement("div");
-                        messages.className = "messages";
-
-                        if (beforeMessages) {
-                            beforeMessages.forEach(function(message) {
-                                if (!message.left)
-                                    return;
-                                var fileMessage = document.createElement("cr-patch-file-message");
-                                fileMessage.message = message;
-                                messages.appendChild(fileMessage);
-                            });
-                        }
-
-                        if (afterMessages) {
-                            afterMessages.forEach(function(message) {
-                                if (message.left)
-                                    return;
-                                var fileMessage = document.createElement("cr-patch-file-message");
-                                fileMessage.message = message;
-                                messages.appendChild(fileMessage);
-                            });
-                        }
-
-                        if (messages.firstChild)
-                            section.appendChild(messages);
                     });
                 });
-            }
+            },
+            emitLine: function(section, line, language) {
+                var self = this;
+                var file = this.file;
+
+                var row = document.createElement("div");
+                row.className = "row " + line.type;
+                section.appendChild(row);
+
+                var beforeMessages;
+                var before = row.appendChild(document.createElement("div"));
+                before.className = "line-number";
+                if (line.type == "both" || line.type == "remove" || line.type == "header") {
+                    beforeMessages = file.messages[line.beforeNumber];
+                    before.textContent = line.beforeNumber;
+                }
+                row.appendChild(before);
+
+                var afterMessages;
+                var after = row.appendChild(document.createElement("div"));
+                after.className = "line-number";
+                if (line.type == "both" || line.type == "add" || line.type == "header") {
+                    afterMessages = file.messages[line.afterNumber];
+                    after.textContent = line.afterNumber;
+                }
+                row.appendChild(after);
+
+                var text = row.appendChild(document.createElement("div"));
+                text.className = "text";
+                if (language)
+                    text.innerHTML = hljs.highlight(language, line.text).value;
+                else
+                    text.textContent = line.text;
+                row.appendChild(text);
+
+                if (line.context) {
+                    var action = row.appendChild(document.createElement("cr-action"));
+                    action.textContent = "Show context";
+                    action.onclick = function() {
+                        file.loadContext(line.contextLinesStart, line.contextLinesEnd).then(function(lines) {
+                            section.innerHTML = "";
+                            lines.forEach(function(line) {
+                                self.emitLine(section, line, language);
+                            });
+                        }).catch(function(e) {
+                            console.log(e);
+                        });
+                    };
+                }
+
+                if (!beforeMessages && !afterMessages)
+                    return;
+
+                var messages = document.createElement("div");
+                messages.className = "messages";
+
+                if (beforeMessages) {
+                    beforeMessages.forEach(function(message) {
+                        if (!message.left)
+                            return;
+                        var fileMessage = document.createElement("cr-patch-file-message");
+                        fileMessage.message = message;
+                        messages.appendChild(fileMessage);
+                    });
+                }
+
+                if (afterMessages) {
+                    afterMessages.forEach(function(message) {
+                        if (message.left)
+                            return;
+                        var fileMessage = document.createElement("cr-patch-file-message");
+                        fileMessage.message = message;
+                        messages.appendChild(fileMessage);
+                    });
+                }
+
+                if (messages.firstChild)
+                    section.appendChild(messages);
+            },
         });
     </script>
 </ploymer-element>
