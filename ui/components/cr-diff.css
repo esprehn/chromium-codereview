@@ -3,6 +3,12 @@
     padding: 0.25em 16px;
 }
 
+.header,
+.header .line-number {
+    color: #849;
+    background-color: #fef;
+}
+
 .remove .text {
     background-color: #fdd;
 }
