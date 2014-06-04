@@ -25,6 +25,9 @@
             .issue-edit-fields {
                 display: table;
                 width: 100%;
+                border: none;
+                margin: 0;
+                padding: 0;
             }
 
             .issue-edit-row {
@@ -64,7 +67,7 @@
 
             <h1>Edit Issue</h1>
 
-            <div class="issue-edit-fields">
+            <fieldset class="issue-edit-fields" disabled?="{{ saving }}">
                 <div class="issue-edit-row">
                     <label class="issue-edit-label" for="subject">Title</label>
                     <div class="issue-edit-field">
@@ -100,7 +103,7 @@
                         <div class="issue-edit-error">{{ errors.description }}</div>
                     </div>
                 </div>
-            </div>
+            </fieldset>
 
             <cr-toolbar>
                 <cr-button primary on-tap="{{ save }}">Save</cr-button>
@@ -117,6 +120,7 @@
             description: "",
             errors: null,
             butterbarMessage: "",
+            saving: false,
             cancel: function(event) {
                 if (this.$.reviewerAutocomplete.active || this.$.ccAutocomplete.active) {
                     event.preventDefault();
@@ -127,6 +131,7 @@
                 this.close();
             },
             reset: function() {
+                this.saving = false;
                 this.butterbarMessage = "";
                 this.errors = {};
             },
@@ -142,6 +147,7 @@
                     description: this.description,
                     closed: this.issue.closed,
                 };
+                this.saving = true;
                 this.butterbarMessage = "Saving...";
                 this.issue.edit(data)
                     .then(this.saveSuccess.bind(this))
