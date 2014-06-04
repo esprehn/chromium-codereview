@@ -61,9 +61,9 @@
                 </cr-toolbar>
             </template>
             <template if="{{ expanded }}">
-                <div class="message-edit">
+                <fieldset class="message-edit" disabled?="{{ saving }}">
                     <textarea id="textarea" rows="10" value="{{ text }}"></textarea>
-                </div>
+                </fieldset>
                 <cr-toolbar>
                     <cr-button primary on-tap="{{ save }}">Save</cr-button>
                     <cr-button on-tap="{{ cancel }}">Cancel</cr-button>
@@ -82,6 +82,7 @@
             expand: function() {
                 this.text = this.message.text;
                 this.expanded = true;
+                this.saving = false;
             },
             expandedChanged: function() {
                 this.async(this.focusInput);
@@ -98,6 +99,7 @@
                     this.discard();
                     return;
                 }
+                this.saving = true;
                 this.fire("file-message-save", {
                     text: this.text,
                     message: this.message,
