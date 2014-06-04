@@ -21,9 +21,9 @@
             </cr-toolbar>
         </template>
         <template if="{{ expanded }}">
-            <div class="reply-input">
+            <fieldset class="reply-input" disabled?="{{ sending }}">
                 <textarea id="textarea" rows="20" value="{{ value }}"></textarea>
-            </div>
+            </fieldset>
             <cr-toolbar>
                 <cr-button primary on-tap="{{ sendMessage }}">Send Message</cr-button>
                 <cr-button on-tap="{{ discardMessage }}">Discard</cr-button>
@@ -35,11 +35,13 @@
         message: null,
         expanded: false,
         value: "",
+        sending: false,
         expand: function() {
             this.expanded = true;
             this.async(this.showReply);
         },
         sendMessage: function() {
+            this.sending = true;
             this.fire("message-save", {
                 messageText: this.value,
             });
