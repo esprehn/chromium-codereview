@@ -35,17 +35,17 @@
             }
         </style>
 
-        <dialog id="dialog" on-cancel="{{ cancel }}">
+        <dialog id="dialog" on-cancel="{{ sending }}">
             <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
 
             <h1>Publish Comments</h1>
 
-            <div class="issue-publish-fields">
+            <fieldset class="issue-publish-fields" disabled?="{{ sending }}">
                 <label class="issue-publish-label" for="message">Message</label>
                 <div class="issue-publish-field">
                     <textarea id="message" value="{{ message }}" rows="20"></textarea>
                 </div>
-            </div>
+            </fieldset>
 
             <cr-toolbar>
                 <cr-button primary on-tap="{{ send }}">Send</cr-button>
@@ -58,10 +58,12 @@
             issue: null,
             message: "",
             butterbarMessage: "",
+            sending: false,
             cancel: function(event) {
                 this.close();
             },
             reset: function() {
+                this.sending = false;
                 this.butterbarMessage = "";
                 this.message = "";  
             },
@@ -75,6 +77,7 @@
                     addAsReviewer: true,
                     publishDrafts: true,
                 };
+                this.sending = true;
                 this.butterbarMessage = "Saving...";
                 this.issue.publish(data)
                     .then(this.saveSuccess.bind(this))
@@ -86,6 +89,7 @@
             },
             saveFailure: function(error) {
                 // FIXME: We should show an better error message.
+                this.sending = false;
                 this.butterbarMessage = "Error: " + error.message;
             },
             showModal: function() {
