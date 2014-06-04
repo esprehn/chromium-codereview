@@ -1,6 +1,15 @@
 
+var URL_PATTERN = /^https?:\/\/codereview.chromium.org\/(\d+)?\/?$/;
+var APP_URL = "https://codereview.chromium.org/app/";
+
 chrome.webNavigation.onBeforeNavigate.addListener(function(details) {
-    if (details.url === "https://codereview.chromium.org/"
-        || details.url === "http://codereview.chromium.org/")
-        chrome.tabs.update(details.tabId, {url:"https://codereview.chromium.org/app/"});
+    var url = details.url;
+    var match = url.match(URL_PATTERN);
+    if (!match)
+        return;
+    var issueId = parseInt(match[1], 10);
+    var url = APP_URL;
+    if (issueId)
+        url += "#/issue/" + issueId;
+    chrome.tabs.update(details.tabId, {url:url});
 });
