@@ -3,6 +3,7 @@
 <link rel="import" href="cr-button.html">
 <link rel="import" href="cr-butterbar.html">
 <link rel="import" href="cr-issue-edit-dialog.html">
+<link rel="import" href="cr-issue-publish-dialog.html">
 <link rel="import" href="cr-issue-messages.html">
 <link rel="import" href="cr-issue-meta.html">
 <link rel="import" href="cr-issue-patchsets.html">
@@ -26,7 +27,7 @@
             <div class="issue-content">
                 <cr-toolbar class="issue-toolbar">
                     <template if="{{ !issue.closed }}">
-                        <cr-button on-tap="{{ publishDrafts }}" create>Publish</cr-button>
+                        <cr-button on-tap="{{ showPublishDialog }}" create>Publish</cr-button>
                         <cr-button on-tap="{{ quickLgtm }}">Quick LGTM</cr-button>
                         <cr-button on-tap="{{ quickLgtmAndCommit }}">Quick LGTM + CQ</cr-button>
                         <cr-button on-tap="{{ toggleCommit }}"><template if="{{ issue.commit }}">Cancel</template> Commit</cr-button>
@@ -60,6 +61,7 @@
         <cr-issue-messages messages="{{ issue.messages }}" id="messages" on-message-save="{{ saveMessage }}"></cr-issue-messages>
 
         <cr-issue-edit-dialog id="editor" issue="{{ issue }}"></cr-issue-edit-dialog>
+        <cr-issue-publish-dialog id="publisher" issue="{{ issue }}"></cr-issue-publish-dialog>
     </template>
     <script>
         Polymer("cr-issue", {
@@ -93,6 +95,9 @@
             showEditDialog: function() {
                 this.$.editor.showModal();
             },
+            showPublishDialog: function() {
+                this.$.publisher.showModal();
+            },
             collapseAllMessages: function() {
                 this.$.messages.toggleAll({active: false});
             },
@@ -113,12 +118,6 @@
                 this.publish({
                     lgtm: true,
                     commit: true,
-                });
-            },
-            publishDrafts: function() {
-                this.publish({
-                    addAsReviewer: true,
-                    publishDrafts: true,
                 });
             },
             publish: function(options) {

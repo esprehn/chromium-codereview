@@ -1,0 +1,86 @@
+
+<link rel="import" href="cr-butterbar.html">
+<link rel="import" href="cr-button.html">
+<link rel="import" href="cr-toolbar.html">
+
+<polymer-element name="cr-issue-publish-dialog" attributes="issue">
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <style>
+            #dialog {
+                max-width: 800px;
+                width: 100%;
+                padding: 0;
+                border: 1px solid #ccc;
+                box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.2);
+                top: 100px;
+                color: #222;
+            }
+
+            h1 {
+                -webkit-user-select: none;
+                cursor: default;
+            }
+
+            .issue-publish-fields {
+                padding: 1em 16px;
+            }
+        </style>
+
+        <dialog id="dialog" on-cancel="{{ cancel }}">
+            <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
+
+            <h1>Publish Comments</h1>
+            
+            <div class="issue-publish-fields">
+                <textarea value="{{ message }}" rows="20"></textarea>
+            </div>
+
+            <cr-toolbar>
+                <cr-button primary on-tap="{{ send }}">Send</cr-button>
+                <cr-button on-tap="{{ cancel }}">Cancel</cr-button>
+            </cr-toolbar>
+        </dialog>
+    </template>
+    <script>
+        Polymer("cr-issue-publish-dialog", {
+            issue: null,
+            message: "",
+            butterbarMessage: "",
+            cancel: function(event) {
+                this.close();
+            },
+            reset: function() {
+                this.message = "";  
+            },
+            close: function() {
+                this.reset();
+                this.$.dialog.close();
+            },
+            send: function() {
+                var data = {
+                    message: this.message,
+                    addAsReviewer: true,
+                    publishDrafts: true,
+                };
+                this.butterbarMessage = "Saving...";
+                this.issue.publish(data)
+                    .then(this.saveSuccess.bind(this))
+                    .catch(this.saveFailure.bind(this));
+            },
+            saveSuccess: function() {
+                this.fire("issue-refresh");
+                this.close();
+            },
+            saveFailure: function(error) {
+                // FIXME: We should show an error message.
+                console.log(error);
+            },
+            showModal: function() {
+                if (!this.issue)
+                    return;
+                this.$.dialog.showModal();
+            },
+        });
+    </script>
+</polymer-element>
