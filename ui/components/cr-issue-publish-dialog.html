@@ -22,8 +22,16 @@
                 cursor: default;
             }
 
-            .issue-publish-fields {
-                padding: 1em 16px;
+            .issue-publish-label {
+                font-weight: bold;
+                color: #959595;
+                -webkit-user-select: none;
+                cursor: default;
+            }
+
+            .issue-publish-field,
+            .issue-publish-label {
+                padding: 0.5em 16px;
             }
         </style>
 
@@ -31,9 +39,12 @@
             <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
 
             <h1>Publish Comments</h1>
-            
+
             <div class="issue-publish-fields">
-                <textarea value="{{ message }}" rows="20"></textarea>
+                <label class="issue-publish-label" for="message">Message</label>
+                <div class="issue-publish-field">
+                    <textarea id="message" value="{{ message }}" rows="20"></textarea>
+                </div>
             </div>
 
             <cr-toolbar>
