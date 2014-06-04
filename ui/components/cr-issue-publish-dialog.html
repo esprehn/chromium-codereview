@@ -51,6 +51,7 @@
                 this.close();
             },
             reset: function() {
+                this.butterbarMessage = "";
                 this.message = "";  
             },
             close: function() {
@@ -73,8 +74,8 @@
                 this.close();
             },
             saveFailure: function(error) {
-                // FIXME: We should show an error message.
-                console.log(error);
+                // FIXME: We should show an better error message.
+                this.butterbarMessage = "Error: " + error.message;
             },
             showModal: function() {
                 if (!this.issue)
