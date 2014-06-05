@@ -20,6 +20,7 @@
             file: null,
             active: false,
             diff: null,
+            highlightData: null,
             fileChanged: function(oldValue, newValue) {
                 var output = this.$.output;
                 output.innerHTML = "";
@@ -127,11 +128,15 @@
                     output.appendChild(section);
 
                     group.forEach(function(line) {
-                        if (language != file.language && file.shouldResetEmbeddedLanguage(language, line.text))
+                        if (language != file.language && file.shouldResetEmbeddedLanguage(language, line.text)) {
                             language = file.language;
+                            self.highlightData = null;
+                        }
                         self.emitLine(section, line, language);
-                        if (language == file.language)
+                        if (language == file.language) {
                             language = file.selectEmbeddedLanguage(line.text);
+                            self.highlightData = null;
+                        }
                     });
                 });
             },
@@ -167,10 +172,18 @@
 
                 var text = row.appendChild(document.createElement("div"));
                 text.className = "text";
-                if (language)
-                    text.innerHTML = hljs.highlight(language, line.text).value;
-                else
+                if (language) {
+                    try {
+                        var code = hljs.highlight(language, line.text, true, self.highlightData);
+                        self.highlightData = code.top;
+                        text.innerHTML = code.value;
+                    } catch (e) {
+                        console.log("Syntax highlighter error", e);
+                        text.textContent = line.text;
+                    }
+                } else {
                     text.textContent = line.text;
+                }
                 row.appendChild(text);
 
                 if (line.context) {
