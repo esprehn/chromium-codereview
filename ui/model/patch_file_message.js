@@ -36,7 +36,7 @@ PatchFileMessage.prototype.parseDraftElement = function(element)
 
     var text = element.querySelector(".comment-text");
     if (text)
-        this.text = text.textContent;
+        this.text = text.textContent.trim();
 
     var userName = b.textContent;
     if (userName == "(Draft)") {
