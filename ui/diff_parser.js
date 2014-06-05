@@ -55,10 +55,12 @@ DiffParser.prototype.nextLineType = function()
 DiffParser.prototype.parseFile = function()
 {
     var groups = [];
-    var currentGroupType = null;
+    var currentGroupType = "";
     var currentGroup = [];
     var currentBeforeLineNumber = 0;
     var currentAfterLineNumber = 0;
+    var deltaOffset = 0;
+    var removeCount = 0;
     while (this.haveLines()) {
         var type = this.nextLineType();
         if (type == "index" || type == "empty")
@@ -79,8 +81,8 @@ DiffParser.prototype.parseFile = function()
             var matchedHeader = this.takeLine().match(DiffParser.HEADER_PATTERN);
             var beforeLineNumber = parseInt(matchedHeader[1], 10);
             var afterLineNumber = parseInt(matchedHeader[2], 10);
-            line.contextLinesStart = currentAfterLineNumber;
-            line.contextLinesEnd = afterLineNumber - 1;
+            line.contextLinesStart = currentBeforeLineNumber + deltaOffset;
+            line.contextLinesEnd = beforeLineNumber - 1 + deltaOffset;
             line.context = (line.contextLinesEnd - line.contextLinesStart) > 0;
             line.text = matchedHeader[4];
             currentBeforeLineNumber = beforeLineNumber;
@@ -97,6 +99,15 @@ DiffParser.prototype.parseFile = function()
             if (groupType == "add" || groupType == "both")
                 currentAfterLineNumber++;
         }
+
+        if (groupType == "remove")
+            removeCount++;
+        else if (groupType == "add" && removeCount)
+            removeCount--;
+        else if (groupType == "add")
+            deltaOffset++;
+        else
+            removeCount = 0;
 
         if (groupType == "add" || groupType == "remove")
             groupType = "delta";
@@ -117,7 +128,7 @@ DiffParser.prototype.parseFile = function()
         type: "header",
         beforeNumber: 0,
         afterNumber: 0,
-        contextLinesStart: currentAfterLineNumber,
+        contextLinesStart: currentBeforeLineNumber + deltaOffset,
         contextLinesEnd: Number.MAX_SAFE_INTEGER,
         context: true,
         text: "",
