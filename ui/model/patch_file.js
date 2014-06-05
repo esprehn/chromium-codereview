@@ -54,6 +54,10 @@ PatchFile.computeLanguage = function(name)
         return "objectivec";
     if (name.endsWith(".json"))
         return "json";
+    // FIXME: We should create a proper language definition for idl. For now we
+    // use ActionScript since they're actually quite similar.
+    if (name.endsWith(".idl"))
+        return "actionscript";
     return "";
 };
 
