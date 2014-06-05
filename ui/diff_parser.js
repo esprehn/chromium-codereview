@@ -82,8 +82,6 @@ DiffParser.prototype.parseFile = function()
             line.contextLinesStart = currentAfterLineNumber;
             line.contextLinesEnd = afterLineNumber - 1;
             line.context = (line.contextLinesEnd - line.contextLinesStart) > 0;
-            line.beforeNumber = "@@";
-            line.afterNumber = "@@";
             line.text = matchedHeader[3];
             currentBeforeLineNumber = beforeLineNumber;
             currentAfterLineNumber = afterLineNumber;
@@ -110,6 +108,18 @@ DiffParser.prototype.parseFile = function()
     }
     if (currentGroup.length)
         groups.push(currentGroup);
+
+    // Always have a header at the end of the file to allow an "Expand context"
+    // link to show the rest of the file after the last group.
+    groups.push([{
+        type: "header",
+        beforeNumber: 0,
+        afterNumber: 0,
+        contextLinesStart: currentAfterLineNumber,
+        contextLinesEnd: Number.MAX_SAFE_INTEGER,
+        context: true,
+        text: "",
+    }]);
     return groups;
 };
 

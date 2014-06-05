@@ -146,18 +146,22 @@
                 var beforeMessages;
                 var before = row.appendChild(document.createElement("div"));
                 before.className = "line-number";
-                if (line.type == "both" || line.type == "remove" || line.type == "header") {
+                if (line.type == "both" || line.type == "remove") {
                     beforeMessages = file.messages[line.beforeNumber];
                     before.textContent = line.beforeNumber;
+                } else if (line.type == "header") {
+                    before.textContent = "@@";
                 }
                 row.appendChild(before);
 
                 var afterMessages;
                 var after = row.appendChild(document.createElement("div"));
                 after.className = "line-number";
-                if (line.type == "both" || line.type == "add" || line.type == "header") {
+                if (line.type == "both" || line.type == "add") {
                     afterMessages = file.messages[line.afterNumber];
                     after.textContent = line.afterNumber;
+                } else if (line.type == "header") {
+                    after.textContent = "@@";
                 }
                 row.appendChild(after);
 
