@@ -21,7 +21,7 @@ PatchFileMessage.createDraft = function()
 PatchFileMessage.prototype.parseData = function(data)
 {
     this.author = User.forName(data.author, data.author_email);
-    this.text = data.text || "";
+    this.text = (data.text || "").trim();
     this.draft = data.draft || false;
     this.line = data.lineno || 0;
     this.date = Date.utc.create(data.date);
