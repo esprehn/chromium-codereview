@@ -85,6 +85,8 @@ DiffParser.prototype.parseFile = function()
             line.text = matchedHeader[4];
             currentBeforeLineNumber = beforeLineNumber;
             currentAfterLineNumber = afterLineNumber;
+            if (!beforeLineNumber)
+                continue;
         } else {
             line.beforeNumber = currentBeforeLineNumber;
             line.afterNumber = currentAfterLineNumber;
