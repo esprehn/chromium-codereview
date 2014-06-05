@@ -9,7 +9,7 @@ DiffParser.HEADER_BEGIN = "Index: ";
 DiffParser.HEADER_END = "+++ ";
 DiffParser.BINARY_HEADER_END = "Binary files ";
 DiffParser.PNG_SUFFIX = ".png";
-DiffParser.HEADER_PATTERN = /^@@\ \-(\d+),[^+]+\+(\d+)\,\d+\ @@\ ?(.*)/;
+DiffParser.HEADER_PATTERN = /^@@ \-(\d+),[^+]+\+(\d+)(,\d+)? @@ ?(.*)/;
 
 DiffParser.prototype.peekLine = function()
 {
@@ -82,7 +82,7 @@ DiffParser.prototype.parseFile = function()
             line.contextLinesStart = currentAfterLineNumber;
             line.contextLinesEnd = afterLineNumber - 1;
             line.context = (line.contextLinesEnd - line.contextLinesStart) > 0;
-            line.text = matchedHeader[3];
+            line.text = matchedHeader[4];
             currentBeforeLineNumber = beforeLineNumber;
             currentAfterLineNumber = afterLineNumber;
         } else {
