@@ -205,14 +205,13 @@ Issue.prototype.createPublishData = function(options)
         var message = options.message || "";
         var addAsReviewer = options.addAsReviewer;
         var publishDrafts = options.publishDrafts;
-        var commit = false;
+        var commit = options.commit;
         var reviewers = issue.reviewerEmails();
         var cc = issue.ccEmails();
         if (options.lgtm) {
             message = "lgtm\n\n" + message;
             addAsReviewer = true;
             publishDrafts = true;
-            commit = options.commit;
         }
         return {
             xsrf_token: user.xsrfToken,

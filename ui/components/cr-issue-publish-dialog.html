@@ -22,6 +22,10 @@
                 cursor: default;
             }
 
+            label {
+                -webkit-user-select: none;
+            }
+
             .issue-publish-label {
                 font-weight: bold;
                 color: #959595;
@@ -49,6 +53,7 @@
 
             <cr-toolbar>
                 <cr-button primary on-tap="{{ send }}">Send</cr-button>
+                <cr-button  on-tap="{{ sendAndCommit }}">Send + CQ</cr-button>
                 <cr-button on-tap="{{ cancel }}">Cancel</cr-button>
             </cr-toolbar>
         </dialog>
@@ -59,6 +64,7 @@
             message: "",
             butterbarMessage: "",
             sending: false,
+            commit: false,
             cancel: function(event) {
                 this.close();
             },
@@ -71,11 +77,15 @@
                 this.reset();
                 this.$.dialog.close();
             },
-            send: function() {
+            sendAndCommit: function() {
+                this.send({commit: true});
+            },
+            send: function(options) {
                 var data = {
                     message: this.message,
                     addAsReviewer: true,
                     publishDrafts: true,
+                    commit: options.commit,
                 };
                 this.sending = true;
                 this.butterbarMessage = "Saving...";
