@@ -44,10 +44,12 @@
                 <cr-button primary on-tap="{{ send }}">Send</cr-button>
                 <cr-button  on-tap="{{ sendAndCommit }}">Send + CQ</cr-button>
                 <cr-button on-tap="{{ cancel }}">Cancel</cr-button>
-                <label>
-                    <input type="checkbox" checked="{{ addAsReviewer }}">
-                    Add as reviewer
-                </label>
+                <template if="{{ !userIsOwner }}">
+                    <label>
+                        <input type="checkbox" checked="{{ addAsReviewer }}">
+                        Add as reviewer
+                    </label>
+                </template>
             </cr-toolbar>
         </dialog>
     </template>
@@ -58,6 +60,7 @@
             butterbarMessage: "",
             sending: false,
             addAsReviewer: true,
+            userIsOwner: true,
             cancel: function(event) {
                 if (this.$.editor.dismissAutocomplete()) {
                     event.preventDefault();
@@ -72,6 +75,7 @@
                 this.butterbarMessage = "";
                 this.message = "";
                 this.$.editor.dismissAutocomplete();
+                this.userIsOwner = this.issue.owner.isCurrentUser();
             },
             close: function() {
                 this.reset();
@@ -104,7 +108,7 @@
             showModal: function() {
                 if (!this.issue)
                     return;
-                this.$.editor.reset();
+                this.reset();
                 this.$.dialog.showModal();
             },
         });
