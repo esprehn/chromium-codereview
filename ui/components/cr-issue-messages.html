@@ -1,5 +1,5 @@
 
-<link rel="import" href="../../bower_components/polymer-ui-accordion/polymer-ui-accordion.html">
+<link rel="import" href="../../bower_components/polymer-ui-collapsible/polymer-ui-collapsible.html">
 
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-issue-message-reply.html">
@@ -8,26 +8,22 @@
     <template>
         <link rel="stylesheet" href="cr-issue-messages.css">
 
-        <template if="{{ messages.length }}">
-            <polymer-ui-accordion multi selected="{{ [ messages.length - 1 ] }}">
-                <template repeat="{{ message, i in messages }}">
-                    <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval} | tokenList }}">
-                        <div class="message-header polymer-ui-collapsible-header" on-tap="{{ scrollMessageToVisibleIfNeeded }}">
-                            <div class="message-title">
-                                <div class="message-author">{{ message.author.displayName }}</div>
-                                <div class="message-preview">{{ message.text | messagePreview }}</div>
-                            </div>
-                            <div class="message-date">
-                                {{ message.date | formatDate }}
-                            </div>
-                        </div>
-                        <div class="message-text">
-                            <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
-                        </div>
-                        <cr-issue-message-reply message="{{ message }}"></cr-issue-message-reply>
-                    </polymer-ui-collapsible>
-                </template>
-            </polymer-ui-accordion>
+        <template repeat="{{ message, i in messages }}">
+            <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval} | tokenList }}" active?="{{ i == messages.length - 1 }}">
+                <div class="message-header polymer-ui-collapsible-header" on-tap="{{ scrollMessageToVisibleIfNeeded }}">
+                    <div class="message-title">
+                        <div class="message-author">{{ message.author.displayName }}</div>
+                        <div class="message-preview">{{ message.text | messagePreview }}</div>
+                    </div>
+                    <div class="message-date">
+                        {{ message.date | formatDate }}
+                    </div>
+                </div>
+                <div class="message-text">
+                    <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
+                </div>
+                <cr-issue-message-reply message="{{ message }}"></cr-issue-message-reply>
+            </polymer-ui-collapsible>
         </template>
     </template>
     <script>
