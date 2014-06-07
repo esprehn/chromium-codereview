@@ -11,6 +11,7 @@ function PatchSet(issue, id)
     this.owner = null // User
     this.message = "";
     this.id = id || 0;
+    this.commit = false;
 }
 
 PatchSet.DETAIL_URL = "/api/{1}/{2}/?comments=true"

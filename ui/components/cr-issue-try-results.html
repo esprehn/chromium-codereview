@@ -1,0 +1,43 @@
+
+<polymer-element name="cr-issue-try-results" attributes="results" noscript>
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <style>
+            :host {
+                display: flex;
+                flex-wrap: wrap;
+                margin: 0 16px 0.5em 16px;
+            }
+
+            .try-job:link,
+            .try-job:visited {
+                margin: 0.5em 8px 0.5em 0;
+                padding: 0.25em 16px;
+                color: black;
+            }
+
+            .try-job {
+                background-color: #E0E0E0;
+            }
+
+            .try-job.pending {
+                background-color: #F9EDBE;
+            }
+
+            .try-job.success {
+                background-color: #8fdf5f;
+                color: #222121;
+            }
+
+            .try-job.warnings,
+            .try-hob.exception,
+            .try-job.failure {
+                background-color: #E75D54;
+                color: #F4F4F4;
+            }
+        </style>
+        <template repeat="{{ job in results }}">
+            <a class="try-job {{ job.result }}" href="{{ job.url }}" title="{{ job.result }}" target="_blank">{{ job.builder }}</a>
+        </template>
+    </template>
+</polymer-element>

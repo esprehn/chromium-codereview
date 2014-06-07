@@ -1,6 +1,7 @@
 
 <link rel="import" href="cr-action.html">
 <link rel="import" href="cr-issue-patchfile.html">
+<link rel="import" href="cr-issue-try-results.html">
 <link rel="import" href="cr-toolbar.html">
 
 <polymer-element name="cr-issue-patchset" attributes="patchset">
@@ -21,13 +22,9 @@
                 <cr-issue-patchfile file="{{ file }}" diff="{{ file.diffActive }}"></cr-issue-patchfile>
             </template>
         </div>
-        <template if="{{ patchset.tryJobResults.length }}">
-            <h2>Try Job Results</h2>
-            <div class="try-jobs">
-                <template repeat="{{ job in patchset.tryJobResults }}">
-                    <a class="try-job {{ job.result }}" href="{{ job.url }}" title="{{ job.result }}" target="_blank">{{ job.builder }}</a>
-                </template>
-            </div>
+        <template if="{{ patchset.tryJobResults.length && !patchset.commit }}">
+            <h2>Try job results</h2>
+            <cr-issue-try-results results="{{ patchset.tryJobResults }}"></cr-issue-try-results>
         </template>
     </template>
     <script>

@@ -1,12 +1,13 @@
 
 <link rel="import" href="cr-action.html">
-<link rel="import" href="cr-button.html">
 <link rel="import" href="cr-butterbar.html">
+<link rel="import" href="cr-button.html">
 <link rel="import" href="cr-issue-edit-dialog.html">
-<link rel="import" href="cr-issue-publish-dialog.html">
 <link rel="import" href="cr-issue-messages.html">
 <link rel="import" href="cr-issue-meta.html">
 <link rel="import" href="cr-issue-patchsets.html">
+<link rel="import" href="cr-issue-publish-dialog.html">
+<link rel="import" href="cr-issue-try-results.html">
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-toolbar.html">
 
@@ -30,7 +31,9 @@
                         <cr-button on-tap="{{ showPublishDialog }}" create>Publish</cr-button>
                         <cr-button on-tap="{{ quickLgtm }}">Quick LGTM</cr-button>
                         <cr-button on-tap="{{ quickLgtmAndCommit }}">Quick LGTM + CQ</cr-button>
-                        <cr-button on-tap="{{ toggleCommit }}"><template if="{{ issue.commit }}">Cancel</template> Commit</cr-button>
+                        <template if="{{ !issue.commit }}">
+                            <cr-button on-tap="{{ toggleCommit }}">Commit</cr-button>
+                        </template>
                     </template>
                     <cr-button on-tap="{{ toggleClosed }}">
                         <template if="{{ issue.closed }}">Reopen</template>
@@ -40,6 +43,16 @@
                         <cr-action on-tap="{{ showEditDialog }}">Edit</cr-action>
                     </div>
                 </cr-toolbar>
+
+                <template if="{{ issue.commit }}">
+                    <div class="commit-status">
+                        <h2>Commit status</h2>
+                        <cr-issue-try-results results="{{ issue.patchsets[issue.patchsets.length - 1].tryJobResults }}"></cr-issue-try-results>
+                        <cr-toolbar>
+                            <cr-button on-tap="{{ toggleCommit }}">Cancel commit</cr-button>
+                        </cr-toolbar>
+                    </div>
+                </template>
 
                 <div class="issue-description">
                     <cr-linkified-text text="{{ issue.description }}" pre></cr-linkified-text>
