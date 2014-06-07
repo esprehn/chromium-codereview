@@ -44,8 +44,8 @@ PatchSet.prototype.revert = function(options)
 {
     if (!options.reason)
         return Promise.reject(new Error("Must supply a reason"));
-    var patchset = options;
-    this.createRevertData(options).then(function(data) {
+    var patchset = this;
+    return this.createRevertData(options).then(function(data) {
         return sendFormData(patchset.getRevertUrl(), data);
     });
 };
@@ -56,7 +56,7 @@ PatchSet.prototype.createRevertData = function(options)
         return {
             xsrf_token: user.xsrfToken,
             revert_reason: options.reason,
-            revert_cq: options.cq ? "1" : "0",
+            revert_cq: options.commit ? "1" : "0",
         };
     });
 };

@@ -13,6 +13,15 @@ h2 {
     font-size: 1.3em;
 }
 
+dialog h1 {
+    -webkit-user-select: none;
+    cursor: default;
+}
+
+label {
+    -webkit-user-select: none;
+}
+
 h1.app-header {
     margin: 0;
     padding: 0.5em 16px;
@@ -38,21 +47,21 @@ a:hover {
 }
 
 input[type=text] {
-  padding: 0.5em;
+    padding: 0.5em;
 }
 
 textarea,
 input[type=text] {
-  display: block;
-  background-color: white;
-  border-radius: 1px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-top: 1px solid rgba(0, 0, 0, 0.25);
-  box-sizing: border-box;
-  font-family: Monaco, monospace;
-  font-size: 1em;
-  margin: 0;
-  width: 100%;
+    display: block;
+    background-color: white;
+    border-radius: 1px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-top: 1px solid rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
+    font-family: Monaco, monospace;
+    font-size: 1em;
+    margin: 0;
+    width: 100%;
 }
 
 textarea:hover,
@@ -70,4 +79,14 @@ input[type=text]:focus {
 input.invalid,
 textarea.invalid {
     border: 1px solid #DD4B39;
+}
+
+dialog {
+    max-width: 800px;
+    width: 100%;
+    padding: 0;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.2);
+    top: 100px;
+    color: #222;
 }

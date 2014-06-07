@@ -1,0 +1,92 @@
+
+<link rel="import" href="cr-butterbar.html">
+<link rel="import" href="cr-button.html">
+<link rel="import" href="cr-toolbar.html">
+
+<polymer-element name="cr-issue-revert-dialog" attributes="patchset">
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <style>
+            .dialog-fields-label {
+                font-weight: bold;
+                color: #959595;
+                -webkit-user-select: none;
+                cursor: default;
+            }
+
+            .dialog-fields-field,
+            .dialog-fields-label {
+                padding: 0.5em 16px;
+            }
+        </style>
+
+        <dialog id="dialog" on-cancel="{{ cancel }}">
+            <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
+
+            <h1>Revert patch</h1>
+
+            <fieldset class="dialog-fields" disabled?="{{ sending }}">
+                <label class="dialog-fields-label" for="reason">Reason</label>
+                <div class="dialog-fields-field">
+                    <textarea id="reason" value="{{ reason }}" rows="20"></textarea>
+                </div>
+            </fieldset>
+
+            <cr-toolbar>
+                <cr-button primary on-tap="{{ revert }}">Revert</cr-button>
+                <cr-button on-tap="{{ cancel }}">Cancel</cr-button>
+                <label>
+                    <input type="checkbox" checked="{{ commit }}">
+                    Automatically send revert to CQ
+                </label>
+            </cr-toolbar>
+        </dialog>
+    </template>
+    <script>
+        Polymer("cr-issue-revert-dialog", {
+            patchset: null,
+            reason: "",
+            commit: true,
+            butterbarMessage: "",
+            sending: false,
+            cancel: function(event) {
+                this.close();
+            },
+            reset: function() {
+                this.sending = false;
+                this.butterbarMessage = "";
+                this.reason = "";
+                this.commit = true;
+            },
+            close: function() {
+                this.reset();
+                this.$.dialog.close();
+            },
+            revert: function() {
+                var data = {
+                    reason: this.reason,
+                    commit: this.commit,
+                };
+                this.sending = true;
+                this.butterbarMessage = "Saving...";
+                this.patchset.revert(data)
+                    .then(this.saveSuccess.bind(this))
+                    .catch(this.saveFailure.bind(this));
+            },
+            saveSuccess: function() {
+                this.fire("issue-refresh");
+                this.close();
+            },
+            saveFailure: function(error) {
+                // FIXME: We should show an better error message.
+                this.sending = false;
+                this.butterbarMessage = "Error: " + error.message;
+            },
+            showModal: function() {
+                if (!this.patchset)
+                    return;
+                this.$.dialog.showModal();
+            },
+        });
+    </script>
+</polymer-element>

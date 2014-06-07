@@ -7,6 +7,7 @@
 <link rel="import" href="cr-issue-meta.html">
 <link rel="import" href="cr-issue-patchsets.html">
 <link rel="import" href="cr-issue-publish-dialog.html">
+<link rel="import" href="cr-issue-revert-dialog.html">
 <link rel="import" href="cr-issue-try-results.html">
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-toolbar.html">
@@ -34,11 +35,12 @@
                         <template if="{{ !issue.commit }}">
                             <cr-button on-tap="{{ toggleCommit }}">Commit</cr-button>
                         </template>
+                        <cr-button on-tap="{{ toggleClosed }}">Close</cr-button>
                     </template>
-                    <cr-button on-tap="{{ toggleClosed }}">
-                        <template if="{{ issue.closed }}">Reopen</template>
-                        <template if="{{ !issue.closed }}">Close</template>
-                    </cr-button>
+                    <template if="{{ issue.closed }}">
+                        <cr-button on-tap="{{ toggleClosed }}">Reopen</cr-button>
+                        <cr-button on-tap="{{ showRevertDialog }}">Revert</cr-button>
+                    </template>
                     <div class="ui-actions">
                         <cr-action on-tap="{{ showEditDialog }}">Edit</cr-action>
                     </div>
@@ -73,8 +75,9 @@
 
         <cr-issue-messages messages="{{ issue.messages }}" id="messages" on-message-save="{{ saveMessage }}"></cr-issue-messages>
 
-        <cr-issue-edit-dialog id="editor" issue="{{ issue }}"></cr-issue-edit-dialog>
-        <cr-issue-publish-dialog id="publisher" issue="{{ issue }}"></cr-issue-publish-dialog>
+        <cr-issue-edit-dialog id="editDialog" issue="{{ issue }}"></cr-issue-edit-dialog>
+        <cr-issue-publish-dialog id="publishDialog" issue="{{ issue }}"></cr-issue-publish-dialog>
+        <cr-issue-revert-dialog id="revertDialog" patchset="{{ issue.patchsets[issue.patchsets.length - 1] }}"></cr-issue-revert-dialog>
     </template>
     <script>
         Polymer("cr-issue", {
@@ -106,10 +109,15 @@
                 });
             },
             showEditDialog: function() {
-                this.$.editor.showModal();
+                this.$.editDialog.showModal();
             },
             showPublishDialog: function() {
-                this.$.publisher.showModal();
+                this.$.publishDialog.showModal();
+            },
+            showRevertDialog: function() {
+                if (!this.issue.closed || this.issue.patchsets.isEmpty())
+                    return;
+                this.$.revertDialog.showModal();
             },
             collapseAllMessages: function() {
                 this.$.messages.toggleAll({active: false});
