@@ -106,7 +106,7 @@
                 var email = event.target.textContent;
                 var input = this.querySelector("input");
                 var range = this.termRange;
-                var value = email.substring(range.text.length);
+                var value = email.substring(range.text.length) + ", ";
 
                 // Restore selection to where the autocomplete expects it. This prevents the user from
                 // selecting some random text and then clicking a suggestion which might destroy their
