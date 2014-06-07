@@ -6,8 +6,8 @@ h2 {
 }
 
 .commit-status {
-    border: 1px solid #e5e5e5;
-    margin: 1em 16px;
+    border-bottom: 1px solid #e5e5e5;
+    margin: 0.5em 16px;
 }
 
 .issue-subject {
