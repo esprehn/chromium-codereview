@@ -14,10 +14,18 @@ function PatchSet(issue, id)
 }
 
 PatchSet.DETAIL_URL = "/api/{1}/{2}/?comments=true"
+PatchSet.REVERT_URL = "/api/{1}/{2}/revert";
 
 PatchSet.prototype.getDetailUrl = function()
 {
     return PatchSet.DETAIL_URL.assign(
+        encodeURIComponent(this.issue.id),
+        encodeURIComponent(this.id));
+};
+
+PatchSet.prototype.getRevertUrl = function()
+{
+    return PatchSet.REVERT_URL.assign(
         encodeURIComponent(this.issue.id),
         encodeURIComponent(this.id));
 };
@@ -28,6 +36,27 @@ PatchSet.prototype.loadDetails = function()
     return loadJSON(this.getDetailUrl()).then(function(data) {
         patchset.parseData(data);
         return patchset;
+    });
+};
+
+PatchSet.prototype.revert = function(options)
+{
+    if (!options.reason)
+        return Promise.reject(new Error("Must supply a reason"));
+    var patchset = options;
+    this.createRevertData(options).then(function(data) {
+        return sendFormData(patchset.getRevertUrl(), data);
+    });
+};
+
+PatchSet.prototype.createRevertData = function(options)
+{
+    return User.loadCurrentUser(true).then(function(user) {
+        return {
+            xsrf_token: user.xsrfToken,
+            revert_reason: options.reason,
+            revert_cq: options.cq ? "1" : "0",
+        };
     });
 };
 
