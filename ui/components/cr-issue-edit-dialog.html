@@ -1,7 +1,7 @@
 
-<link rel="import" href="cr-user-autocomplete.html">
 <link rel="import" href="cr-butterbar.html">
 <link rel="import" href="cr-button.html">
+<link rel="import" href="cr-issue-editor.html">
 <link rel="import" href="cr-toolbar.html">
 
 <polymer-element name="cr-issue-edit-dialog" attributes="issue">
@@ -21,42 +21,6 @@
                 -webkit-user-select: none;
                 cursor: default;
             }
-
-            .issue-edit-fields {
-                display: table;
-                width: 100%;
-            }
-
-            .issue-edit-row {
-                display: table-row;
-            }
-
-            .issue-edit-label {
-                font-weight: bold;
-                color: #959595;
-                -webkit-user-select: none;
-                cursor: default;
-            }
-
-            .issue-edit-field {
-                width: 100%;
-                position: relative;
-            }
-
-            .issue-edit-label,
-            .issue-edit-field {
-                display: table-cell;
-                padding: 1em 16px;
-                vertical-align: top;
-            }
-
-            .issue-edit-error {
-                display: block;
-                color: #DD4B39;
-                font-weight: bold;
-                padding-top: 0.5em;
-            }
-
         </style>
 
         <dialog id="dialog" on-cancel="{{ cancel }}">
@@ -64,43 +28,7 @@
 
             <h1>Edit Issue</h1>
 
-            <fieldset class="issue-edit-fields" disabled?="{{ saving }}">
-                <div class="issue-edit-row">
-                    <label class="issue-edit-label" for="subject">Title</label>
-                    <div class="issue-edit-field">
-                        <input type="text" id="subject" value="{{ subject }}" autocomplete="off" class="{{ {invalid: errors.subject} | tokenList }}">
-                        <div class="issue-edit-error">{{ errors.subject }}</div>
-                    </div>
-                </div>
-
-                <div class="issue-edit-row">
-                    <label class="issue-edit-label" for="reviewers">Reviewers</label>
-                    <div class="issue-edit-field">
-                        <cr-user-autocomplete id="reviewerAutocomplete" value="{{ reviewers }}">
-                            <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off" class="{{ {invalid: errors.reviewers} | tokenList }}">
-                        </cr-user-autocomplete>
-                        <div class="issue-edit-error">{{ errors.reviewers }}</div>
-                    </div>
-                </div>
-
-                <div class="issue-edit-row">
-                    <label class="issue-edit-label" for="cc">CC</label>
-                    <div class="issue-edit-field">
-                        <cr-user-autocomplete id="ccAutocomplete" value="{{ cc }}">
-                            <input type="text" id="cc" value="{{ cc }}" autocomplete="off" class="{{ {invalid: errors.cc} | tokenList }}">
-                        </cr-user-autocomplete>
-                        <div class="issue-edit-error">{{ errors.cc }}</div>
-                    </div>
-                </div>
-
-                <div class="issue-edit-row">
-                    <label class="issue-edit-label" for="description">Description</label>
-                    <div class="issue-edit-field">
-                        <textarea id="description" value="{{ description }}" rows="20" class="{{ {invalid: errors.description} | tokenList }}"></textarea>
-                        <div class="issue-edit-error">{{ errors.description }}</div>
-                    </div>
-                </div>
-            </fieldset>
+            <cr-issue-editor id="editor" issue="{{ issue }}" errors="{{ errors }}" disabled?="{{ saving }}"></cr-issue-editor>
 
             <cr-toolbar>
                 <cr-button primary on-tap="{{ save }}">Save</cr-button>
@@ -111,18 +39,12 @@
     <script>
         Polymer("cr-issue-edit-dialog", {
             issue: null,
-            subject: "",
-            reviewers: "",
-            cc: "",
-            description: "",
-            errors: null,
+            errors: {},
             butterbarMessage: "",
             saving: false,
             cancel: function(event) {
-                if (this.$.reviewerAutocomplete.active || this.$.ccAutocomplete.active) {
+                if (this.$.editor.dismissAutocomplete()) {
                     event.preventDefault();
-                    this.$.reviewerAutocomplete.resetAutocomplete();
-                    this.$.ccAutocomplete.resetAutocomplete();
                     return;
                 }
                 this.close();
@@ -137,13 +59,7 @@
                 this.$.dialog.close();
             },
             save: function() {
-                var data = {
-                    subject: this.subject,
-                    reviewers: this.reviewers,
-                    cc: this.cc,
-                    description: this.description,
-                    closed: this.issue.closed,
-                };
+                var data = this.$.editor.createEditData();
                 this.saving = true;
                 this.butterbarMessage = "Saving...";
                 this.issue.edit(data)
@@ -165,10 +81,7 @@
             showModal: function() {
                 if (!this.issue)
                     return;
-                this.subject = this.issue.subject;
-                this.description = this.issue.description;
-                this.reviewers = this.issue.reviewerEmails();
-                this.cc = this.issue.ccEmails();
+                this.$.editor.reset();
                 this.$.dialog.showModal();
             },
         });

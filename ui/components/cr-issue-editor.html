@@ -1,0 +1,121 @@
+
+<link rel="import" href="cr-user-autocomplete.html">
+
+<polymer-element name="cr-issue-editor" attributes="issue errors disabled">
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <style>
+            .issue-edit-fields {
+                display: table;
+                width: 100%;
+            }
+
+            .issue-edit-row {
+                display: table-row;
+            }
+
+            .issue-edit-label {
+                font-weight: bold;
+                color: #959595;
+                -webkit-user-select: none;
+                cursor: default;
+            }
+
+            .issue-edit-field {
+                width: 100%;
+                position: relative;
+            }
+
+            .issue-edit-label,
+            .issue-edit-field {
+                display: table-cell;
+                padding: 1em 16px;
+                vertical-align: top;
+            }
+
+            .issue-edit-error {
+                display: block;
+                color: #DD4B39;
+                font-weight: bold;
+                padding-top: 0.5em;
+            }
+
+        </style>
+
+        <fieldset class="issue-edit-fields" disabled?="{{ disabled }}">
+            <div class="issue-edit-row">
+                <label class="issue-edit-label" for="subject">Title</label>
+                <div class="issue-edit-field">
+                    <input type="text" id="subject" value="{{ subject }}" autocomplete="off" class="{{ {invalid: errors.subject} | tokenList }}">
+                    <div class="issue-edit-error">{{ errors.subject }}</div>
+                </div>
+            </div>
+
+            <div class="issue-edit-row">
+                <label class="issue-edit-label" for="reviewers">Reviewers</label>
+                <div class="issue-edit-field">
+                    <cr-user-autocomplete id="reviewerAutocomplete" value="{{ reviewers }}">
+                        <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off" class="{{ {invalid: errors.reviewers} | tokenList }}">
+                    </cr-user-autocomplete>
+                    <div class="issue-edit-error">{{ errors.reviewers }}</div>
+                </div>
+            </div>
+
+            <div class="issue-edit-row">
+                <label class="issue-edit-label" for="cc">CC</label>
+                <div class="issue-edit-field">
+                    <cr-user-autocomplete id="ccAutocomplete" value="{{ cc }}">
+                        <input type="text" id="cc" value="{{ cc }}" autocomplete="off" class="{{ {invalid: errors.cc} | tokenList }}">
+                    </cr-user-autocomplete>
+                    <div class="issue-edit-error">{{ errors.cc }}</div>
+                </div>
+            </div>
+
+            <div class="issue-edit-row">
+                <label class="issue-edit-label" for="description">Description</label>
+                <div class="issue-edit-field">
+                    <textarea id="description" value="{{ description }}" rows="20" class="{{ {invalid: errors.description} | tokenList }}"></textarea>
+                    <div class="issue-edit-error">{{ errors.description }}</div>
+                </div>
+            </div>
+        </fieldset>
+    </template>
+    <script>
+        Polymer("cr-issue-editor", {
+            issue: null,
+            subject: "",
+            reviewers: "",
+            cc: "",
+            description: "",
+            errors: null,
+            disabled: false,
+            reset: function() {
+                this.disabled = false;
+                if (!this.issue)
+                    return;
+                this.subject = this.issue.subject;
+                this.description = this.issue.description;
+                this.reviewers = this.issue.reviewerEmails();
+                this.cc = this.issue.ccEmails();
+            },
+            dismissAutocomplete: function() {
+                if (this.$.reviewerAutocomplete.active || this.$.ccAutocomplete.active) {
+                    this.$.reviewerAutocomplete.resetAutocomplete();
+                    this.$.ccAutocomplete.resetAutocomplete();
+                    return true;
+                }
+                return false;
+            },
+            createEditData: function() {
+                var data = {
+                    subject: this.subject,
+                    reviewers: this.reviewers,
+                    cc: this.cc,
+                    description: this.description,
+                    closed: this.issue.closed,
+                };
+                return data;
+            },
+        });
+    </script>
+</polymer-element>
