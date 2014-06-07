@@ -1,7 +1,7 @@
 
 <link rel="import" href="cr-user-autocomplete.html">
 
-<polymer-element name="cr-issue-editor" attributes="issue errors disabled">
+<polymer-element name="cr-issue-editor" attributes="issue errors disabled fields">
     <template>
         <link rel="stylesheet" href="common.css">
         <style>
@@ -43,41 +43,49 @@
         </style>
 
         <fieldset class="issue-edit-fields" disabled?="{{ disabled }}">
-            <div class="issue-edit-row">
-                <label class="issue-edit-label" for="subject">Title</label>
-                <div class="issue-edit-field">
-                    <input type="text" id="subject" value="{{ subject }}" autocomplete="off" class="{{ {invalid: errors.subject} | tokenList }}">
-                    <div class="issue-edit-error">{{ errors.subject }}</div>
+            <template if="{{ fields | contains('subject') }}">
+                <div class="issue-edit-row">
+                    <label class="issue-edit-label" for="subject">Title</label>
+                    <div class="issue-edit-field">
+                        <input type="text" id="subject" value="{{ subject }}" autocomplete="off" class="{{ {invalid: errors.subject} | tokenList }}">
+                        <div class="issue-edit-error">{{ errors.subject }}</div>
+                    </div>
                 </div>
-            </div>
+            </template>
 
-            <div class="issue-edit-row">
-                <label class="issue-edit-label" for="reviewers">Reviewers</label>
-                <div class="issue-edit-field">
-                    <cr-user-autocomplete id="reviewerAutocomplete" value="{{ reviewers }}">
-                        <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off" class="{{ {invalid: errors.reviewers} | tokenList }}">
-                    </cr-user-autocomplete>
-                    <div class="issue-edit-error">{{ errors.reviewers }}</div>
+            <template if="{{ fields | contains('reviewers') }}">
+                <div class="issue-edit-row">
+                    <label class="issue-edit-label" for="reviewers">Reviewers</label>
+                    <div class="issue-edit-field">
+                        <cr-user-autocomplete id="reviewerAutocomplete" value="{{ reviewers }}">
+                            <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off" class="{{ {invalid: errors.reviewers} | tokenList }}">
+                        </cr-user-autocomplete>
+                        <div class="issue-edit-error">{{ errors.reviewers }}</div>
+                    </div>
                 </div>
-            </div>
+            </template>
 
-            <div class="issue-edit-row">
-                <label class="issue-edit-label" for="cc">CC</label>
-                <div class="issue-edit-field">
-                    <cr-user-autocomplete id="ccAutocomplete" value="{{ cc }}">
-                        <input type="text" id="cc" value="{{ cc }}" autocomplete="off" class="{{ {invalid: errors.cc} | tokenList }}">
-                    </cr-user-autocomplete>
-                    <div class="issue-edit-error">{{ errors.cc }}</div>
+            <template if="{{ fields | contains('cc') }}">
+                <div class="issue-edit-row">
+                    <label class="issue-edit-label" for="cc">CC</label>
+                    <div class="issue-edit-field">
+                        <cr-user-autocomplete id="ccAutocomplete" value="{{ cc }}">
+                            <input type="text" id="cc" value="{{ cc }}" autocomplete="off" class="{{ {invalid: errors.cc} | tokenList }}">
+                        </cr-user-autocomplete>
+                        <div class="issue-edit-error">{{ errors.cc }}</div>
+                    </div>
                 </div>
-            </div>
+            </template>
 
-            <div class="issue-edit-row">
-                <label class="issue-edit-label" for="description">Description</label>
-                <div class="issue-edit-field">
-                    <textarea id="description" value="{{ description }}" rows="20" class="{{ {invalid: errors.description} | tokenList }}"></textarea>
-                    <div class="issue-edit-error">{{ errors.description }}</div>
+            <template if="{{ fields | contains('description') }}">
+                <div class="issue-edit-row">
+                    <label class="issue-edit-label" for="description">Description</label>
+                    <div class="issue-edit-field">
+                        <textarea id="description" value="{{ description }}" rows="20" class="{{ {invalid: errors.description} | tokenList }}"></textarea>
+                        <div class="issue-edit-error">{{ errors.description }}</div>
+                    </div>
                 </div>
-            </div>
+            </template>
         </fieldset>
     </template>
     <script>
@@ -89,6 +97,7 @@
             description: "",
             errors: null,
             disabled: false,
+            fields: "subject description reviewers cc",
             reset: function() {
                 this.disabled = false;
                 if (!this.issue)
@@ -115,6 +124,9 @@
                     closed: this.issue.closed,
                 };
                 return data;
+            },
+            contains: function(list, value) {
+                return list && list.indexOf(value) != -1;
             },
         });
     </script>
