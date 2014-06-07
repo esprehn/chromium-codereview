@@ -208,8 +208,8 @@ Issue.prototype.createPublishData = function(options)
         var addAsReviewer = options.addAsReviewer;
         var publishDrafts = options.publishDrafts;
         var commit = options.commit;
-        var reviewers = issue.reviewerEmails();
-        var cc = issue.ccEmails();
+        var reviewers = Object.has(options, "reviewers") ? options.reviewers : issue.reviewerEmails();
+        var cc = Object.has(options, "cc") ? options.cc : issue.ccEmails();
         if (options.lgtm) {
             message = "lgtm\n\n" + message;
             addAsReviewer = true;

@@ -1,6 +1,7 @@
 
 <link rel="import" href="cr-butterbar.html">
 <link rel="import" href="cr-button.html">
+<link rel="import" href="cr-issue-editor.html">
 <link rel="import" href="cr-toolbar.html">
 
 <polymer-element name="cr-issue-publish-dialog" attributes="issue">
@@ -39,10 +40,17 @@
             }
         </style>
 
-        <dialog id="dialog" on-cancel="{{ sending }}">
+        <dialog id="dialog" on-cancel="{{ cancel }}">
             <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
 
             <h1>Publish Comments</h1>
+
+            <cr-issue-editor
+                id="editor"
+                fields="cc reviewers"
+                issue="{{ issue }}"
+                errors="{{ errors }}"
+                disabled?="{{ saving }}"></cr-issue-editor>
 
             <fieldset class="issue-publish-fields" disabled?="{{ sending }}">
                 <label class="issue-publish-label" for="message">Message</label>
@@ -66,12 +74,18 @@
             sending: false,
             commit: false,
             cancel: function(event) {
+                if (this.$.editor.dismissAutocomplete()) {
+                    event.preventDefault();
+                    return;
+                }
                 this.close();
             },
             reset: function() {
+                this.$.editor.reset();
                 this.sending = false;
                 this.butterbarMessage = "";
-                this.message = "";  
+                this.message = "";
+                this.$.editor.dismissAutocomplete();
             },
             close: function() {
                 this.reset();
@@ -81,12 +95,11 @@
                 this.send({commit: true});
             },
             send: function(options) {
-                var data = {
-                    message: this.message,
-                    addAsReviewer: true,
-                    publishDrafts: true,
-                    commit: options.commit,
-                };
+                var data = this.$.editor.createEditData();
+                data.message = this.message;
+                data.addAsReviewer = true;
+                data.publishDrafts = true;
+                data.commit = options.commit;
                 this.sending = true;
                 this.butterbarMessage = "Saving...";
                 this.issue.publish(data)
@@ -105,6 +118,7 @@
             showModal: function() {
                 if (!this.issue)
                     return;
+                this.$.editor.reset();
                 this.$.dialog.showModal();
             },
         });
