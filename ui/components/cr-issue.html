@@ -47,13 +47,11 @@
                 </cr-toolbar>
 
                 <template if="{{ issue.commit }}">
-                    <div class="commit-status">
-                        <h2>Commit status</h2>
-                        <cr-issue-try-results results="{{ issue.patchsets[issue.patchsets.length - 1].tryJobResults }}"></cr-issue-try-results>
-                        <cr-toolbar>
-                            <cr-button on-tap="{{ toggleCommit }}">Cancel commit</cr-button>
-                        </cr-toolbar>
-                    </div>
+                    <h2>Commit status</h2>
+                    <cr-issue-try-results results="{{ issue.patchsets[issue.patchsets.length - 1].tryJobResults }}"></cr-issue-try-results>
+                    <cr-toolbar class="issue-toolbar">
+                        <cr-button on-tap="{{ toggleCommit }}">Cancel commit</cr-button>
+                    </cr-toolbar>
                 </template>
 
                 <div class="issue-description">
