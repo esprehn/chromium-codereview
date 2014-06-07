@@ -4,7 +4,7 @@
 <link rel="import" href="cr-issue-editor.html">
 <link rel="import" href="cr-toolbar.html">
 
-<polymer-element name="cr-issue-publish-dialog" attributes="issue">
+<polymer-element name="cr-issue-publish-dialog" attributes="issue addAsReviewer">
     <template>
         <link rel="stylesheet" href="common.css">
         <style>
@@ -63,6 +63,10 @@
                 <cr-button primary on-tap="{{ send }}">Send</cr-button>
                 <cr-button  on-tap="{{ sendAndCommit }}">Send + CQ</cr-button>
                 <cr-button on-tap="{{ cancel }}">Cancel</cr-button>
+                <label>
+                    <input type="checkbox" checked="{{ addAsReviewer }}">
+                    Add as reviewer
+                </label>
             </cr-toolbar>
         </dialog>
     </template>
@@ -72,7 +76,7 @@
             message: "",
             butterbarMessage: "",
             sending: false,
-            commit: false,
+            addAsReviewer: true,
             cancel: function(event) {
                 if (this.$.editor.dismissAutocomplete()) {
                     event.preventDefault();
@@ -83,6 +87,7 @@
             reset: function() {
                 this.$.editor.reset();
                 this.sending = false;
+                this.addAsReviewer = true;
                 this.butterbarMessage = "";
                 this.message = "";
                 this.$.editor.dismissAutocomplete();
@@ -97,7 +102,7 @@
             send: function(options) {
                 var data = this.$.editor.createEditData();
                 data.message = this.message;
-                data.addAsReviewer = true;
+                data.addAsReviewer = this.addAsReviewer;
                 data.publishDrafts = true;
                 data.commit = options.commit;
                 this.sending = true;
