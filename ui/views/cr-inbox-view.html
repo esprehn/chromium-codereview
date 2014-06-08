@@ -34,6 +34,9 @@
             failed: false,
             attached: function() {
                 var self = this;
+                this.fire("title-change", {
+                    value: "My issues"
+                });
                 var issues = new IssueList();
                 issues.loadIssues().then(function() {
                     self.issues = issues;

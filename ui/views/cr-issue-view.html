@@ -43,8 +43,14 @@
             },
             loadIssue: function() {
                 var self = this;
+                this.fire("title-change", {
+                    value: "Issue " + this.issueId
+                });
                 var issue = new Issue(this.issueId);
                 return issue.loadDetails().then(function() {
+                    self.fire("title-change", {
+                        value: "Issue " + issue.id + ": " + issue.subject
+                    });
                     // FIXME: We should load patchsets on demand, unfortunately we can't
                     // get the patchset titles from the JSON we load. We could switch to
                     // screen scraping the issue page but that would be really slow.

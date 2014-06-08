@@ -19,6 +19,7 @@
 
 <link rel="import" href="cr-route.html">
 <link rel="import" href="cr-view.html">
+<link rel="import" href="cr-document-title.html">
 
 <link rel="import" href="../views/cr-inbox-view.html">
 <link rel="import" href="../views/cr-issue-view.html">
@@ -60,6 +61,7 @@
                 <span>Chromium Code Review</span>
             </a>
         </header>
+        <cr-document-title titlesuffix="Code Review"></cr-document-title>
         <cr-view>
             <cr-route path="/" element="cr-inbox-view"></cr-route>
             <cr-route path="/issue/:issueid" element="cr-issue-view"></cr-route>

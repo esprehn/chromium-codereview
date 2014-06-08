@@ -1,0 +1,34 @@
+
+<polymer-element name="cr-document-title" attributes="titlePrefix titleSuffix">
+    <template>
+        <style>
+            :host { display: none; }
+        </style>
+    </template>
+    <script>
+        Polymer("cr-document-title", {
+            titlePrefix: "",
+            titleSuffix: "",
+            created: function() {
+                this.handleTitleChange = this.handleTitleChange.bind(this);
+            },
+            attached: function() {
+                document.addEventListener("title-change", this.handleTitleChange);
+            },
+            detached: function() {
+                document.removeEventListener("title-change", this.handleTitleChange);
+            },
+            handleTitleChange: function(event) {
+                var value = event.detail.value || "";
+                var title = this.titlePrefix;
+                if (title.length && value.length)
+                    title += ": ";
+                if (value.length)
+                    title += value;
+                if (this.titleSuffix)
+                    title += " - " + this.titleSuffix;
+                document.title = title;
+            },
+        });
+    </script>
+</polymer-element>
