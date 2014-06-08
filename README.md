@@ -12,6 +12,6 @@ Getting started
 
 Note: Chrome 36+ is required.
 
-The application works by redirecting navigations to codereview.chromium.org to /app/ which
-the server will respond to with a 404. It then replaces the 404 page with the app. This
-is done since most rietveld pages take a long time to load, but the 404 page is fast.
+The application works by redirecting navigations to codereview.chromium.org to /static/app/
+which the server will respond to with a 404. It then replaces the 404 page with the app.
+This is done since most rietveld pages take a long time to load, but the 404 page is fast.
