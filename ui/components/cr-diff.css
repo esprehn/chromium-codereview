@@ -25,6 +25,11 @@
     flex: 1;
 }
 
+.text,
+.row cr-action {
+    padding: 0 16px;
+}
+
 .line-number,
 .text {
     white-space: pre-wrap;
