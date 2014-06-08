@@ -19,7 +19,7 @@
 
   "content_scripts": [
     {
-      "matches": ["https://codereview.chromium.org/app/*"],
+      "matches": ["https://codereview.chromium.org/static/app/*"],
       "js": [
         "ui/base.js",
         "ui/resources.js",

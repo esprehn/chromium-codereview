@@ -1,6 +1,6 @@
 
 var URL_PATTERN = /^https?:\/\/codereview.chromium.org\/(\d+)?\/?$/;
-var APP_URL = "https://codereview.chromium.org/app/";
+var APP_URL = "https://codereview.chromium.org/static/app/";
 
 chrome.webNavigation.onBeforeNavigate.addListener(function(details) {
     var url = details.url;
