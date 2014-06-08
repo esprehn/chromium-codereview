@@ -42,7 +42,9 @@
 
             <cr-toolbar>
                 <cr-button primary on-tap="{{ send }}">Send</cr-button>
-                <cr-button  on-tap="{{ sendAndCommit }}">Send + CQ</cr-button>
+                <template if="{{ !issue.closed }}">
+                    <cr-button  on-tap="{{ sendAndCommit }}">Send + CQ</cr-button>
+                </template>
                 <cr-button on-tap="{{ cancel }}">Cancel</cr-button>
                 <template if="{{ !userIsOwner }}">
                     <label>

@@ -28,8 +28,8 @@
 
             <div class="issue-content">
                 <cr-toolbar class="issue-toolbar">
+                    <cr-button on-tap="{{ showPublishDialog }}" create>Publish</cr-button>
                     <template if="{{ !issue.closed }}">
-                        <cr-button on-tap="{{ showPublishDialog }}" create>Publish</cr-button>
                         <cr-button on-tap="{{ quickLgtm }}">Quick LGTM</cr-button>
                         <cr-button on-tap="{{ quickLgtmAndCommit }}">Quick LGTM + CQ</cr-button>
                         <template if="{{ !issue.commit }}">
