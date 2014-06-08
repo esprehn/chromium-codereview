@@ -96,7 +96,9 @@
                     text: name,
                 };
                 Search.findUsers(name).then(function(users) {
-                    self.completions = users;
+                    // Don't overwrite completions if a new search has been made.
+                    if (self.termRange.text == name)
+                        self.completions = users;
                 });
             },
             selectUser: function(event) {
