@@ -94,8 +94,10 @@
             if (!key)
                 return;
             for (var i = 0; i < instances.length; ++i) {
-                if (instances[i].handleKeyEvent(key, event))
-                    return;
+                if (instances[i].handleKeyEvent(key, event)) {
+                    event.preventDefault();
+                    return false;
+                }
             }
         }
 

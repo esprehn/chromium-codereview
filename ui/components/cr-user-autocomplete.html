@@ -1,4 +1,6 @@
 
+<link rel="import" href="cr-keyboard.html">
+
 <polymer-element name="cr-user-autocomplete" attributes="value">
     <template>
         <style>
@@ -24,7 +26,7 @@
                 padding: 0.5em 16px;
             }
 
-            .completion:hover {
+            .selected {
                 background-color: #eee;
             }
 
@@ -36,11 +38,15 @@
         <content on-focusout="{{ dismiss }}"></content>
 
         <template if="{{ completions.length }}">
-            <div id="completions" on-tap="{{ selectUser }}" on-focusin="{{ preventDismiss }}" on-focusout="{{ allowDismiss }}">
+            <div id="completions" on-tap="{{ commit }}" on-focusin="{{ preventDismiss }}" on-focusout="{{ allowDismiss }}" on-mouseover="{{ selectOption }}">
                 <template repeat="{{ user, i in completions }}">
-                    <div class="completion" role="button" tabindex="0">{{ user.email }}</div>
+                    <div data-index="{{ i }}" class="completion {{ {selected:i == selectedIndex} | tokenList }}" tabindex="0">{{ user.email }}</div>
                 </template>
             </div>
+            <cr-keyboard
+                on-key-down="{{ nextOption }}"
+                on-key-up="{{ previousOption }}"
+                on-key-enter="{{ commit }}"></cr-keyboard>
         </template>
     </template>
     <script>
@@ -51,6 +57,7 @@
             didComplete: false,
             shouldDismiss: true,
             active: false,
+            selectedIndex: 0,
             dismiss: function() {
                 if (!this.shouldDismiss)
                     return;
@@ -67,6 +74,18 @@
             },
             completionsChanged: function(oldValue, newValue) {
                 this.active = newValue.length;
+                this.selectedIndex = 0;
+            },
+            nextOption: function(event) {
+                this.selectedIndex = Math.min(this.completions.length - 1, this.selectedIndex + 1);
+            },
+            previousOption: function(event) {
+                this.selectedIndex = Math.max(0, this.selectedIndex - 1);
+            },
+            selectOption: function(event) {
+                if (!event.target.classList.contains("completion"))
+                    return;
+                this.selectedIndex = event.target.dataset.index;
             },
             valueChanged: function(oldValue, newValue) {
                 var NAME_PATTERN = /[a-z0-9.\-_]+/;
@@ -101,14 +120,14 @@
                         self.completions = users;
                 });
             },
-            selectUser: function(event) {
-                if (!event.target.classList.contains("completion"))
+            commit: function() {
+                var user = this.completions[this.selectedIndex];
+                if (!user)
                     return;
 
-                var email = event.target.textContent;
                 var input = this.querySelector("input");
                 var range = this.termRange;
-                var value = email.substring(range.text.length) + ", ";
+                var value = user.email.substring(range.text.length) + ", ";
 
                 // Restore selection to where the autocomplete expects it. This prevents the user from
                 // selecting some random text and then clicking a suggestion which might destroy their
