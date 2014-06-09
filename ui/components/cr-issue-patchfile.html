@@ -11,7 +11,7 @@
             <div class="file-status">{{ file.status }}</div>
             <div class="file-removed">-{{ file.removed }}</div>
             <div class="file-added">+{{ file.added }}</div>
-            <div class="file-name"><cr-action on-tap="{{ toggleDiff }}">{{ file.name }}</cr-action></div>
+            <div class="file-name"><cr-action on-tap="{{ toggleDiff }}" selectable>{{ file.name }}</cr-action></div>
             <div class="file-messages">
                 {{ file.messageCount | pluralize("comment") }}
                 <template if="{{ file.draftCount }}">
