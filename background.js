@@ -23,4 +23,9 @@ chrome.webNavigation.onBeforeNavigate.addListener(function(details) {
     if (issueId)
         url += issueId;
     chrome.tabs.update(details.tabId, {url:url});
+}, {
+    url: [
+        {hostEquals: "chromiumcodereview.appspot.com"},
+        {hostEquals: "codereview.chromium.org"},
+    ]
 });
