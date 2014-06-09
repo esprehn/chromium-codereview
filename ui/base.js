@@ -8,5 +8,7 @@ function toArray(value)
 // https://github.com/Polymer/ShadowDOM/issues/395
 Element.prototype.remove = function()
 {
+    if (!this.parentNode)
+        return;
     this.parentNode.removeChild(this);
 }

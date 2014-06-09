@@ -1,0 +1,62 @@
+
+<link rel="import" href="cr-dialog-backdrop.html">
+<link rel="import" href="cr-keyboard.html">
+
+<polymer-element name="cr-dialog" extends="dialog">
+    <template>
+        <style>
+        :host(.polyfill) {
+            position: absolute;
+            left: 0;
+            right: 0;
+            width: -webkit-fit-content;
+            height: -webkit-fit-content;
+            margin: auto;
+            background: white;
+            z-index: 100;
+        }
+
+        :host(.polyfill:not([open])) {
+            display: none;
+        }
+        </style>
+        <content></content>
+        <template if="{{ polyfill && open }}">
+            <cr-keyboard on-key-escape="{{ fireCancelEvent }}"></sd-keyboard>
+        </template>
+    </template>
+    <script>
+    (function() {
+        var backdrop = document.createElement("cr-dialog-backdrop");
+        Polymer("cr-dialog", {
+            polyfill: !window.HTMLDialogElement,
+            created: function() {
+                if (!this.polyfill)
+                    return;
+                this.classList.add("polyfill");
+                this.showModal = function() {
+                    this.open = true;
+                    this.setAttribute("open", "");
+                    document.body.appendChild(backdrop);
+                    this.async(function() {
+                        // Focus the first input.
+                        var input = this.querySelector("input, textarea, * /deep/ input, * /deep/ textarea");
+                        if (input)
+                            input.focus();
+                    });
+                };
+                this.close = function() {
+                    if (!this.open)
+                        return;
+                    this.removeAttribute("open");
+                    backdrop.remove();
+                };
+                this.fireCancelEvent = function() {
+                    if (this.dispatchEvent(new CustomEvent("cancel")))
+                        this.close();
+                };
+            },
+        });
+    })();
+    </script>
+</ploymer-element>

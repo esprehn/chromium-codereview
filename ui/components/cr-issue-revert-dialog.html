@@ -1,6 +1,7 @@
 
 <link rel="import" href="cr-butterbar.html">
 <link rel="import" href="cr-button.html">
+<link rel="import" href="cr-dialog.html">
 <link rel="import" href="cr-toolbar.html">
 
 <polymer-element name="cr-issue-revert-dialog" attributes="patchset">
@@ -20,7 +21,7 @@
             }
         </style>
 
-        <dialog id="dialog" on-cancel="{{ cancel }}">
+        <dialog is="cr-dialog" id="dialog" on-cancel="{{ cancel }}">
             <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
 
             <h1>Revert patch</h1>

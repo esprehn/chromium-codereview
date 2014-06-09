@@ -1,6 +1,7 @@
 
 <link rel="import" href="cr-butterbar.html">
 <link rel="import" href="cr-button.html">
+<link rel="import" href="cr-dialog.html">
 <link rel="import" href="cr-issue-editor.html">
 <link rel="import" href="cr-toolbar.html">
 
@@ -21,7 +22,7 @@
             }
         </style>
 
-        <dialog id="dialog" on-cancel="{{ cancel }}">
+        <dialog is="cr-dialog" id="dialog" on-cancel="{{ cancel }}">
             <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
 
             <h1>Publish Comments</h1>

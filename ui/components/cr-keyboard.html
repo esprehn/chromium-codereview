@@ -47,6 +47,7 @@
             8: "delete",
             9: "tab",
             20: "space",
+            27: "escape",
             "!": "exclamation",
             "@": "at",
             "#": "pound",
@@ -82,8 +83,10 @@
 
         function convertKey(event) {
             var key = event.keyIdentifier || event.key;
-            if (key.indexOf("U+") != -1)
-                return KEY_MAP[String.fromCharCode(parseInt(key.replace("U+", "0x")))];
+            if (key.indexOf("U+") != -1) {
+                var code = parseInt(key.replace("U+", "0x"));
+                return KEY_MAP[code] || KEY_MAP[String.fromCharCode(code)];
+            }
             if (KEY_MAP[key])
                 return KEY_MAP[key];
             return key.toLowerCase();
