@@ -11,16 +11,18 @@
 <link rel="import" href="cr-issue-try-results.html">
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-toolbar.html">
+<link rel="import" href="cr-view-handler.html">
 
 <polymer-element name="cr-issue" attributes="issue" on-butterbar-update="{{ updateButterbar }}">
     <template>
+        <cr-view-handler></cr-view-handler>
         <link rel="stylesheet" href="common.css">
         <link rel="stylesheet" href="cr-issue.css">
 
         <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
 
         <h1 class="issue-subject">
-            Issue <a href="#/issue/{{ issue.id }}">{{ issue.id }}</a><template if="{{ issue.closed }}"> (Closed)</template>: {{ issue.subject }}
+            Issue <a href="/{{ issue.id }}">{{ issue.id }}</a><template if="{{ issue.closed }}"> (Closed)</template>: {{ issue.subject }}
         </h1>
 
         <div class="issue-body">

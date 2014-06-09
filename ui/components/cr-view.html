@@ -1,5 +1,5 @@
 
-<polymer-element name="cr-view">
+<polymer-element name="cr-view" attributes="pathprefix">
     <template>
         <style>
             :host { display: block; }
@@ -9,22 +9,38 @@
         Polymer("cr-view", {
             routes: [],
             activeView: null,
+            pathprefix: "",
             created: function() {
                 this.observer = new MutationObserver(this.childrenChanged.bind(this));
                 this.observer.observe(this, {childList:true});
-
-                // Bind so using addEventListener and later removeEventListener works.
-                this.hashChanged = this.hashChanged.bind(this);
+                this.routeChanged = this.routeChanged.bind(this);
+                this.handleNavigate = this.handleNavigate.bind(this);
             },
             attached: function() {
-                window.addEventListener("hashchange", this.hashChanged);
+                this.async(this.replaceInitialUrl);
+                window.addEventListener("popstate", this.routeChanged);
+                document.addEventListener("navigate", this.handleNavigate);
             },
             detached: function() {
-                window.removeEventListener("hashchange", this.hashChanged);
+                window.removeEventListener("popstate", this.routeChanged);
+                document.removeEventListener("navigate", this.handleNavigate);
             },
-            hashChanged: function() {
+            replaceInitialUrl: function() {
+                var url = window.location.pathname; //+ window.location.search + window.location.hash;
+                if (url.startsWith(this.pathprefix))
+                    url = url.replace(this.pathprefix, "");
+                this.updateUrl(url);
+            },
+            handleNavigate: function(event) {
+                this.updateUrl(event.detail.url);
+            },
+            updateUrl: function(url) {
+                window.history.pushState(null, null, url);
+                this.async(this.routeChanged);
+            },
+            routeChanged: function() {
                 var self = this;
-                var path = this.parseHash(window.location.hash);
+                var path = window.location.pathname;
                 User.loadCurrentUser().then(function() {
                     self.routes.any(function(route) {
                         var newView = route.createView(path);
@@ -40,34 +56,19 @@
             },
             childrenChanged: function() {
                 var routes = toArray(this.querySelectorAll("cr-route"));
-                // Prevent infinite loop inside Shadow DOM polyfill since out ShadowRoot's children
-                // are also our real children.
+                // Prevent infinite loop inside Shadow DOM polyfill since our
+                // ShadowRoot's children are also our real children.
                 if (this.routes.intersect(routes).length === routes.length)
                     return;
                 this.routes = routes;
-                this.async(this.hashChanged);
+                this.async(this.routeChanged);
             },
             swapViews: function(newView) {
                 if (this.activeView)
                     this.activeView.remove();
                 this.activeView = newView;
                 this.shadowRoot.appendChild(newView);
-            },
-            parseHash: function(hash) {
-                // Remove the # and following slash.
-                hash = hash.replace(/^#\/?/, "");
-
-                // We strip a query string from the hash, we don't handle that yet.
-                hash = hash.replace(/\?.*?$/, "");
-
-                // Collapse duplicate slashes.
-                hash = hash.replace(/\/\/+/, "/");
-
-                // Path should always start with a slash.
-                hash = "/" + hash;
-
-                return hash;
-            },
+            }
         });
     </script>
 </polymer-element>

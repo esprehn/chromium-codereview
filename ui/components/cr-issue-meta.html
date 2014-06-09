@@ -1,6 +1,9 @@
 
+<link rel="import" href="cr-view-handler.html">
+
 <polymer-element name="cr-issue-meta" attributes="issue">
     <template>
+        <cr-view-handler></cr-view-handler>
         <link rel="stylesheet" href="common.css">
         <style>
             :host {
@@ -35,7 +38,7 @@
         <template if="{{ issue }}">
             <div class="issue-author issue-meta-item">
                 <div class="issue-meta-type">Owner</div>
-                <div class="issue-meta-value"><a href="#/user/{{ issue.owner.email }}">{{ issue.owner.displayName }}</a></div>
+                <div class="issue-meta-value"><a href="/user/{{ issue.owner.email }}">{{ issue.owner.displayName }}</a></div>
             </div>
             <div class="issue-created issue-meta-item">
                 <div class="issue-meta-type">Created</div>
@@ -60,7 +63,7 @@
                 <div class="issue-meta-type">Reviewers</div>
                 <div class="issue-meta-value">
                     <template repeat="{{ user, i in issue.reviewers }}">
-                        <a class="issue-reviewer {{ {approval: issue.scores[user.email] == 1, disapproval: issue.scores[user.email] == -1} | tokenList }}" href="#/user/{{ user.email }}">{{ user.displayName }}</a>
+                        <a class="issue-reviewer {{ {approval: issue.scores[user.email] == 1, disapproval: issue.scores[user.email] == -1} | tokenList }}" href="/user/{{ user.email }}">{{ user.displayName }}</a>
                     </template>
                 </div>
             </div>
@@ -68,7 +71,7 @@
                 <div class="issue-meta-type">CC</div>
                 <div class="issue-meta-value">
                     <template repeat="{{ user, i in issue.cc }}">
-                        <a class="issue-cced" href="#/user/{{ user.email }}">{{ user.displayName }}</a>
+                        <a class="issue-cced" href="/user/{{ user.email }}">{{ user.displayName }}</a>
                     </template>
                 </div>
             </div>

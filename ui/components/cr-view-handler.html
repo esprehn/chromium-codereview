@@ -1,0 +1,58 @@
+<!--
+    Use to make all links in a component view navigation aware. This will trap
+    clicks to links in that component and then redirect the navigation to the
+    <cr-view> component by dispatching a "navigate" event.
+
+    To use just add the component to the <template> inside all components that
+    use <a href> where the link should switch to a different view.
+
+    This is done instead of having a special <cr-link> element to avoid having
+    to create hundreds of extra custom elements on list pages, and to make
+    adding new links to components more obvious.
+
+    ex.
+        <cr-view-handler></cr-view-handler>
+-->
+<polymer-element name="cr-view-handler">
+    <template>
+        <style>
+            :host { display: block; }
+        </style>
+    </template>
+    <script>
+        Polymer("cr-view-handler", {
+            created: function() {
+                this.handleClick = this.handleClick.bind(this);
+            },
+            attached: function() {
+                this.scope = this.enclosingTreeScope();
+                this.scope.addEventListener("click", this.handleClick);
+            },
+            detached: function() {
+                this.scope.removeEventListener("click", this.handleClick);
+            },
+            handleClick: function(event) {
+                var a = this.findEnclosingLink(event.target);
+                if (!a)
+                    return;
+                if (!a.href.startsWith(window.location.origin))
+                    return;
+                event.preventDefault();
+                this.asyncFire("navigate", {
+                    url: a.pathname + a.search + a.hash
+                });
+            },
+            findEnclosingLink: function(node) {
+                while (node && node.nodeName != "A")
+                    node = node.parentNode;
+                return node;
+            },
+            enclosingTreeScope: function() {
+                var scope = this;
+                while (scope.parentNode)
+                    scope = scope.parentNode;
+                return scope;
+            },
+        });
+    </script>
+</polymer-element>

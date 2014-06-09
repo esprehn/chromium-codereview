@@ -19,14 +19,16 @@
 
 <link rel="import" href="cr-route.html">
 <link rel="import" href="cr-view.html">
+<link rel="import" href="cr-view-handler.html">
 <link rel="import" href="cr-document-title.html">
 
 <link rel="import" href="../views/cr-inbox-view.html">
 <link rel="import" href="../views/cr-issue-view.html">
 <link rel="import" href="../views/cr-user-view.html">
 
-<polymer-element name="cr-app">
+<polymer-element name="cr-app" noscript>
     <template>
+        <cr-view-handler></cr-view-handler>
         <link rel="stylesheet" href="common.css">
         <style>
             :host { display: block; }
@@ -56,24 +58,16 @@
             }
         </style>
         <header>
-            <a href="{{ homeUrl }}">
+            <a href="/">
                 <img src="../images/chromium-logo.png">
                 <span>Chromium Code Review</span>
             </a>
         </header>
         <cr-document-title titlesuffix="Code Review"></cr-document-title>
-        <cr-view>
+        <cr-view pathprefix="/static/app">
             <cr-route path="/" element="cr-inbox-view"></cr-route>
-            <cr-route path="/issue/:issueid" element="cr-issue-view"></cr-route>
             <cr-route path="/user/:username" element="cr-user-view"></cr-route>
+            <cr-route path="/:issueid" element="cr-issue-view"></cr-route>
         </cr-view>
     </template>
-    <script>
-        Polymer("cr-app", {
-            homeUrl: "",
-            created: function() {
-                this.homeUrl = "//{1}{2}#/".assign(window.location.host, window.location.pathname);
-            },
-        });
-    </script>
 </polymer-element>

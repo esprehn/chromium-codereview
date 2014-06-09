@@ -1,6 +1,9 @@
 
+<link rel="import" href="cr-view-handler.html">
+
 <polymer-element name="cr-issue-list" attributes="issues">
     <template>
+        <cr-view-handler></cr-view-handler>
         <style>
             :host {
                 display: table;
@@ -39,7 +42,7 @@
             }
         </style>
         <template repeat="{{ issue in issues }}">
-            <a href="#/issue/{{ issue.id }}" class="issue">
+            <a href="/{{ issue.id }}" class="issue">
                 <span class="issue-id issue-data">{{ issue.id }}</span>
                 <span class="issue-owner issue-data">{{ issue.owner.displayName }}</span>
                 <span class="issue-subject issue-data">{{ issue.subject }}</span>
