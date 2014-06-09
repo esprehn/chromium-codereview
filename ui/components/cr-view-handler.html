@@ -32,6 +32,8 @@
                 this.scope.removeEventListener("click", this.handleClick);
             },
             handleClick: function(event) {
+                if (event.metaKey || event.ctrlKey)
+                    return;
                 var a = this.findEnclosingLink(event.target);
                 if (!a)
                     return;
