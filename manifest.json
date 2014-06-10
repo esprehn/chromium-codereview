@@ -23,6 +23,7 @@
       "js": [
         "ui/base.js",
         "ui/resources.js",
+        "ui/dom.js",
         "ui/main.js"
       ],
       "run_at": "document_start"
