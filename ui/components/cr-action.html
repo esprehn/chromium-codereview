@@ -17,18 +17,21 @@
                 text-decoration: underline;
             }
         </style>
-        <a tabindex="0"
-            on-keypress="{{ handleKeypress }}"
+        <a href="/#"
+            on-keyup="{{ handleKeyup }}"
             on-click="{{ handleClick }}"><content></content></a>
     </template>
     <script>
         Polymer("cr-action", {
-            handleKeypress: function(event) {
-                // Enter key
+            handleKeyup: function(event) {
+                // Enter and spacebar keys
                 if (event.keyCode == 13 || event.keyCode == 32) {
                     this.fire("tap");
                     event.preventDefault();
                 }
+            },
+            handleClick: function(event) {
+                event.preventDefault();
             },
         });
     </script>
