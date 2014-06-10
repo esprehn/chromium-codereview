@@ -62,25 +62,6 @@ PatchFile.computeLanguage = function(name)
     return "";
 };
 
-// FIXME: This is a terrible hack to get the message that matches a saved draft,
-// instead the API should give you back the messageId and have a real JSON response.
-PatchFile.findDraftInDocument = function(document, text)
-{
-    var trimmedText = text.compact().replace(/\n/g, "");
-    var comments = document.querySelectorAll(".comment-border");
-    for (var i = 0; i < comments.length; ++i) {
-        var message = new PatchFileMessage();
-        message.parseDraftElement(comments[i]);
-        if (!message.draft)
-            continue;
-        if (message.text.compact().replace(/\n/g, "") != trimmedText)
-            continue;
-        message.text = text;
-        return message;
-    }
-    return null;
-};
-
 PatchFile.prototype.shouldResetEmbeddedLanguage = function(language, text)
 {
     if (!this.containsEmbeddedLanguages)
@@ -200,17 +181,25 @@ PatchFile.prototype.getContextUrl = function(start, end)
 
 PatchFile.prototype.saveDraft = function(message, newText)
 {
-    return this.createDraftData(message, message.date).then(function(data) {
+    return this.createDraftData(message).then(function(data) {
         data.text = newText;
         return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
-            return PatchFile.findDraftInDocument(xhr.response, newText);
+            var id = PatchFileMessage.findDraftMessageId(xhr.response);
+            if (!id)
+                throw new Error("Cannot save draft");
+            // This isn't really the correct date, but it's good enough to just
+            // approximate that it was saved right now.
+            message.date = Date.utc.create();
+            message.messageId = id;
+            message.text = newText;
+            return true;
         });
     });
 };
 
 PatchFile.prototype.discardDraft = function(message)
 {
-    return this.createDraftData(message, true).then(function(data) {
+    return this.createDraftData(message).then(function(data) {
         data.old_text = message.text;
         data.text = "";
         data.file = "";
@@ -220,9 +209,9 @@ PatchFile.prototype.discardDraft = function(message)
     });
 };
 
-PatchFile.prototype.createDraftData = function(message, loadMessageId)
+PatchFile.prototype.createDraftData = function(message)
 {
-    var data = {
+    return Promise.resolve({
         snapshot: message.left ? "old" : "new",
         lineno: message.line,
         side: message.left ? "a" : "b",
@@ -231,31 +220,6 @@ PatchFile.prototype.createDraftData = function(message, loadMessageId)
         patch: this.id,
         text: message.text,
         message_id: message.messageId,
-    };
-    if (message.messageId || !loadMessageId)
-        return Promise.resolve(data);
-    return this.loadDraftMessageId(message).then(function(messageId) {
-        data.message_id = messageId;
-        return data;
-    });
-};
-
-PatchFile.prototype.loadDraftMessageId = function(message)
-{
-    var data = {
-        snapshot: message.left ? "old" : "new",
-        lineno: message.line,
-        side: message.left ? "a" : "b",
-        issue: this.patchset.issue.id,
-        patchset: this.patchset.id,
-        patch: this.id,
-        text: "",
-    };
-    return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
-        var draft = PatchFile.findDraftInDocument(xhr.response, message.text);
-        if (draft)
-            return draft.messageId;
-        return "";
     });
 };
 

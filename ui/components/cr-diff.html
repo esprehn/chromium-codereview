@@ -67,11 +67,8 @@
                 this.fire("butterbar-update", {
                     message: "Saving..."
                 });
-                this.file.saveDraft(message, text).then(function(savedMessage) {
+                this.file.saveDraft(message, text).then(function() {
                     self.fire("butterbar-update");
-                    if (!message.date)
-                        self.file.addMessage(message);
-                    target.message = savedMessage;
                     target.expanded = false;
                 }).catch(function(e) {
                     self.fire("butterbar-update");
