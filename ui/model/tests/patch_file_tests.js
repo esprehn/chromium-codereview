@@ -1,5 +1,27 @@
 
 describe("PatchFile should", function() {
+    it("parse file extensions into syntax highlighting languages", function() {
+        expect(PatchFile.computeLanguage("")).toBe("");
+        expect(PatchFile.computeLanguage("Document.h")).toBe("cpp");
+        expect(PatchFile.computeLanguage("Document.cpp")).toBe("cpp");
+        expect(PatchFile.computeLanguage("path/test.html")).toBe("html");
+        expect(PatchFile.computeLanguage("dir/test.xhtml")).toBe("html");
+        expect(PatchFile.computeLanguage("example.js")).toBe("javascript");
+        expect(PatchFile.computeLanguage("this_is.file.css")).toBe("css");
+        expect(PatchFile.computeLanguage("image.xml")).toBe("xml");
+        expect(PatchFile.computeLanguage("image.svg")).toBe("xml");
+        expect(PatchFile.computeLanguage("horror.pl")).toBe("perl");
+        expect(PatchFile.computeLanguage("horror2.pm")).toBe("perl");
+        expect(PatchFile.computeLanguage("//./.py/horror1.cgi")).toBe("perl");
+        expect(PatchFile.computeLanguage("snakesonaplane.py")).toBe("python");
+        expect(PatchFile.computeLanguage("gems.rb")).toBe("ruby");
+        expect(PatchFile.computeLanguage("cocoa.mm")).toBe("objectivec");
+        expect(PatchFile.computeLanguage("../.file/data.json")).toBe("json");
+        expect(PatchFile.computeLanguage("Document.idl")).toBe("actionscript");
+        expect(PatchFile.computeLanguage("Document.map")).toBe("");
+        expect(PatchFile.computeLanguage("Document.h.")).toBe("");
+        expect(PatchFile.computeLanguage("Document.cpp/")).toBe("");
+    });
     it("only parse positive or zero delta numbers", function() {
         var file = new PatchFile();
 
