@@ -38,17 +38,26 @@
             routeChanged: function() {
                 var self = this;
                 var path = window.location.pathname;
-                User.loadCurrentUser().then(function() {
-                    self.routes.any(function(route) {
-                        var newView = route.createView(path);
-                        if (!newView)
-                            return false;
+                self.routes.any(function(route) {
+                    var newView = route.createView(path);
+                    if (!newView)
+                        return false;
+                    if (path == "/login") {
                         self.swapViews(newView);
                         return true;
+                    }
+                    User.loadCurrentUser().then(function() {
+                        self.swapViews(newView);
+                    }).catch(function(e) {
+                        if (e instanceof XMLHttpRequest && !e.status) {
+                            self.asyncFire("navigate", {
+                                url: "/login#" + path,
+                            });
+                        }
+                        // FIXME: Handle there not being a current user or an error.
+                        console.log(e);
                     });
-                }).catch(function(e) {
-                    console.log(e);
-                    // FIXME: Handle there not being a current user or an error.
+                    return true;
                 });
             },
             childrenChanged: function() {

@@ -1,0 +1,37 @@
+
+<polymer-element name="cr-login-view">
+    <template>
+        <style>
+            :host { display: block; }
+
+            h1 {
+                margin: 0;
+                padding: 1em 16px;
+                font-size: 1.5em;
+                text-align: center;
+            }
+        </style>
+        <h1>Please <a href="{{ loginUrl }}">login</a> to use the Chrome Code Review tool.</h1>
+    </template>
+    <script>
+    (function() {
+        var REDIRECT_URL = "https://www.google.com/accounts/ServiceLogin?service=ah&passive=true&continue=https://appengine.google.com/_ah/conflogin%3Fcontinue%3D{1}&ltmpl=gm";
+        Polymer("cr-login-view", {
+            loginUrl: "",
+            attached: function() {
+                // FIXME: Must redirect through /static/app because of some strangeness
+                // with extension where the webNavigation handlers aren't called on the
+                // redirect that is issued after login.
+                var url = window.location.protocol
+                    + "//"
+                    + window.location.hostname
+                    + window.location.port
+                    + "/static/app"
+                    + window.location.hash.replace("#", "");
+                this.loginUrl = REDIRECT_URL.assign(encodeURIComponent(url));
+                console.log(url);
+            },
+        });
+    })();
+    </script>
+</polymer-element>

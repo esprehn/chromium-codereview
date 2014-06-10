@@ -1,6 +1,6 @@
 
 var APPSPOT_URL_PATTERN = /^https?:\/\/chromiumcodereview\.appspot\.com/;
-var APP_REDIRECT_URL_PATTERN = /^https?:\/\/codereview\.chromium\.org\/((\d+)|user\/[^\/]+)?\/?$/;
+var APP_REDIRECT_URL_PATTERN = /^https?:\/\/codereview\.chromium\.org\/((\d+)|login(#.*)?|user\/[^\/]+)?\/?$/;
 var LEGACY_REDIRECT_URL_PATTERN = /^https:\/\/codereview.chromium.org\/static\/app\/#\/issue\/(\d+)?\/?$/;
 
 var CHROMIUM_URL = "https://codereview.chromium.org";

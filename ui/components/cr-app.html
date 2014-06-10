@@ -25,6 +25,7 @@
 
 <link rel="import" href="../views/cr-inbox-view.html">
 <link rel="import" href="../views/cr-issue-view.html">
+<link rel="import" href="../views/cr-login-view.html">
 <link rel="import" href="../views/cr-user-view.html">
 
 <polymer-element name="cr-app" noscript>
@@ -67,6 +68,7 @@
         <cr-document-title titlesuffix="Code Review"></cr-document-title>
         <cr-view pathprefix="/static/app">
             <cr-route path="/" element="cr-inbox-view"></cr-route>
+            <cr-route path="/login" element="cr-login-view"></cr-route>
             <cr-route path="/user/:username" element="cr-user-view"></cr-route>
             <cr-route path="/:issueid" element="cr-issue-view"></cr-route>
         </cr-view>
