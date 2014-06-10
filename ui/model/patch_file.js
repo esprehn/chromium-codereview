@@ -22,6 +22,7 @@ PatchFile.REVIEW_URL = "/{1}/diff/{2}/{3}";
 PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
 PatchFile.CONTEXT_URL = "/{1}/diff_skipped_lines/{2}/{3}/{4}/{5}/a/2000";
 PatchFile.COMMENT_URL = "/inline_draft";
+PatchFile.IMAGE_URL = "/{1}/image/{2}/{3}/{4}";
 
 PatchFile.MIXED_LANGUAGES = {
     "html": true,
@@ -169,6 +170,24 @@ PatchFile.prototype.getDiffUrl = function()
         encodeURIComponent(this.id));
 };
 
+PatchFile.prototype.getOldImageUrl = function()
+{
+    return PatchFile.IMAGE_URL.assign(
+        encodeURIComponent(this.patchset.issue.id),
+        encodeURIComponent(this.patchset.id),
+        encodeURIComponent(this.id),
+        0);
+};
+
+PatchFile.prototype.getNewImageUrl = function()
+{
+    return PatchFile.IMAGE_URL.assign(
+        encodeURIComponent(this.patchset.issue.id),
+        encodeURIComponent(this.patchset.id),
+        encodeURIComponent(this.id),
+        1);
+};
+
 PatchFile.prototype.getContextUrl = function(start, end)
 {
     return PatchFile.CONTEXT_URL.assign(
@@ -255,7 +274,7 @@ PatchFile.prototype.parseDiff = function(text)
     if (!result[0] || result[0].name != this.name)
         throw new Error("No diff available");
     var diff = result[0];
-    if (!diff.copy)
+    if (!diff.copy || diff.isImage)
         return result[0];
     return this.loadContext(0, Number.MAX_SAFE_INTEGER).then(function(lines) {
         return {

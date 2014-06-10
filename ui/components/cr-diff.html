@@ -1,4 +1,5 @@
 
+<link rel="import" href="cr-diff-image.html">
 <link rel="import" href="cr-patch-file-message.html">
 
 <script src="../lib/highlight/highlight.pack.js"></script>
@@ -123,6 +124,12 @@
                 var file = this.file;
                 var language = file.language;
                 var self = this;
+                if (this.diff.isImage) {
+                    var image = document.createElement("cr-diff-image");
+                    image.file = file;
+                    output.appendChild(image);
+                    return;
+                }
                 this.diff.groups.forEach(function(group) {
                     var section = document.createElement("div");
                     output.appendChild(section);

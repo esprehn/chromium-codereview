@@ -1,0 +1,29 @@
+
+<polymer-element name="cr-diff-image">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            img {
+                padding-right: 16px;
+            }
+        </style>
+        <img src="{{ oldImageUrl }}">
+        <img src="{{ newImageUrl }}">
+    </template>
+    <script>
+        Polymer("cr-diff-image", {
+            file: null,
+            oldImageUrl: null,
+            newImageUrl: null,
+            fileChanged: function() {
+                if (!this.file)
+                    return;
+                this.oldImageUrl = this.file.getOldImageUrl();
+                this.newImageUrl = this.file.getNewImageUrl();
+            },
+        });
+    </script>
+</ploymer-element>

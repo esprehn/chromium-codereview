@@ -54,6 +54,10 @@
     cursor: pointer;
 }
 
+cr-diff-image {
+    margin-left: 108px;
+}
+
 .messages {
     border: 1px solid #ccc;
     margin-left: calc(6em + 32px);
