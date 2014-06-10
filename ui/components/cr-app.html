@@ -40,6 +40,8 @@
                 font-size: 1.1em;
                 -webkit-user-select: none;
                 cursor: default;
+                display: flex;
+                align-items: center;
             }
 
             header span,
@@ -47,12 +49,25 @@
                 vertical-align: middle;
             }
 
-            header a:link,
-            header a:visited {
+            .title {
+                flex: 1;
+            }
+
+            .title a:link,
+            .title a:visited {
                 padding: 0.25em 4px;
                 display: inline-block;
                 color: white;
                 text-decoration: none;
+            }
+
+            .bug-report a {
+                color: #D99E05;
+            }
+
+            .bug-report {
+                flex-shrink: 0;
+                padding-right: 16px;
             }
 
             header img {
@@ -60,10 +75,17 @@
             }
         </style>
         <header>
-            <a href="/">
-                <img src="../images/chromium-logo.png">
-                <span>Chromium Code Review</span>
-            </a>
+            <div class="title">
+                <a href="/">
+                    <img src="../images/chromium-logo.png">
+                    <span>Chromium Code Review</span>
+                </a>
+            </div>
+            <div class="bug-report">
+                <a href="https://github.com/esprehn/chromium-codereview/issues/new" target="_blank">
+                    Report a bug
+                </a>
+            </div>
         </header>
         <cr-document-title titlesuffix="Code Review"></cr-document-title>
         <cr-view pathprefix="/static/app">
