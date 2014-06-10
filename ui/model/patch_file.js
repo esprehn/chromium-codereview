@@ -271,7 +271,7 @@ PatchFile.prototype.parseDiff = function(text)
 {
     var parser = new DiffParser(text);
     var result = parser.parse();
-    if (!result[0] || result[0].name != this.name)
+    if (!result || !result[0] || result[0].name != this.name)
         throw new Error("No diff available");
     var diff = result[0];
     if (!diff.copy || diff.isImage)
@@ -311,6 +311,10 @@ PatchFile.prototype.parseContext = function(data)
     for (var i = 0; i < data.length; i += 2) {
         var newLine = PatchFile.parseContextLine(data[i][1][1][1]);
         var oldLine = PatchFile.parseContextLine(data[i][1][0][1]);
+        // FIXME: Rietveld will respond with mysterious lines sometimes, for now
+        // we harden the code to skip them instead of throwing errors.
+        if (!newLine || !oldLine)
+            continue;
         lines.push({
             type: "both",
             beforeNumber: oldLine.lineNumber,
@@ -326,6 +330,8 @@ PatchFile.prototype.parseContext = function(data)
 
 PatchFile.parseContextLine = function(text)
 {
+    if (!text)
+        return null;
     var numberStart = 0;
     while (text[numberStart] == " " && numberStart < text.length)
         ++numberStart;
