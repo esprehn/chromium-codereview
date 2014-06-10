@@ -1,6 +1,6 @@
 
 var APPSPOT_URL_PATTERN = /^https?:\/\/chromiumcodereview\.appspot\.com/;
-var APP_REDIRECT_URL_PATTERN = /^https?:\/\/codereview\.chromium\.org\/(\d+)?\/?$/;
+var APP_REDIRECT_URL_PATTERN = /^https?:\/\/codereview\.chromium\.org\/((\d+)|user\/[^\/]+)?\/?$/;
 var LEGACY_REDIRECT_URL_PATTERN = /^https:\/\/codereview.chromium.org\/static\/app\/#\/issue\/(\d+)?\/?$/;
 
 var CHROMIUM_URL = "https://codereview.chromium.org";
@@ -18,10 +18,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(function(details) {
         match = url.match(LEGACY_REDIRECT_URL_PATTERN);
     if (!match)
         return;
-    var issueId = parseInt(match[1], 10);
-    var url = APP_URL;
-    if (issueId)
-        url += issueId;
+    var url = APP_URL + (match[1] || "");
     chrome.tabs.update(details.tabId, {url:url});
 }, {
     url: [
