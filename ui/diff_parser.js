@@ -8,7 +8,10 @@ function DiffParser(text)
 DiffParser.HEADER_BEGIN = "Index: ";
 DiffParser.HEADER_END = "+++ ";
 DiffParser.BINARY_HEADER_END = "Binary files ";
+DiffParser.COPY_HEADER_END = "similarity index ";
 DiffParser.PNG_SUFFIX = ".png";
+DiffParser.COPY_FROM_PREFIX = "copy from ";
+DiffParser.COPY_TO_PREFIX = "copy to ";
 DiffParser.HEADER_PATTERN = /^@@ \-(\d+),[^+]+\+(\d+)(,\d+)? @@ ?(.*)/;
 
 DiffParser.prototype.peekLine = function()
@@ -136,34 +139,55 @@ DiffParser.prototype.parseFile = function()
     return groups;
 };
 
+DiffParser.prototype.parseCopy = function()
+{
+    var result = {
+        from: "",
+        to: "",
+    };
+    while (this.haveLines()) {
+        var line = this.takeLine();
+        if (line.startsWith(DiffParser.COPY_FROM_PREFIX))
+            result.from = line.from(DiffParser.COPY_FROM_PREFIX.length);
+        else if (line.startsWith(DiffParser.COPY_TO_PREFIX))
+            result.to = line.from(DiffParser.COPY_TO_PREFIX.length);
+    }
+    return result;
+};
+
 DiffParser.prototype.parseHeader = function()
 {
     while (this.haveLines()) {
         var line = this.takeLine();
         if (line.startsWith(DiffParser.HEADER_END))
-            return false;
+            return "text";
         if (line.startsWith(DiffParser.BINARY_HEADER_END))
-            return true;
+            return "binary"
+        if (line.startsWith(DiffParser.COPY_HEADER_END))
+            return "copy";
     }
-    throw new Error("Parse error: Failed to find '{1}' or '{2}'".assign(
+    throw new Error("Parse error: Failed to find one of '{1}', '{2}' or '{3}'".assign(
         DiffParser.HEADER_END,
-        DiffParser.BINARY_HEADER_END));
+        DiffParser.BINARY_HEADER_END,
+        DiffParser.COPY_HEADER_END));
 };
 
 DiffParser.prototype.parse = function()
 {
     var result = [];
     while (this.haveLines()) {
-      var line = this.takeLine();
-      if (!line.startsWith(DiffParser.HEADER_BEGIN))
-          continue;
-      var name = line.slice(DiffParser.HEADER_BEGIN.length);
-      var isBinary = this.parseHeader();
-      result.push({
-          name: name,
-          isImage: isBinary && name.endsWith(DiffParser.PNG_SUFFIX),
-          groups: this.parseFile(),
-      });
+        var line = this.takeLine();
+        if (!line.startsWith(DiffParser.HEADER_BEGIN))
+            continue;
+        var name = line.slice(DiffParser.HEADER_BEGIN.length);
+        var type = this.parseHeader();
+        var copy = (type == "copy") ? this.parseCopy() : null;
+        result.push({
+            name: name,
+            isImage: type != "text" && name.endsWith(DiffParser.PNG_SUFFIX),
+            copy: copy,
+            groups: this.parseFile(),
+        });
     }
     return result;
 };

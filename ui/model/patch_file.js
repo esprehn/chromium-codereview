@@ -244,11 +244,37 @@ PatchFile.prototype.loadDiff = function()
 {
     var file = this;
     return loadText(this.getDiffUrl()).then(function(text) {
-        var parser = new DiffParser(text);
-        var result = parser.parse();
-        if (result[0] && result[0].name == file.name)
-            return result[0];
+        return file.parseDiff(text);
+    });
+};
+
+PatchFile.prototype.parseDiff = function(text)
+{
+    var parser = new DiffParser(text);
+    var result = parser.parse();
+    if (!result[0] || result[0].name != this.name)
         throw new Error("No diff available");
+    var diff = result[0];
+    if (!diff.copy)
+        return result[0];
+    return this.loadContext(0, Number.MAX_SAFE_INTEGER).then(function(lines) {
+        return {
+            name: diff.name,
+            isImage: diff.isImage,
+            copy: diff.copy,
+            groups: [
+                [{
+                    type: "header",
+                    beforeNumber: 0,
+                    afterNumber: 0,
+                    contextLinesStart: 0,
+                    contextLinesEnd: 0,
+                    context: false,
+                    text: "copy from " + diff.copy.from,
+                }],
+                lines
+            ],
+        };
     });
 };
 
