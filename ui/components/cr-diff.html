@@ -130,6 +130,19 @@
                     output.appendChild(image);
                     return;
                 }
+                if (this.diff.from) {
+                    var section = document.createElement("div");
+                    output.appendChild(section);
+                    this.emitLine(section, {
+                        type: "header",
+                        beforeNumber: 0,
+                        afterNumber: 0,
+                        contextLinesStart: 0,
+                        contextLinesEnd: 0,
+                        context: false,
+                        text: this.diff.from,
+                    }, "text");
+                }
                 this.diff.groups.forEach(function(group) {
                     var section = document.createElement("div");
                     output.appendChild(section);

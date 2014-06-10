@@ -6,12 +6,13 @@ function DiffParser(text)
 }
 
 DiffParser.HEADER_BEGIN = "Index: ";
-DiffParser.HEADER_END = "+++ ";
+DiffParser.TEXT_HEADER_END = "+++ ";
 DiffParser.BINARY_HEADER_END = "Binary files ";
-DiffParser.COPY_HEADER_END = "similarity index ";
 DiffParser.PNG_SUFFIX = ".png";
 DiffParser.COPY_FROM_PREFIX = "copy from ";
 DiffParser.COPY_TO_PREFIX = "copy to ";
+DiffParser.RENAME_FROM_PREFIX = "rename from ";
+DiffParser.RENAME_TO_PREFIX = "rename to ";
 DiffParser.HEADER_PATTERN = /^@@ \-(\d+),[^+]+\+(\d+)(,\d+)? @@ ?(.*)/;
 
 DiffParser.prototype.peekLine = function()
@@ -139,37 +140,30 @@ DiffParser.prototype.parseFile = function()
     return groups;
 };
 
-DiffParser.prototype.parseCopy = function()
+DiffParser.prototype.parseHeader = function()
 {
-    var result = {
+    var header = {
+        isBinary: false,
         from: "",
         to: "",
     };
     while (this.haveLines()) {
         var line = this.takeLine();
-        if (line.startsWith(DiffParser.COPY_FROM_PREFIX))
-            result.from = line.from(DiffParser.COPY_FROM_PREFIX.length);
-        else if (line.startsWith(DiffParser.COPY_TO_PREFIX))
-            result.to = line.from(DiffParser.COPY_TO_PREFIX.length);
+        if (line.startsWith(DiffParser.TEXT_HEADER_END)) {
+            header.isBinary = false;
+            break;
+        } else if (line.startsWith(DiffParser.BINARY_HEADER_END)) {
+            header.isBinary = true;
+            break;
+        } else if (line.startsWith(DiffParser.COPY_FROM_PREFIX)
+            || line.startsWith(DiffParser.RENAME_FROM_PREFIX)) {
+            header.from = line;
+        } else if (line.startsWith(DiffParser.COPY_TO_PREFIX)
+            || line.startsWith(DiffParser.RENAME_TO_PREFIX)) {
+            header.to = line;
+        }
     }
-    return result;
-};
-
-DiffParser.prototype.parseHeader = function()
-{
-    while (this.haveLines()) {
-        var line = this.takeLine();
-        if (line.startsWith(DiffParser.HEADER_END))
-            return "text";
-        if (line.startsWith(DiffParser.BINARY_HEADER_END))
-            return "binary"
-        if (line.startsWith(DiffParser.COPY_HEADER_END))
-            return "copy";
-    }
-    throw new Error("Parse error: Failed to find one of '{1}', '{2}' or '{3}'".assign(
-        DiffParser.HEADER_END,
-        DiffParser.BINARY_HEADER_END,
-        DiffParser.COPY_HEADER_END));
+    return header;
 };
 
 DiffParser.prototype.parse = function()
@@ -180,13 +174,15 @@ DiffParser.prototype.parse = function()
         if (!line.startsWith(DiffParser.HEADER_BEGIN))
             continue;
         var name = line.slice(DiffParser.HEADER_BEGIN.length);
-        var type = this.parseHeader();
-        var copy = (type == "copy") ? this.parseCopy() : null;
+        var header = this.parseHeader();
+        var groups = this.parseFile();
         result.push({
             name: name,
-            isImage: type != "text" && name.endsWith(DiffParser.PNG_SUFFIX),
-            copy: copy,
-            groups: this.parseFile(),
+            isImage: header.isBinary && name.endsWith(DiffParser.PNG_SUFFIX),
+            from: header.from,
+            to: header.to,
+            external: !header.isBinary && header.from && !groups.length,
+            groups: groups,
         });
     }
     return result;

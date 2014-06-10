@@ -274,26 +274,11 @@ PatchFile.prototype.parseDiff = function(text)
     if (!result || !result[0] || result[0].name != this.name)
         throw new Error("No diff available");
     var diff = result[0];
-    if (!diff.copy || diff.isImage)
-        return result[0];
+    if (!diff.external)
+        return diff;
     return this.loadContext(0, Number.MAX_SAFE_INTEGER).then(function(lines) {
-        return {
-            name: diff.name,
-            isImage: diff.isImage,
-            copy: diff.copy,
-            groups: [
-                [{
-                    type: "header",
-                    beforeNumber: 0,
-                    afterNumber: 0,
-                    contextLinesStart: 0,
-                    contextLinesEnd: 0,
-                    context: false,
-                    text: "copy from " + diff.copy.from,
-                }],
-                lines
-            ],
-        };
+        diff.groups = [lines];
+        return diff;
     });
 };
 
