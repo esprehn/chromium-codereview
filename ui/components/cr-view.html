@@ -30,7 +30,6 @@
                 if (url.startsWith(this.pathprefix))
                     url = url.replace(this.pathprefix, "");
                 window.history.replaceState(null, null, url);
-                this.async(this.routeChanged);
             },
             handleNavigate: function(event) {
                 window.history.pushState(null, null, event.detail.url);
