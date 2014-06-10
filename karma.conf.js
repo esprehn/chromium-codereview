@@ -16,13 +16,15 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'ui/*.js',
-      'ui/**/*.js'
+      'ui/**/*.js',
+      'ui/resources_mocks.js',
     ],
 
 
     // list of files to exclude
     exclude: [
-      'main.js'
+      'ui/main.js',
+      'ui/resources.js',
     ],
 
 

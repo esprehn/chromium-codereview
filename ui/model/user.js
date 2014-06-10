@@ -125,6 +125,7 @@ User.prototype.parseDetail = function(text)
     if (match) {
         this.email = match[1];
         this.name = match[2];
+        this.displayName = this.email.split("@")[0] || this.name;
     }
 
     match = User.ISSUES_OPEN_PATTERN.exec(text);
