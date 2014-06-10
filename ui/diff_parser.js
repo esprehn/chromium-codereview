@@ -178,10 +178,10 @@ DiffParser.prototype.parse = function()
         var groups = this.parseFile();
         result.push({
             name: name,
-            isImage: header.isBinary && name.endsWith(DiffParser.PNG_SUFFIX),
+            isImage: name.endsWith(DiffParser.PNG_SUFFIX),
             from: header.from,
             to: header.to,
-            external: !header.isBinary && header.from && !groups.length,
+            external: header.from && groups.length == 1,
             groups: groups,
         });
     }

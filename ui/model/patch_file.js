@@ -274,7 +274,7 @@ PatchFile.prototype.parseDiff = function(text)
     if (!result || !result[0] || result[0].name != this.name)
         throw new Error("No diff available");
     var diff = result[0];
-    if (!diff.external)
+    if (!diff.external || diff.isImage)
         return diff;
     return this.loadContext(0, Number.MAX_SAFE_INTEGER).then(function(lines) {
         diff.groups = [lines];
