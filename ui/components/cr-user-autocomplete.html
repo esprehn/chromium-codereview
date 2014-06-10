@@ -40,7 +40,12 @@
         <template if="{{ completions.length }}">
             <div id="completions" on-tap="{{ commit }}" on-focusin="{{ preventDismiss }}" on-focusout="{{ allowDismiss }}" on-mouseover="{{ selectOption }}">
                 <template repeat="{{ user, i in completions }}">
-                    <div data-index="{{ i }}" class="completion {{ {selected:i == selectedIndex} | tokenList }}" tabindex="0">{{ user.email }}</div>
+                    <div data-index="{{ i }}" class="completion {{ {selected:i == selectedIndex} | tokenList }}" tabindex="0">
+                        {{ user.email }}
+                        <template if="{{ user.email != user.name }}">
+                            ({{ user.name }})
+                        </template>
+                    </div>
                 </template>
             </div>
             <cr-keyboard

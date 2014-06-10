@@ -22,7 +22,7 @@ Search.findUsers = function(query, limit)
             user.parseDetail(line);
             users.push(user);
         });
-        return users;
+        return users.sort(User.compareEmail);
     });
 };
 
