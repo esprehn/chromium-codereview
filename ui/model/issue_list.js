@@ -11,14 +11,80 @@ function IssueList()
 }
 
 IssueList.ISSUE_LIST_URL = "/";
+IssueList.CACHE_KEY = "IssueList.cachedIssues";
 
-IssueList.prototype.loadIssues = function()
+IssueList.cachedIssues = null;
+
+IssueList.getCachedIssues = function()
 {
-    var issueList = this;
-    return loadDocument(IssueList.ISSUE_LIST_URL).then(function(document) {
-        issueList.parseDocument(document);
-        return issueList;
+    if (IssueList.cachedIssues)
+        return IssueList.cachedIssues;
+    var html = localStorage.getItem(IssueList.CACHE_KEY);
+    if (!html)
+        return null;
+    var list = new IssueList();
+    var doc = document.implementation.createHTMLDocument();
+    doc.body.innerHTML = html;
+    list.parseDocument(doc);
+    IssueList.cachedIssues = list;
+    return list;
+};
+
+IssueList.prototype.loadIssues = function(cache)
+{
+    var issues = this;
+    return loadDocument(IssueList.ISSUE_LIST_URL).then(function(doc) {
+        if (cache) {
+            localStorage.setItem(IssueList.CACHE_KEY, doc.body.innerHTML);
+            IssueList.cachedIssues = issues;
+        }
+        issues.parseDocument(doc);
+        return issues;
     });
+};
+
+IssueList.prototype.equalStructure = function(other)
+{
+    return User.compare(this.owner, other.owner)
+        && IssueList.equalListStructure(this.incoming, other.incoming)
+        && IssueList.equalListStructure(this.outgoing, other.outgoing)
+        && IssueList.equalListStructure(this.unsent, other.unsent)
+        && IssueList.equalListStructure(this.cc, other.cc)
+        && IssueList.equalListStructure(this.draft, other.draft)
+        && IssueList.equalListStructure(this.closed, other.closed);
+};
+
+// Note: Compares only the data that <cr-inbox-view> cares about.
+IssueList.equalListStructure = function(a, b)
+{
+    if (a.length != b.length)
+        return false;
+    for (var i = 0; i < a.length; ++a) {
+        if (a[i].id != b[i].id
+            || a[i].subject != b[i].subject
+            || a[i].displayName != b[i].displayName) {
+            return false;
+        }
+    }
+    return true;
+};
+
+IssueList.prototype.updateDates = function(other)
+{
+    IssueList.updateListDates(this.incoming, other.incoming);
+    IssueList.updateListDates(this.outgoing, other.outgoing);
+    IssueList.updateListDates(this.unsent, other.unsent);
+    IssueList.updateListDates(this.cc, other.cc);
+    IssueList.updateListDates(this.draft, other.draft);
+    IssueList.updateListDates(this.closed, other.closed);
+};
+
+IssueList.updateListDates = function(a, b)
+{
+    for (var i = 0; i < a.length; ++a) {
+        a[i].created = b[i].created;
+        a[i].lastModified = b[i].lastModified;
+    }
 };
 
 IssueList.convertRelativeDate = function(value)

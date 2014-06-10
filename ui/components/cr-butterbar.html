@@ -1,5 +1,5 @@
 
-<polymer-element name="cr-butterbar" attributes="message">
+<polymer-element name="cr-butterbar" attributes="message action">
     <template>
         <style>
             span {
@@ -24,12 +24,21 @@
             }
         </style>
         <template if="{{ message }}">
-            <span>{{ message }}</span>
+            <span>
+                {{ message }}
+                <template if="{{ action }}">
+                    <cr-action on-tap="{{ activate }}">{{ action }}</cr-action>
+                </template>
+            </span>
         </template>
     </template>
     <script>
         Polymer("cr-butterbar", {
-           message: "",
+            message: "",
+            action: "",
+            activate: function() {
+                this.fire("action-activate");
+            },
         });
     </script>
 </polymer-element>
