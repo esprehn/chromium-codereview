@@ -42,9 +42,7 @@
                 <template repeat="{{ user, i in completions }}">
                     <div data-index="{{ i }}" class="completion {{ {selected:i == selectedIndex} | tokenList }}" tabindex="0">
                         {{ user.email }}
-                        <template if="{{ user.email != user.name }}">
-                            ({{ user.name }})
-                        </template>
+                        ({{ user.name }})
                     </div>
                 </template>
             </div>
