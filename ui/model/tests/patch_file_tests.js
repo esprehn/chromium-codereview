@@ -1,6 +1,6 @@
 
-describe("PatchFile should", function() {
-    it("parse file extensions into syntax highlighting languages", function() {
+describe("PatchFile", function() {
+    it("should parse file extensions into syntax highlighting languages", function() {
         expect(PatchFile.computeLanguage("")).toBe("");
         expect(PatchFile.computeLanguage("Document.h")).toBe("cpp");
         expect(PatchFile.computeLanguage("Document.cpp")).toBe("cpp");
@@ -22,7 +22,38 @@ describe("PatchFile should", function() {
         expect(PatchFile.computeLanguage("Document.h.")).toBe("");
         expect(PatchFile.computeLanguage("Document.cpp/")).toBe("");
     });
-    it("only parse positive or zero delta numbers", function() {
+    it("should maintain message counts", function() {
+        var file = new PatchFile();
+
+        expect(file.messageCount).toBe(0);
+        expect(file.draftCount).toBe(0);
+
+        var message = new PatchFileMessage();
+        message.line = 10;
+        file.addMessage(message);
+        expect(file.messages[10]).toEqual([message]);
+        expect(file.messageCount).toBe(1);
+        expect(file.draftCount).toBe(0);
+
+        var draft = new PatchFileMessage();
+        draft.line = 10;
+        draft.draft = true;
+        file.addMessage(draft);
+        expect(file.messages[10]).toEqual([message, draft]);
+        expect(file.messageCount).toBe(1);
+        expect(file.draftCount).toBe(1);
+
+        file.removeMessage(message);
+        expect(file.messages[10]).toEqual([draft]);
+        expect(file.messageCount).toBe(0);
+        expect(file.draftCount).toBe(1);
+
+        file.removeMessage(draft);
+        expect(file.messages[10]).toEqual([]);
+        expect(file.messageCount).toBe(0);
+        expect(file.draftCount).toBe(0);
+    });
+    it("should only parse positive or zero delta numbers", function() {
         var file = new PatchFile();
 
         expect(file.added).toBe(0);
