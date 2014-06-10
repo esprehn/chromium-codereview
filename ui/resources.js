@@ -63,6 +63,8 @@ function sendFormData(url, data)
 
 function resolveUrl(name)
 {
+    if (!chrome || !chrome.extension)
+        return name;
     return chrome.extension.getURL(name);
 }
 
