@@ -24,6 +24,14 @@
     display: flex;
 }
 
+.message-number {
+    flex-shrink: 0;
+    min-width: 2em;
+    color: #646464;
+    padding-left: 8px;
+    text-align: right;
+}
+
 .message-author {
     flex-shrink: 0;
     font-weight: bold;

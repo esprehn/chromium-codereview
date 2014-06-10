@@ -18,6 +18,7 @@
                     <div class="message-date">
                         {{ message.date | formatDate }}
                     </div>
+                    <div class="message-number">#{{ i + 1 }}</div>
                 </div>
                 <div class="message-text">
                     <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
