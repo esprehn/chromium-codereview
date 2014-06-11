@@ -65,13 +65,15 @@
         <h2>Patchsets</h2>
         <cr-issue-patchsets patchsets="{{ issue.patchsets }}"></cr-issue-patchsets>
 
-        <header>
-            <h2>Messages</h2>
-            <div class="ui-actions">
-                <cr-action on-tap="{{ expandAllMessages }}">Expand All</cr-action> /
-                <cr-action on-tap="{{ collapseAllMessages }}">Collapse All</cr-action>
-            </div>
-        </header>
+        <template if="{{ issue.messages.length }}">
+            <header>
+                <h2>Messages</h2>
+                <div class="ui-actions">
+                    <cr-action on-tap="{{ expandAllMessages }}">Expand All</cr-action> /
+                    <cr-action on-tap="{{ collapseAllMessages }}">Collapse All</cr-action>
+                </div>
+            </header>
+        </template>
 
         <cr-issue-messages messages="{{ issue.messages }}" id="messages" on-message-save="{{ saveMessage }}"></cr-issue-messages>
 
