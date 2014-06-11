@@ -19,6 +19,8 @@ function Issue(id)
     this.commit = false;
     this.id = id || 0;
     this.scores = {}; // Map<email, (-1, 1)>
+    this.approvalCount = 0;
+    this.disapprovalCount = 0;
 }
 
 Issue.DETAIL_URL = "/api/{1}?messages=true";
@@ -123,10 +125,13 @@ Issue.prototype.updateScores = function() {
         if (!message.approval && !message.disapproval)
             return;
         var email = message.author.email;
-        if (message.approval)
+        if (message.approval) {
             issue.scores[email] = 1;
-        else if (message.disapproval)
+            issue.approvalCount++;
+        } else if (message.disapproval) {
             issue.scores[email] = -1;
+            issue.disapprovalCount++;
+        }
         // Rietveld allows removing reviewers even if they lgtm or not lgtm a patch,
         // but still treats them as a reviewer even though the JSON API won't return
         // that user anymore. We add them back here to compensate for the JSON API

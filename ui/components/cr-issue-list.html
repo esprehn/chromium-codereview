@@ -18,11 +18,11 @@
                 cursor: default;
             }
 
-            .issue:nth-child(2n) span {
+            .issue:nth-child(2n) .issue-data {
                 background-color: #F8F8F8;
             }
 
-            .issue:hover span {
+            .issue:hover .issue-data {
                 background-color: #F9F3E4;
             }
 
@@ -40,6 +40,29 @@
             .issue-subject {
                 width: 100%;
             }
+
+            .chip {
+                border-radius: 4px;
+                display: flex;
+                width: 1em;
+                height: 1em;
+            }
+
+            .issue-approval {
+                padding-right: 4px;
+            }
+
+            .issue-disapproval {
+                padding-left: 0;
+            }
+
+            .issue-approval .chip {
+                background-color: #009933;
+            }
+
+            .issue-disapproval .chip {
+                background-color: #DD4B39;
+            }
         </style>
         <template repeat="{{ issue in issues }}">
             <a href="/{{ issue.id }}" class="issue">
@@ -47,6 +70,16 @@
                 <span class="issue-owner issue-data">{{ issue.owner.displayName }}</span>
                 <span class="issue-subject issue-data">{{ issue.subject }}</span>
                 <span class="issue-date issue-data">{{ issue.lastModified | formatDate }}</span>
+                <span class="issue-approval issue-data">
+                    <template if="{{ issue.approvalCount }}">
+                        <span class="chip" title="lgtm by {{ issue.scores | selectKeys(1) }}"></span>
+                    </template>
+                </span>
+                <span class="issue-disapproval issue-data">
+                    <template if="{{ issue.disapprovalCount }}">
+                        <span class="chip" title="not lgtm by {{ issue.scores | selectKeys(-1) }}"></span>
+                    </template>
+                </span>
             </a>
         </template>
     </template>
@@ -57,6 +90,14 @@
                 if (!date)
                     return "";
                 return date.relative();
+            },
+            selectKeys: function(scores, selectedScore) {
+                var users = [];
+                Object.keys(scores, function(name, score) {
+                    if (score == selectedScore)
+                        users.push(name);
+                });
+                return users.sort().join(", ");
             },
         });
     </script>

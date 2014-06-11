@@ -105,17 +105,59 @@ IssueList.convertRelativeDate = function(value)
     return result;
 };
 
-IssueList.convertToUsers = function(value)
+IssueList.convertToUser = function(name)
 {
-    return value.split(",").map(function(value) {
-        return User.forName(value.trim());
-    }).sort(User.compare);
+    return User.forName(name);
+}
+
+IssueList.convertToReviewers = function(node, issue)
+{
+    var links = node.querySelectorAll("a");
+    var users = [];
+
+    function addUser(node) {
+        if (!node)
+            return;
+        var user = User.forName(node.textContent.trim());
+        issue.scores[user.name] = 0;
+        var parentNode = node.parentNode;
+        if (parentNode.className == "approval") {
+            issue.scores[user.name] = 1;
+            issue.approvalCount++;
+        } else if (parentNode.className == "disapproval") {
+            issue.scores[user.name] = -1;
+            issue.disapprovalCount++;
+        }
+        users.push(user);
+    }
+
+    for (var i = 0; i < links.length; ++i)
+        addUser(links[i]);
+
+    var me = toArray(node.querySelectorAll("span")).find(function(node) {
+        return node.textContent == "me";
+    });
+    if (me)
+        addUser(me.firstChild);
+
+    return users.sort(User.compare);
+};
+
+IssueList.serializeWithInnerText = function(node)
+{
+    return node.innerText.trim();
+};
+
+IssueList.serializeToNode = function(node)
+{
+    return node;
 };
 
 IssueList.prototype.parseDocument = function(document)
 {
     var FIELDS = [null, null, "id", "subject", "owner", "reviewers", "messageCount", "draftCount", "lastModified"];
-    var HANDLERS = [null, null, Number, String, User.forName, IssueList.convertToUsers, Number, Number, IssueList.convertRelativeDate];
+    var SERIALIZERS = [null, null, null, null, null, IssueList.serializeToNode, null, null, null];
+    var HANDLERS = [null, null, Number, String, IssueList.convertToUser, IssueList.convertToReviewers, Number, Number, IssueList.convertRelativeDate];
 
     var issueList = this;
 
@@ -143,7 +185,8 @@ IssueList.prototype.parseDocument = function(document)
         for (var td = row.firstElementChild, i = 0; td; td = td.nextElementSibling, ++i) {
             if (!FIELDS[i])
                 continue;
-            issue[FIELDS[i]] = HANDLERS[i](td.innerText.trim());
+            var serializer = SERIALIZERS[i] || IssueList.serializeWithInnerText;
+            issue[FIELDS[i]] = HANDLERS[i](serializer(td), issue);
         }
         currentType.push(issue);
     }
