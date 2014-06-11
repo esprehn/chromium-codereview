@@ -39,7 +39,7 @@
 }
 
 .line-number {
-    width: 3em;
+    min-width: 3em;
     text-align: right;
     color: #444;
     padding-right: 16px;
