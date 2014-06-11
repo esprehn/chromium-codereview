@@ -12,10 +12,7 @@
                 font-size: 2em;
             }
         </style>
-        <cr-butterbar
-            message="{{ butterbarMessage }}"
-            action="{{ butterbarAction }}"
-            on-action-activate="{{ swapIssues }}"></cr-butterbar>
+        <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
         <template if="{{ issues && !failed }}">
             <h1 class="app-header">My Issues</h1>
             <cr-issue-inbox issues="{{ issues }}"></cr-issue-inbox>
@@ -24,51 +21,30 @@
     <script>
         Polymer("cr-inbox-view", {
             issues: null,
-            newIssues: null,
             loading: true,
             failed: false,
             butterbarMessage: "",
-            butterbarAction: "",
             attached: function() {
                 var self = this;
                 this.fire("title-change", {
                     value: "My issues"
                 });
                 this.issues = IssueList.getCachedIssues();
-                if (this.issues)
-                    this.butterbarMessage = "Refreshing your issues.";
-                else
-                    this.butterbarMessage = "Loading your issues.";
+                this.butterbarMessage = "Loading your issues.";
                 var issues = new IssueList();
                 issues.loadIssues(true).then(function() {
                     self.butterbarMessage = "";
-                    self.butterbarAction = "";
-                    if (self.issues && self.issues.equalStructure(issues)) {
-                        // If the issues differ only in dates, update those
-                        // but don't create any new DOM.
+                    // If the issues differ only in dates, update those
+                    // but don't create any new DOM.
+                    if (self.issues && self.issues.equalStructure(issues))
                         self.issues.updateDates(issues);
-                    } else if (self.issues) {
-                        // If we have old issues let the user decide when to swap.
-                        self.newIssues = issues;
-                        self.butterbarMessage = "Updated issues available.";
-                        self.butterbarAction = "Refresh";
-                    } else {
-                        // If we have no existing issues swap right now.
-                        self.newIssues = issues;
-                        self.swapIssues();
-                    }
+                    else
+                        self.issues = issues;
                 }).catch(function(error) {
                     console.log(error);
-                    self.failed = true
+                    self.failed = true;
                     self.butterbarMessage = "Failed to load your issues. :(";
                 });
-            },
-            swapIssues: function() {
-                this.issues = this.newIssues;
-                this.newIssues = null;
-                this.butterbarMessage = "";
-                this.butterbarAction = "";
-                document.body.scrollTop = 0;
             },
         });
     </script>
