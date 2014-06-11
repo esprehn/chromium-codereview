@@ -167,7 +167,7 @@
 
                 var beforeMessages;
                 var before = row.appendChild(document.createElement("div"));
-                before.className = "line-number";
+                before.className = "line-number before-number";
                 if (line.type == "both" || line.type == "remove") {
                     beforeMessages = file.messages[line.beforeNumber];
                     before.textContent = line.beforeNumber;
@@ -178,7 +178,7 @@
 
                 var afterMessages;
                 var after = row.appendChild(document.createElement("div"));
-                after.className = "line-number";
+                after.className = "line-number after-number";
                 if (line.type == "both" || line.type == "add") {
                     afterMessages = file.messages[line.afterNumber];
                     after.textContent = line.afterNumber;

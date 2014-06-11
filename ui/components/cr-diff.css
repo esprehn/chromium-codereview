@@ -46,11 +46,16 @@
     cursor: default;
 }
 
+.after-number {
+    border-right: 1px solid #E4E2E4;
+}
+
 .add .line-number:hover,
 .remove .line-number:hover,
 .both .line-number:hover {
     text-decoration: underline;
     color: #1155CC;
+    background-color: #F1F4F8;
     cursor: pointer;
 }
 
