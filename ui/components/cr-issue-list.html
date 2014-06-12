@@ -63,9 +63,13 @@
             .issue-disapproval .chip {
                 background-color: #DD4B39;
             }
+
+            .updated {
+                font-weight: bold;
+            }
         </style>
         <template repeat="{{ issue in issues }}">
-            <a href="/{{ issue.id }}" class="issue">
+            <a href="/{{ issue.id }}" class="issue {{ {updated: issue.recentActivity} | tokenList }}">
                 <span class="issue-id issue-data">{{ issue.id }}</span>
                 <span class="issue-owner issue-data">{{ issue.owner.displayName }}</span>
                 <span class="issue-subject issue-data">{{ issue.subject }}</span>

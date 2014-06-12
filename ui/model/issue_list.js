@@ -182,6 +182,7 @@ IssueList.prototype.parseDocument = function(document)
         if (!currentType)
             return;
         var issue = new Issue();
+        issue.recentActivity = row.classList.contains("updated");
         for (var td = row.firstElementChild, i = 0; td; td = td.nextElementSibling, ++i) {
             if (!FIELDS[i])
                 continue;
