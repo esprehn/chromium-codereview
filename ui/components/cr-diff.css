@@ -23,6 +23,7 @@
 
 .text {
     flex: 1;
+    border-left: 1px solid #E4E2E4;
 }
 
 .text,
@@ -44,10 +45,6 @@
     color: #444;
     padding-right: 16px;
     cursor: default;
-}
-
-.after-number {
-    border-right: 1px solid #E4E2E4;
 }
 
 .add .line-number:hover,
