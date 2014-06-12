@@ -97,7 +97,6 @@
 
         function convertKey(event) {
             var key = event.keyIdentifier || event.key;
-            console.log(event.keyIdentifier, event.key);
             if (key.indexOf("U+") != -1) {
                 var code = parseInt(key.replace("U+", "0x"), 16);
                 var chr = String.fromCharCode(code).toLowerCase();
