@@ -31,9 +31,9 @@
   ],
 
   "permissions": [
-    "https://codereview.chromium.org/*",
-    "http://codereview.chromium.org/*",
-    "webNavigation",
-    "tabs"
+    "*://chromiumcodereview.appspot.com/*",
+    "*://codereview.chromium.org/*",
+    "webRequest",
+    "webRequestBlocking"
   ]
 }
