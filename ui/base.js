@@ -12,3 +12,11 @@ Element.prototype.remove = function()
         return;
     this.parentNode.removeChild(this);
 }
+
+// We only have String#contains if "Experimental JavaScript is enabled."
+if (!String.prototype.contains) {
+    String.prototype.contains = function(text)
+    {
+        return this.indexOf(text) != -1;
+    }
+}

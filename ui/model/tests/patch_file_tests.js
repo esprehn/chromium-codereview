@@ -22,6 +22,22 @@ describe("PatchFile", function() {
         expect(PatchFile.computeLanguage("Document.h.")).toBe("");
         expect(PatchFile.computeLanguage("Document.cpp/")).toBe("");
     });
+    it("should handle embedded language selection", function() {
+        var html = new PatchFile(null, "example.html");
+        expect(html.selectEmbeddedLanguage("<script type=\"foo\"></script>")).toBe("html");
+        expect(html.selectEmbeddedLanguage("<script></script>")).toBe("html");
+        expect(html.selectEmbeddedLanguage("<script>function() { return 1/script>2; }</script>")).toBe("html");
+        expect(html.selectEmbeddedLanguage("<script>")).toBe("javascript");
+        expect(html.selectEmbeddedLanguage("<script type=\"foo\">")).toBe("javascript");
+        expect(html.selectEmbeddedLanguage("</script>")).toBe("html");
+        expect(html.selectEmbeddedLanguage("<style>")).toBe("css");
+        expect(html.selectEmbeddedLanguage("<style type=example>")).toBe("css");
+        expect(html.selectEmbeddedLanguage("<style type=example>.foo { }</style>")).toBe("html");
+        expect(html.selectEmbeddedLanguage("<style type=example></style>")).toBe("html");
+        var text = new PatchFile(null, "example.cpp");
+        expect(text.selectEmbeddedLanguage("<script></script>")).toBe("cpp");
+        expect(text.selectEmbeddedLanguage("<style></style>")).toBe("cpp");
+    });
     it("should maintain message counts", function() {
         var file = new PatchFile();
 
