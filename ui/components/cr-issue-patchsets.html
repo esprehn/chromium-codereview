@@ -58,6 +58,8 @@
                 <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
             </polymer-ui-collapsible>
         </template>
+
+        <cr-keyboard on-key-e="{{ handleExpandKey }}" global></cr-keyboard>
     </template>
     <script>
         Polymer("cr-issue-patchsets", {
@@ -73,6 +75,18 @@
                 if (messageCount == 1)
                     return messageCount + " comment";
                 return messageCount + " comments";
+            },
+            handleExpandKey: function(event) {
+                event.preventDefault();
+                var sections = this.shadowRoot.querySelectorAll(".patchset");
+                var last = sections[sections.length - 1];
+                if (!last)
+                    return;
+                last.active = true;
+                last.querySelector("cr-issue-patchset").expandAllDiffs();
+                this.async(function() {
+                    last.scrollIntoView(true);
+                });
             },
         });
     </script>
