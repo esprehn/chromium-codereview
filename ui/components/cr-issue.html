@@ -9,6 +9,7 @@
 <link rel="import" href="cr-issue-publish-dialog.html">
 <link rel="import" href="cr-issue-revert-dialog.html">
 <link rel="import" href="cr-issue-try-results.html">
+<link rel="import" href="cr-keyboard.html">
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-toolbar.html">
 <link rel="import" href="cr-view-handler.html">
@@ -80,6 +81,8 @@
         <cr-issue-edit-dialog id="editDialog" issue="{{ issue }}"></cr-issue-edit-dialog>
         <cr-issue-publish-dialog id="publishDialog" issue="{{ issue }}"></cr-issue-publish-dialog>
         <cr-issue-revert-dialog id="revertDialog" patchset="{{ issue.patchsets[issue.patchsets.length - 1] }}"></cr-issue-revert-dialog>
+
+        <cr-keyboard on-key-m="{{ handlePublishKey }}" global></cr-keyboard>
     </template>
     <script>
         Polymer("cr-issue", {
@@ -142,6 +145,10 @@
                     lgtm: true,
                     commit: true,
                 });
+            },
+            handlePublishKey: function(event) {
+                event.preventDefault();
+                this.showPublishDialog();
             },
             publish: function(options) {
                 this.butterbarMessage = "Saving...";

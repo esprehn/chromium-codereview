@@ -13,8 +13,13 @@
 
     keyboard.addEventListener("key-left", previousSlide);
     keyboard.addEventListener("key-right", nextSlide);
+
+    The "global" attribute configures this keyboard listener to be a global key
+    binding which means the <cr-keyboard> instances is assumed to exist all the
+    time but only apply when a non-editable element is focused and no dialogs
+    are open.
 -->
-<polymer-element name="cr-keyboard">
+<polymer-element name="cr-keyboard" attributes="global">
     <template>
         <style>
             :host { display: none; }
@@ -25,26 +30,38 @@
         var instances = [];
 
         Polymer("cr-keyboard", {
+            global: false,
             attached: function() {
                 instances.unshift(this);
             },
             detached: function() {
                 var i = instances.indexOf(this);
-                if (i >= 0) {
+                if (i >= 0)
                     instances.splice(i, 1);
-                }
             },
-            handleKeyEvent: function(key, event) {
-                return this.hasAttribute("on-key-" + key)
-                    && this.fire("key-" + key, event).defaultPrevented;
-            }
+            isActive: function() {
+                if (!this.global)
+                    return true;
+                // FIXME: This doesn't support contenteditable, but we don't use
+                // that yet so there's no need to add the complexity.
+                var activeElement = document.querySelector("* /deep/ :focus");
+                if (activeElement && (activeElement.tagName == "INPUT" || activeElement.tagName == "TEXTAREA"))
+                    return false;
+                var activeDialog = document.querySelector("* /deep/ dialog[open]");
+                if (activeDialog)
+                    return activeDialog.contains(this);
+                return true;
+            },
         });
 
-        var KEY_MAP = {
+        var KEY_CODES = {
             8: "delete",
             9: "tab",
             20: "space",
             27: "escape",
+        };
+
+        var KEY_NAMES = {
             "!": "exclamation",
             "@": "at",
             "#": "pound",
@@ -80,12 +97,18 @@
 
         function convertKey(event) {
             var key = event.keyIdentifier || event.key;
+            console.log(event.keyIdentifier, event.key);
             if (key.indexOf("U+") != -1) {
-                var code = parseInt(key.replace("U+", "0x"));
-                return KEY_MAP[code] || KEY_MAP[String.fromCharCode(code)];
+                var code = parseInt(key.replace("U+", "0x"), 16);
+                var chr = String.fromCharCode(code).toLowerCase();
+                if (KEY_CODES[code])
+                    return KEY_NAMES[code];
+                if (KEY_NAMES[chr])
+                    return KEY_NAMES[chr];
+                return chr;
             }
-            if (KEY_MAP[key])
-                return KEY_MAP[key];
+            if (KEY_NAMES[key])
+                return KEY_NAMES[key];
             return key.toLowerCase();
         }
 
@@ -93,12 +116,11 @@
             var key = convertKey(event);
             if (!key)
                 return;
-            for (var i = 0; i < instances.length; ++i) {
-                if (instances[i].handleKeyEvent(key, event)) {
-                    event.preventDefault();
-                    return false;
-                }
-            }
+            var instance = instances.find(function(instance) {
+                return instance.isActive() && instance.hasAttribute("on-key-" + key);
+            });
+            if (instance && instance.fire("key-" + key, event).defaultPrevented)
+                event.preventDefault();
         }
 
         window.addEventListener("keydown", handleKeyDown);
