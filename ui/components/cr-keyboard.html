@@ -35,11 +35,8 @@
                 }
             },
             handleKeyEvent: function(key, event) {
-                if (this.hasAttribute("on-key-" + key)) {
-                    this.fire("key-" + key, event);
-                    return true;
-                }
-                return false;
+                return this.hasAttribute("on-key-" + key)
+                    && this.fire("key-" + key, event).defaultPrevented;
             }
         });
 

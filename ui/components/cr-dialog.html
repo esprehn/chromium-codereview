@@ -51,8 +51,9 @@
                     this.removeAttribute("open");
                     backdrop.remove();
                 };
-                this.fireCancelEvent = function() {
-                    if (this.dispatchEvent(new CustomEvent("cancel")))
+                this.fireCancelEvent = function(event) {
+                    event.preventDefault();
+                    if (!this.fire("cancel").defaultPrevented)
                         this.close();
                 };
             },

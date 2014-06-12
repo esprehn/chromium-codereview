@@ -80,9 +80,11 @@
                 this.selectedIndex = 0;
             },
             nextOption: function(event) {
+                event.preventDefault();
                 this.selectedIndex = Math.min(this.completions.length - 1, this.selectedIndex + 1);
             },
             previousOption: function(event) {
+                event.preventDefault();
                 this.selectedIndex = Math.max(0, this.selectedIndex - 1);
             },
             selectOption: function(event) {
@@ -123,7 +125,9 @@
                         self.completions = users;
                 });
             },
-            commit: function() {
+            commit: function(event) {
+                event.preventDefault();
+
                 var user = this.completions[this.selectedIndex];
                 if (!user)
                     return;
