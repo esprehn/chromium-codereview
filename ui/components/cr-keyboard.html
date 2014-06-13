@@ -29,12 +29,8 @@
     (function() {
         var instances = [];
 
-        var globalSupported = (function() {
-            var div = document.createElement("div");
-            var root = div.createShadowRoot();
-            root.appendChild(document.createElement("span"));
-            return div.querySelector("* /deep/ span");
-        })();
+        // FIXME: Remove once M35 is stable.
+        var globalSupported = !navigator.userAgent.contains("Chrome/35.");
 
         Polymer("cr-keyboard", {
             global: false,
