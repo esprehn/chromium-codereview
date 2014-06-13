@@ -10,6 +10,7 @@
             activeView: null,
             pathprefix: "",
             created: function() {
+                this.routeChanged = this.routeChanged.bind(this);
                 this.handleNavigate = this.handleNavigate.bind(this);
             },
             attached: function() {
