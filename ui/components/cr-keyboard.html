@@ -29,6 +29,13 @@
     (function() {
         var instances = [];
 
+        var globalSupported = (function() {
+            var div = document.createElement("div");
+            var root = div.createShadowRoot();
+            root.appendChild(document.createElement("span"));
+            return div.querySelector("* /deep/ span");
+        })();
+
         Polymer("cr-keyboard", {
             global: false,
             attached: function() {
@@ -42,6 +49,8 @@
             isActive: function() {
                 if (!this.global)
                     return true;
+                if (!globalSupported)
+                    return false;
                 // FIXME: This doesn't support contenteditable, but we don't use
                 // that yet so there's no need to add the complexity.
                 var activeElement = document.querySelector("* /deep/ :focus");
