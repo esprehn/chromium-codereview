@@ -41,6 +41,15 @@
                 width: 100%;
             }
 
+            .issue-date {
+                min-width: 8em;
+            }
+
+            .issue-owner {
+                min-width: 11em;
+                overflow: hidden;
+            }
+
             .chip {
                 border-radius: 4px;
                 display: flex;
@@ -72,12 +81,18 @@
             .updated {
                 font-weight: bold;
             }
+
+            .owner {
+                max-width: 11em;
+                display: block;
+                overflow: hidden;
+            }
         </style>
         <template repeat="{{ issue in issues }}">
             <a href="/{{ issue.id }}" class="issue {{ {updated: issue.recentActivity} | tokenList }}">
                 <span class="issue-id issue-data">{{ issue.id }}</span>
-                <span class="issue-owner issue-data">{{ issue.owner.displayName }}</span>
                 <span class="issue-subject issue-data">{{ issue.subject }}</span>
+                <span class="issue-owner issue-data"><span class="owner" title="{{ issue.owner.displayName }}">{{ issue.owner.displayName }}</span></span>
                 <span class="issue-date issue-data">{{ issue.lastModified | formatDate }}</span>
                 <span class="issue-approval issue-data">
                     <template if="{{ issue.approvalCount }}">
