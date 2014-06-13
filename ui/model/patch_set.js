@@ -17,6 +17,15 @@ function PatchSet(issue, id)
 PatchSet.DETAIL_URL = "/api/{1}/{2}/?comments=true"
 PatchSet.REVERT_URL = "/api/{1}/{2}/revert";
 
+PatchSet.isSourcePair = function(header, impl)
+{
+    if (!header.endsWith(".h") || !impl.endsWith(".cpp"))
+        return false;
+    var headerPrefix = header.substring(0, header.length - 2);
+    var implPrefix = impl.substring(0, impl.length - 4);
+    return headerPrefix == implPrefix;
+};
+
 PatchSet.prototype.getDetailUrl = function()
 {
     return PatchSet.DETAIL_URL.assign(
@@ -76,11 +85,18 @@ PatchSet.prototype.parseData = function(data)
     this.commentCount = data.num_comments || 0;
     this.created = Date.utc.create(data.created);
 
-    var files = data.files || {};
-    this.files = Object.keys(files).sort().map(function(name) {
+    Object.keys(data.files || {}, function(name, value) {
         var file = new PatchFile(patchset, name);
-        file.parseData(files[name]);
-        return file;
+        file.parseData(value);
+        patchset.files.push(file);
+    });
+
+    this.files.sort(function(a, b) {
+        if (PatchSet.isSourcePair(a.name, b.name))
+            return -1;
+        if (PatchSet.isSourcePair(b.name, a.name))
+            return 1;
+        return a.name.localeCompare(b.name);
     });
 
     this.tryJobResults = (data.try_job_results || []).map(function(resultData) {
