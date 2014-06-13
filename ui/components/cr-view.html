@@ -7,17 +7,16 @@
     </template>
     <script>
         Polymer("cr-view", {
-            routes: [],
             activeView: null,
             pathprefix: "",
             created: function() {
-                this.observer = new MutationObserver(this.childrenChanged.bind(this));
-                this.observer.observe(this, {childList:true});
-                this.routeChanged = this.routeChanged.bind(this);
                 this.handleNavigate = this.handleNavigate.bind(this);
             },
             attached: function() {
-                this.async(this.replaceInitialUrl);
+                // Use setTimeout instead of this.async since raf won't fire in
+                // background tabs and we want to bootstrap the inital view even
+                // for those tabs.
+                setTimeout(this.replaceInitialUrl.bind(this), 0);
                 window.addEventListener("popstate", this.routeChanged);
                 document.addEventListener("navigate", this.handleNavigate);
             },
@@ -30,6 +29,7 @@
                 if (url.startsWith(this.pathprefix))
                     url = url.replace(this.pathprefix, "");
                 window.history.replaceState(null, null, url);
+                this.routeChanged();
             },
             handleNavigate: function(event) {
                 window.history.pushState(null, null, event.detail.url);
@@ -38,7 +38,8 @@
             routeChanged: function() {
                 var self = this;
                 var path = window.location.pathname;
-                self.routes.any(function(route) {
+                var routes = toArray(this.querySelectorAll("cr-route"));
+                routes.any(function(route) {
                     var newView = route.createView(path);
                     if (!newView)
                         return false;
@@ -59,15 +60,6 @@
                     });
                     return true;
                 });
-            },
-            childrenChanged: function() {
-                var routes = toArray(this.querySelectorAll("cr-route"));
-                // Prevent infinite loop inside Shadow DOM polyfill since our
-                // ShadowRoot's children are also our real children.
-                if (this.routes.intersect(routes).length === routes.length)
-                    return;
-                this.routes = routes;
-                this.async(this.routeChanged);
             },
             swapViews: function(newView) {
                 if (this.activeView)
