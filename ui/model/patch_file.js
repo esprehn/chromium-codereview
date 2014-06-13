@@ -18,7 +18,6 @@ function PatchFile(patchset, name)
     this.draftCount = 0;
 }
 
-PatchFile.REVIEW_URL = "/{1}/diff/{2}/{3}";
 PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
 PatchFile.CONTEXT_URL = "/{1}/diff_skipped_lines/{2}/{3}/{4}/{5}/a/2000";
 PatchFile.COMMENT_URL = "/inline_draft";
@@ -132,15 +131,6 @@ PatchFile.prototype.parseData = function(data)
             return messageA.date - messageB.date;
         });
     });
-};
-
-PatchFile.prototype.getReviewUrl = function()
-{
-    // We don't uri encode the name since it's part of the url path.
-    return PatchFile.REVIEW_URL.assign(
-        encodeURIComponent(this.patchset.issue.id),
-        encodeURIComponent(this.patchset.id),
-        this.name);
 };
 
 PatchFile.prototype.getDiffUrl = function()
