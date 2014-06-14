@@ -7,7 +7,7 @@
     <cr-keyboard
         on-key-j="{{ forward }}"
         on-key-k="{{ backwards }}"
-        on-key-delete="{{ remove }}"></sd-keyboard>
+        on-key-delete="{{ remove }}"></cr-keyboard>
 
     or
 
@@ -104,9 +104,9 @@
             var key = event.keyIdentifier || event.key;
             if (key.indexOf("U+") != -1) {
                 var code = parseInt(key.replace("U+", "0x"), 16);
-                var chr = String.fromCharCode(code).toLowerCase();
+                var chr = String.fromCharCode(code).toLowerCase()
                 if (KEY_CODES[code])
-                    return KEY_NAMES[code];
+                    return KEY_CODES[code];
                 if (KEY_NAMES[chr])
                     return KEY_NAMES[chr];
                 return chr;

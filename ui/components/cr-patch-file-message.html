@@ -3,6 +3,7 @@
 <link rel="import" href="cr-button.html">
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-toolbar.html">
+<link rel="import" href="cr-keyboard.html">
 
 <polymer-element name="cr-patch-file-message" attributes="message expanded">
     <template>
@@ -71,6 +72,7 @@
                         <cr-button on-tap="{{ discard }}">Discard</cr-button>
                     </template>
                 </cr-toolbar>
+                <cr-keyboard on-key-escape="{{ handleCancelKey }}"></cr-keyboard>
             </template>
         </template>
     </template>
@@ -124,6 +126,12 @@
                 if (!date)
                     return "";
                 return date.relative();
+            },
+            handleCancelKey: function(event) {
+                if (!this.shadowRoot.querySelector("* /deep/ :focus"))
+                    return;
+                event.preventDefault();
+                this.cancel();
             },
         });
     </script>
