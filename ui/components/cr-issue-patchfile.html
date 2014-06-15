@@ -2,7 +2,7 @@
 <link rel="import" href="cr-action.html">
 <link rel="import" href="cr-diff.html">
 
-<polymer-element name="cr-issue-patchfile" attributes="file diff">
+<polymer-element name="cr-issue-patchfile" attributes="file">
     <template>
         <link rel="stylesheet" href="common.css">
         <link rel="stylesheet" href="cr-issue-patchfile.css">
@@ -21,14 +21,19 @@
             </div>
         </div>
 
-        <cr-diff file="{{ file }}" active?="{{ diff }}"></cr-diff>
+        <cr-diff id="diff" file="{{ file }}"></cr-diff>
     </template>
     <script>
         Polymer("cr-issue-patchfile", {
             file: null,
-            diff: false,
+            showDiff: function() {
+                return this.$.diff.showDiff();
+            },
+            hideDiff: function() {
+                return this.$.diff.hideDiff();
+            },
             toggleDiff: function() {
-                this.diff = !this.diff;
+                return this.$.diff.toggleDiff();
             },
             pluralize: function(count, text) {
                 if (!count)

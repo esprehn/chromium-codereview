@@ -97,22 +97,32 @@
                     console.log(e);
                 });
             },
-            activeChanged: function(oldValue, newValue) {
-                if (!this.file)
-                    return;
-                var self = this;
-                if (newValue && !this.diff) {
-                    this.file.loadDiff().then(function(diff) {
+            showDiff: function() {
+                if (this.active)
+                    return Promise.resolve(this);
+                this.active = true;
+                if (!this.diff) {
+                    var self = this;
+                    return this.file.loadDiff().then(function(diff) {
                         self.diff = diff;
                         self.createDiff();
+                        return self;
                     }).catch(function(e) {
                         console.log(e);
                     });
-                } else if (newValue) {
-                    this.createDiff();
-                } else {
-                    this.$.output.innerHTML = "";
                 }
+                this.createDiff();
+                return Promise.resolve(this);
+            },
+            hideDiff: function() {
+                if (!this.active)
+                    return Promise.resolve(this);
+                this.active = false;
+                this.$.output.innerHTML = "";
+                return Promise.resolve(this);
+            },
+            toggleDiff: function() {
+                return this.active ? this.hideDiff() : this.showDiff();
             },
             createDiff: function() {
                 if (!this.active)
