@@ -34,14 +34,14 @@
                 return toArray(this.$.files.querySelectorAll("cr-issue-patchfile"));
             },
             expandAllDiffs: function() {
-                this.getFiles().forEach(function(file) {
-                    file.showDiff();
-                });
+                return Promise.all(this.getFiles().map(function(file) {
+                    return file.showDiff();
+                }));
             },
             collapseAllDiffs: function() {
-                this.getFiles().forEach(function(file) {
-                    file.hideDiff();
-                });
+                return Promise.all(this.getFiles().map(function(file) {
+                    return file.hideDiff();
+                }));
             },
         });
     </script>

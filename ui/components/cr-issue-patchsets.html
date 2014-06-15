@@ -85,8 +85,7 @@
                 if (!last)
                     return;
                 last.active = true;
-                last.querySelector("cr-issue-patchset").expandAllDiffs();
-                this.async(function() {
+                last.querySelector("cr-issue-patchset").expandAllDiffs().then(function() {
                     last.scrollIntoView(true);
                 });
             },
