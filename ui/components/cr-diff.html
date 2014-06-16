@@ -105,14 +105,13 @@
                     var self = this;
                     return this.file.loadDiff().then(function(diff) {
                         self.diff = diff;
-                        self.createDiff();
-                        return self;
+                        return self.createDiffAsync();
                     }).catch(function(e) {
+                        this.active = false;
                         console.log(e);
                     });
                 }
-                this.createDiff();
-                return Promise.resolve(this);
+                return this.createDiffAsync();
             },
             hideDiff: function() {
                 if (!this.active)
@@ -123,6 +122,14 @@
             },
             toggleDiff: function() {
                 return this.active ? this.hideDiff() : this.showDiff();
+            },
+            createDiffAsync: function() {
+                return new Promise(function(fulfill, reject) {
+                    this.async(function() {
+                        this.createDiff();
+                        fulfill();
+                    }, null, 1);
+                }.bind(this));
             },
             createDiff: function() {
                 if (!this.active)
