@@ -48,7 +48,7 @@
 
         <div class="patchsets">
             <template repeat="{{ patchset, i in patchsets }}">
-                <polymer-ui-collapsible class="patchset" active?="{{ i == patchsets.length - 1 }}">
+                <polymer-ui-collapsible class="patchset" active="{{ patchset.active }}">
                     <div class="patchset-header polymer-ui-collapsible-header">
                         <div class="patchset-title">
                             Patch set {{ i + 1 }}<template if="{{ patchset.message }}">: {{ patchset.message }}</template>
@@ -56,7 +56,9 @@
                         <div class="patchset-comments">{{ patchset.commentCount | commentCount }}</div>
                         <div class="patchset-date">{{ patchset.created | formatDate }}</div>
                     </div>
-                    <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
+                    <template if="{{ patchset.active }}">
+                        <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
+                    </template>
                 </polymer-ui-collapsible>
             </template>
         </div>
@@ -66,6 +68,10 @@
     <script>
         Polymer("cr-issue-patchsets", {
             patchsets: null,
+            patchsetsChanged: function(oldValue, newValue) {
+                if (newValue)
+                    newValue.last().active = true;
+            },
             formatDate: function(date) {
                 if (!date)
                     return "";
