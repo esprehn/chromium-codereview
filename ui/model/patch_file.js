@@ -30,35 +30,34 @@ PatchFile.MIXED_LANGUAGES = {
     "xml": true,
 };
 
+PatchFile.SYNTAX_LANGUAGES = {
+    "cpp": "cpp",
+    "h": "cpp",
+    "html": "html",
+    "xhtml": "html",
+    "js": "javascript",
+    "css": "css",
+    "xml": "xml",
+    "svg": "xml",
+    "pl": "perl",
+    "pm": "perl",
+    "cgi": "perl",
+    "py": "python",
+    "rb": "ruby",
+    "mm": "objectivec",
+    "json": "json",
+    // FIXME: We should create a proper language definition for idl. For now we
+    // use ActionScript since they're actually quite similar.
+    "idl": "actionscript",
+};
+
 PatchFile.computeLanguage = function(name)
 {
     if (!name)
         return "";
-    if (name.endsWith(/\.(cpp|h)$/))
-        return "cpp";
-    if (name.endsWith(/\.(html|xhtml)$/))
-        return "html";
-    if (name.endsWith(".js"))
-        return "javascript";
-    if (name.endsWith(".css"))
-        return "css";
-    if (name.endsWith(/\.(xml|svg)$/))
-        return "xml";
-    if (name.endsWith(/\.(pl|pm|cgi)$/))
-        return "perl";
-    if (name.endsWith(".py"))
-        return "python";
-    if (name.endsWith(".rb"))
-        return "ruby";
-    if (name.endsWith(".mm"))
-        return "objectivec";
-    if (name.endsWith(".json"))
-        return "json";
-    // FIXME: We should create a proper language definition for idl. For now we
-    // use ActionScript since they're actually quite similar.
-    if (name.endsWith(".idl"))
-        return "actionscript";
-    return "";
+    var index = name.lastIndexOf(".");
+    var extension = name.from(index + 1);
+    return PatchFile.SYNTAX_LANGUAGES[extension] || "";
 };
 
 PatchFile.prototype.shouldResetEmbeddedLanguage = function(language, text)
