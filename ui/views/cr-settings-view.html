@@ -1,0 +1,37 @@
+
+<link rel="import" href="../components/cr-butterbar.html">
+<link rel="import" href="../components/cr-settings-editor.html">
+
+<polymer-element name="cr-settings-view">
+    <template>
+        <link rel="stylesheet" href="../components/common.css">
+        <link rel="stylesheet" href="../components/forms.css">
+        <style>
+            :host { display: block; }
+        </style>
+        <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
+        <h1 class="app-header">Settings for {{ user.name }}</h1>
+        <template if="{{ settings }}">
+            <cr-settings-editor settings="{{ settings }}"></cr-settings-editor>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-settings-view", {
+            settings: null,
+            user: null,
+            butterbarMessage: "",
+            attached: function() {
+                var self = this;
+                var settings = new UserSettings();
+                this.user = User.current;
+                this.butterbarMessage = "Loading settings...";
+                settings.loadDetails().then(function() {
+                    self.settings = settings;
+                    self.butterbarMessage = "";
+                }).catch(function(e) {
+                    self.butterbarMessage = "Error loading settings.";
+                });
+            },
+        });
+    </script>
+</polymer-element>

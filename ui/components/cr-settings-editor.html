@@ -1,0 +1,43 @@
+
+<polymer-element name="cr-settings-editor" attributes="settings disabled">
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <link rel="stylesheet" href="forms.css">
+
+        <fieldset class="form-fields" disabled?="{{ disabled }}">
+            <div class="form-row">
+                <label class="form-label" for="name">Name</label>
+                <div class="form-field">
+                    <input type="text" id="name" value="{{ settings.name }}" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="form-label" for="context">Context</label>
+                <div class="form-field">
+                    <input type="text" id="context" value="{{ settings.context }}" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="form-label" for="columnWidth">Name</label>
+                <div class="form-field">
+                    <input type="text" id="columnWidth" value="{{ settings.columnWidth }}" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="form-label" for="notifyByChat">Notify by chat</label>
+                <div class="form-field">
+                    <input type="checkbox" id="notifyByChat" checked="{{ settings.notifyByChat }}">
+                </div>
+            </div>
+        </fieldset>
+    </template>
+    <script>
+        Polymer("cr-settings-editor", {
+            settings: null,
+            disabled: false,
+            reset: function() {
+                this.disabled = false;
+            },
+        });
+    </script>
+</polymer-element>
