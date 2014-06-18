@@ -2,7 +2,7 @@
 function UserSettings()
 {
     this.name = "";
-    this.context = 0;
+    this.context = "";
     this.columnWidth = 0;
     this.notifyByChat = false;
 }
@@ -24,7 +24,7 @@ UserSettings.prototype.parseDocument = function(doc)
 
     var context = doc.getElementById("id_context");
     if (context && context.selectedOptions && context.selectedOptions.length)
-        this.context = parseInt(context.selectedOptions[0].value, 10) || 0;
+        this.context = context.selectedOptions[0].value;
 
     var columnWidth = doc.getElementById("id_column_width");
     if (columnWidth)
@@ -53,7 +53,7 @@ UserSettings.prototype.createSaveData = function()
     return User.loadCurrentUser(true).then(function(user) {
         return {
             nickname: settings.name,
-            xsrfToken: user.xsrfToken,
+            xsrf_token: user.xsrfToken,
             notify_by_chat: settings.notifyByChat ? "on" : "",
             notify_by_email: "on",
             column_width: settings.columnWidth,

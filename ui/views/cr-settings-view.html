@@ -12,7 +12,10 @@
         <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
         <h1 class="app-header">Settings for {{ user.name }}</h1>
         <template if="{{ settings }}">
-            <cr-settings-editor settings="{{ settings }}"></cr-settings-editor>
+            <cr-settings-editor settings="{{ settings }}" disabled="{{ disabled }}"></cr-settings-editor>
+            <cr-toolbar>
+                <cr-button primary on-tap="{{ save }}">Save</cr-button>
+            </cr-toolbar>
         </template>
     </template>
     <script>
@@ -20,6 +23,7 @@
             settings: null,
             user: null,
             butterbarMessage: "",
+            disabled: false,
             attached: function() {
                 var self = this;
                 var settings = new UserSettings();
@@ -30,6 +34,20 @@
                     self.butterbarMessage = "";
                 }).catch(function(e) {
                     self.butterbarMessage = "Error loading settings.";
+                });
+            },
+            save: function() {
+                if (!this.settings)
+                    return;
+                var self = this;
+                this.butterbarMessage = "Saving...";
+                this.disabled = true;
+                this.settings.save().then(function() {
+                    self.disabled = false;
+                    self.butterbarMessage = "";
+                }).catch(function(e) {
+                    self.butterbarMessage = "Error: " + e.message;
+                    console.log(e);
                 });
             },
         });

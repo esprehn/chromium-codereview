@@ -14,7 +14,15 @@
             <div class="form-row">
                 <label class="form-label" for="context">Context</label>
                 <div class="form-field">
-                    <input type="text" id="context" value="{{ settings.context }}" autocomplete="off">
+                    <select id="context" value="{{ settings.context }}">
+                        <option value="3">3 lines</option>
+                        <option value="10">10 lines</option>
+                        <option value="25">25 lines</option>
+                        <option value="50">50 lines</option>
+                        <option value="75">75 lines</option>
+                        <option value="100">100 lines</option>
+                        <option value="">Whole file</option>
+                    </select>
                 </div>
             </div>
             <div class="form-row">
