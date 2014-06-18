@@ -10,7 +10,7 @@
             :host { display: block; }
         </style>
         <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
-        <h1 class="app-header">Settings for {{ user.name }}</h1>
+        <h1 class="app-header">Settings for {{ user.email }}</h1>
         <template if="{{ settings }}">
             <cr-settings-editor settings="{{ settings }}" disabled="{{ disabled }}" errors="{{ errors }}"></cr-settings-editor>
             <cr-toolbar>
