@@ -60,3 +60,17 @@ function sendFormData(url, data)
         };
     });
 }
+
+function parseFormErrorData(doc)
+{
+    var li = doc.querySelector(".errorlist li");
+    if (!li)
+        return null;
+    var input = li.parentNode.parentNode.querySelector("input");
+    if (!input)
+        return null;
+    return {
+        message: li.textContent,
+        fieldName: input.name,
+    };
+}

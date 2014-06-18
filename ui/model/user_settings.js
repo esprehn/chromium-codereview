@@ -9,6 +9,13 @@ function UserSettings()
 
 UserSettings.DETAIL_URL = "/settings";
 
+UserSettings.FIELD_NAME_MAP = {
+    "nickname": "name",
+    "notify_by_chat": "notifyByChat",
+    "column_width": "columnWidth",
+    "context": "context",
+};
+
 UserSettings.prototype.loadDetails = function()
 {
     var settings = this;
@@ -39,10 +46,16 @@ UserSettings.prototype.save = function()
 {
     var settings = this;
     return this.createSaveData().then(function(data) {
-        return sendFormData(UserSettings.DETAIL_URL, data).then(function() {
-            // Synchronize the user's name now that we've saved it to the server.
-            User.current.name = settings.name;
-            return settings;
+        return sendFormData(UserSettings.DETAIL_URL, data).then(function(xhr) {
+            var errorData = parseFormErrorData(xhr.response);
+            if (!errorData) {
+                // Synchronize the user's name now that we've saved it to the server.
+                User.current.name = settings.name;
+                return settings;
+            }
+            var error = new Error(errorData.message);
+            error.fieldName = UserSettings.FIELD_NAME_MAP[errorData.fieldName] || errorData.fieldName;
+            throw error;
         });
     });
 };

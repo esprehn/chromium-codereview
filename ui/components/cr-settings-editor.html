@@ -1,5 +1,5 @@
 
-<polymer-element name="cr-settings-editor" attributes="settings disabled">
+<polymer-element name="cr-settings-editor" attributes="settings errors disabled">
     <template>
         <link rel="stylesheet" href="common.css">
         <link rel="stylesheet" href="forms.css">
@@ -8,13 +8,14 @@
             <div class="form-row">
                 <label class="form-label" for="name">Name</label>
                 <div class="form-field">
-                    <input type="text" id="name" value="{{ settings.name }}" autocomplete="off">
+                    <input type="text" id="name" value="{{ settings.name }}" autocomplete="off" class="{{ {invalid: errors.name} | tokenList }}">
+                    <div class="form-error">{{ errors.name }}</div>
                 </div>
             </div>
             <div class="form-row">
                 <label class="form-label" for="context">Context</label>
                 <div class="form-field">
-                    <select id="context" value="{{ settings.context }}">
+                    <select id="context" value="{{ settings.context }}" class="{{ {invalid: errors.context} | tokenList }}">
                         <option value="3">3 lines</option>
                         <option value="10">10 lines</option>
                         <option value="25">25 lines</option>
@@ -23,18 +24,21 @@
                         <option value="100">100 lines</option>
                         <option value="">Whole file</option>
                     </select>
+                    <div class="form-error">{{ errors.context }}</div>
                 </div>
             </div>
             <div class="form-row">
-                <label class="form-label" for="columnWidth">Name</label>
+                <label class="form-label" for="columnWidth">Column width</label>
                 <div class="form-field">
-                    <input type="text" id="columnWidth" value="{{ settings.columnWidth }}" autocomplete="off">
+                    <input type="text" id="columnWidth" value="{{ settings.columnWidth }}" autocomplete="off" class="{{ {invalid: errors.columnWidth} | tokenList }}">
+                    <div class="form-error">{{ errors.columnWidth }}</div>
                 </div>
             </div>
             <div class="form-row">
                 <label class="form-label" for="notifyByChat">Notify by chat</label>
                 <div class="form-field">
-                    <input type="checkbox" id="notifyByChat" checked="{{ settings.notifyByChat }}">
+                    <input type="checkbox" id="notifyByChat" checked="{{ settings.notifyByChat }}" class="{{ {invalid: errors.notifyByChat} | tokenList }}">
+                    <div class="form-error">{{ errors.notifyByChat }}</div>
                 </div>
             </div>
         </fieldset>
@@ -42,10 +46,8 @@
     <script>
         Polymer("cr-settings-editor", {
             settings: null,
+            errors: {},
             disabled: false,
-            reset: function() {
-                this.disabled = false;
-            },
         });
     </script>
 </polymer-element>

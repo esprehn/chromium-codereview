@@ -12,7 +12,7 @@
         <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
         <h1 class="app-header">Settings for {{ user.name }}</h1>
         <template if="{{ settings }}">
-            <cr-settings-editor settings="{{ settings }}" disabled="{{ disabled }}"></cr-settings-editor>
+            <cr-settings-editor settings="{{ settings }}" disabled="{{ disabled }}" errors="{{ errors }}"></cr-settings-editor>
             <cr-toolbar>
                 <cr-button primary on-tap="{{ save }}">Save</cr-button>
             </cr-toolbar>
@@ -24,6 +24,7 @@
             user: null,
             butterbarMessage: "",
             disabled: false,
+            errors: {},
             attached: function() {
                 var self = this;
                 var settings = new UserSettings();
@@ -36,18 +37,27 @@
                     self.butterbarMessage = "Error loading settings.";
                 });
             },
+            reset: function() {
+                this.disabled = false;
+                this.errors = {};
+                this.butterbarMessage = "";
+            },
             save: function() {
                 if (!this.settings)
                     return;
                 var self = this;
-                this.butterbarMessage = "Saving...";
+                this.reset();
                 this.disabled = true;
+                this.butterbarMessage = "Saving...";
                 this.settings.save().then(function() {
-                    self.disabled = false;
-                    self.butterbarMessage = "";
-                }).catch(function(e) {
-                    self.butterbarMessage = "Error: " + e.message;
-                    console.log(e);
+                    self.reset();
+                }).catch(function(error) {
+                    self.reset();
+                    if (!error.fieldName) {
+                        self.butterbarMessage = "Error: " + error.message;
+                        return;
+                    }
+                    self.errors[error.fieldName] = error.message;
                 });
             },
         });
