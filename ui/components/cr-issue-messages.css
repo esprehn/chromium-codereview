@@ -76,3 +76,8 @@
 .disapproval .message-preview {
     color: #F4F4F4;
 }
+
+.selected .message-header,
+.selected .message-preview {
+    background-color: lemonchiffon;
+}

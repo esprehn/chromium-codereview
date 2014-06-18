@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="cr-issue-messages.css">
 
         <template repeat="{{ message, i in messages }}">
-            <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval} | tokenList }}" active?="{{ i == messages.length - 1 }}">
+            <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval, selected: i == messages.selectionId } | tokenList }}" active?="{{ i == messages.activeId }}">
                 <div class="message-header polymer-ui-collapsible-header" on-tap="{{ scrollMessageToVisibleIfNeeded }}">
                     <div class="message-title">
                         <div class="message-author">{{ message.author.displayName }}</div>
