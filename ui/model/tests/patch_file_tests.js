@@ -21,6 +21,7 @@ describe("PatchFile", function() {
         expect(PatchFile.computeLanguage("Document.map")).toBe("");
         expect(PatchFile.computeLanguage("Document.h.")).toBe("");
         expect(PatchFile.computeLanguage("Document.cpp/")).toBe("");
+        expect(PatchFile.computeLanguage("prefetch_messages.cc")).toBe("cpp");
     });
     it("should handle embedded language selection", function() {
         var html = new PatchFile(null, "example.html");

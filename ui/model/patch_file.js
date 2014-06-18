@@ -32,6 +32,7 @@ PatchFile.MIXED_LANGUAGES = {
 
 PatchFile.SYNTAX_LANGUAGES = {
     "cpp": "cpp",
+    "cc": "cpp",
     "h": "cpp",
     "html": "html",
     "xhtml": "html",
