@@ -19,7 +19,10 @@
 
   "content_scripts": [
     {
-      "matches": ["https://codereview.chromium.org/static/app/*"],
+      "matches": [
+        "https://codereview.chromium.org/static/app/*",
+        "https://codereview.appspot.com/static/app/*"
+      ],
       "js": [
         "ui/base.js",
         "ui/resources.js",
@@ -33,6 +36,7 @@
   "permissions": [
     "*://chromiumcodereview.appspot.com/*",
     "*://codereview.chromium.org/*",
+    "*://codereview.appspot.com/*",
     "webRequest",
     "webRequestBlocking"
   ]
