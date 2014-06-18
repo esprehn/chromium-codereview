@@ -157,6 +157,7 @@ Issue.prototype.toggleClosed = function()
             reviewers: this.reviewerEmails(),
             cc: this.ccEmails(),
             closed: false,
+            private: this.private,
         });
     }
     var issue = this;
@@ -192,6 +193,7 @@ Issue.prototype.createEditData = function(options)
             reviewers: options.reviewers,
             cc: options.cc,
             closed: options.closed ? "on" : "",
+            private: options.private ? "on" : "",
         };
     });
 };

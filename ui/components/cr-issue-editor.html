@@ -45,8 +45,18 @@
                 <div class="form-row">
                     <label class="form-label" for="description">Description</label>
                     <div class="form-field">
-                        <textarea id="description" value="{{ description }}" rows="20" class="{{ {invalid: errors.description} | tokenList }}"></textarea>
+                        <textarea id="description" value="{{ description }}" rows="15" class="{{ {invalid: errors.description} | tokenList }}"></textarea>
                         <div class="form-error">{{ errors.description }}</div>
+                    </div>
+                </div>
+            </template>
+
+            <template if="{{ fields | contains('private') }}">
+                <div class="form-row">
+                    <label class="form-label" for="private">Private</label>
+                    <div class="form-field">
+                        <input id="private" type="checkbox" checked="{{ private }}">
+                        <div class="form-error">{{ errors.private }}</div>
                     </div>
                 </div>
             </template>
@@ -61,7 +71,8 @@
             description: "",
             errors: null,
             disabled: false,
-            fields: "subject description reviewers cc",
+            private: false,
+            fields: "subject description reviewers cc private",
             reset: function() {
                 this.disabled = false;
                 if (!this.issue)
@@ -70,6 +81,7 @@
                 this.description = this.issue.description;
                 this.reviewers = this.issue.reviewerEmails();
                 this.cc = this.issue.ccEmails();
+                this.private = this.issue.private;
             },
             dismissAutocomplete: function() {
                 if (this.$.reviewerAutocomplete.active || this.$.ccAutocomplete.active) {
@@ -86,6 +98,7 @@
                     cc: this.cc,
                     description: this.description,
                     closed: this.issue.closed,
+                    private: this.private,
                 };
                 return data;
             },

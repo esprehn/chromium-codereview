@@ -85,6 +85,12 @@
                     {{ issue.baseUrl }}
                 </div>
             </div>
+            <template if="{{ issue.private }}">
+                <div class="issue-private issue-meta-item">
+                    <div class="issue-meta-type">Private</div>
+                    <div class="issue-meta-value">Yes</div>
+                </div>
+            </template>
         </template>
     </template>
     <script>
