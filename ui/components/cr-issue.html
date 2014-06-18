@@ -8,10 +8,10 @@
 <link rel="import" href="cr-issue-patchsets.html">
 <link rel="import" href="cr-issue-publish-dialog.html">
 <link rel="import" href="cr-issue-revert-dialog.html">
-<link rel="import" href="cr-issue-try-results.html">
 <link rel="import" href="cr-keyboard.html">
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-toolbar.html">
+<link rel="import" href="cr-try-results.html">
 <link rel="import" href="cr-view-handler.html">
 
 <polymer-element name="cr-issue" attributes="issue" on-butterbar-update="{{ updateButterbar }}">
@@ -51,7 +51,7 @@
 
                 <template if="{{ issue.commit }}">
                     <h2>Commit status</h2>
-                    <cr-issue-try-results results="{{ issue.patchsets[issue.patchsets.length - 1].tryJobResults }}"></cr-issue-try-results>
+                    <cr-try-results results="{{ issue.patchsets[issue.patchsets.length - 1].tryJobResults }}"></cr-try-results>
                     <cr-toolbar class="issue-toolbar">
                         <cr-button on-tap="{{ toggleCommit }}">Cancel commit</cr-button>
                     </cr-toolbar>
