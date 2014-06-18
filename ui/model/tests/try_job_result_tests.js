@@ -1,11 +1,13 @@
 
 describe("TryJobResult", function() {
+    var URL = "http://build.chromium.org/p/tryserver.blink/builders/win_blink_rel/builds/12456";
+
     function createData() {
         return {
             parent_name: null,
             tests: [ ],
             slave: null,
-            url: null,
+            url: URL,
             timestamp: "2014-06-18 08:13:29.036400",
             builder: "win_blink_oilpan_rel",
             clobber: true,
@@ -32,6 +34,8 @@ describe("TryJobResult", function() {
         expect(tryResult.result).toBe("pending");
         expect(tryResult.revision).toBe("HEAD");
         expect(tryResult.buildnumber).toBe(123);
+        expect(tryResult.master).toBe("tryserver.blink");
+        expect(tryResult.url).toBe(URL);
     });
     it("should convert results ids to names", function() {
         var data = createData();
@@ -41,13 +45,5 @@ describe("TryJobResult", function() {
             tryResult.parseData(data);
             expect(tryResult.result).toBe(name);
         });
-    });
-    it("should handle triggered tests", function() {
-        var tryResult = new TryJobResult();
-        var data = createData();
-        data.builder = "cros_daisy_triggered_tests";
-        data.master = "tryserver.chromium";
-        tryResult.parseData(data);
-        expect(tryResult.getServerName()).toBe(data.master);
     });
 });
