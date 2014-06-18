@@ -45,6 +45,7 @@ TryJobResult.prototype.getServerName = function()
 
 TryJobResult.prototype.parseData = function(data)
 {
+    // FIXME: We should use the .master and .url properties.
     var result = this;
     this.tests = (data.tests || []).map(function(name) {
         return new TryJobResultStep(result, name);
