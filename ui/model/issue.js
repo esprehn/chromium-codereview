@@ -109,8 +109,11 @@ Issue.prototype.parseData = function(data)
     this.updateScores();
     this.reviewers.sort(User.compare);
     this.cc.sort(User.compare);
-    if (this.patchsets.length && this.commit)
-        this.patchsets.last().commit = true;
+    if (this.patchsets.length) {
+        var last = this.patchsets.last();
+        last.commit = this.commit;
+        last.mostRecent = true;
+    }
     // Overwrite the count in case they differ (ex. new comments were added since
     // the summary list was loaded).
     this.messageCount = this.messages.length;

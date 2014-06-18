@@ -12,6 +12,7 @@ function PatchSet(issue, id)
     this.message = "";
     this.id = id || 0;
     this.commit = false;
+    this.mostRecent = false;
 }
 
 PatchSet.DETAIL_URL = "/api/{1}/{2}/?comments=true"

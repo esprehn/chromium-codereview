@@ -22,9 +22,9 @@
                 <cr-issue-patchfile file="{{ file }}"></cr-issue-patchfile>
             </template>
         </div>
-        <template if="{{ patchset.tryJobResults.length && !patchset.commit }}">
+        <template if="{{ (patchset.tryJobResults.length || patchset.mostRecent) && !patchset.commit }}">
             <h2>Try job results</h2>
-            <cr-try-results results="{{ patchset.tryJobResults }}"></cr-try-results>
+            <cr-try-results results="{{ patchset.tryJobResults }}" showmore="{{ patchset.mostRecent && !patchset.issue.closed }}"></cr-try-results>
         </template>
     </template>
     <script>
