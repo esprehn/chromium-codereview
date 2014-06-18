@@ -2,9 +2,15 @@
   "manifest_version": 2,
 
   "name": "ChromeReview",
-  "version": "0.15",
+  "version": "0.19",
 
   "description": "Making code review amazing.",
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
 
   "author": "esprehn",
   "background": {
@@ -19,7 +25,10 @@
 
   "content_scripts": [
     {
-      "matches": ["https://codereview.chromium.org/static/app/*"],
+      "matches": [
+        "https://codereview.chromium.org/static/app/*",
+        "https://codereview.appspot.com/static/app/*"
+      ],
       "js": [
         "ui/base.js",
         "ui/resources.js",
@@ -33,6 +42,7 @@
   "permissions": [
     "*://chromiumcodereview.appspot.com/*",
     "*://codereview.chromium.org/*",
+    "*://codereview.appspot.com/*",
     "webRequest",
     "webRequestBlocking"
   ]

@@ -1,0 +1,36 @@
+
+.form-fields {
+    display: table;
+    width: 100%;
+}
+
+.form-row {
+    display: table-row;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #959595;
+    -webkit-user-select: none;
+    cursor: default;
+    white-space: nowrap;
+}
+
+.form-field {
+    width: 100%;
+    position: relative;
+    vertical-align: top;
+}
+
+.form-label,
+.form-field {
+    display: table-cell;
+    padding: 1em 16px;
+}
+
+.form-error {
+    display: block;
+    color: #DD4B39;
+    font-weight: bold;
+    padding-top: 0.5em;
+}

@@ -2,12 +2,19 @@
 function UserSettings()
 {
     this.name = "";
-    this.context = 0;
+    this.context = "";
     this.columnWidth = 0;
     this.notifyByChat = false;
 }
 
 UserSettings.DETAIL_URL = "/settings";
+
+UserSettings.FIELD_NAME_MAP = {
+    "nickname": "name",
+    "notify_by_chat": "notifyByChat",
+    "column_width": "columnWidth",
+    "context": "context",
+};
 
 UserSettings.prototype.loadDetails = function()
 {
@@ -24,7 +31,7 @@ UserSettings.prototype.parseDocument = function(doc)
 
     var context = doc.getElementById("id_context");
     if (context && context.selectedOptions && context.selectedOptions.length)
-        this.context = parseInt(context.selectedOptions[0].value, 10) || 0;
+        this.context = context.selectedOptions[0].value;
 
     var columnWidth = doc.getElementById("id_column_width");
     if (columnWidth)
@@ -39,10 +46,17 @@ UserSettings.prototype.save = function()
 {
     var settings = this;
     return this.createSaveData().then(function(data) {
-        return sendFormData(UserSettings.DETAIL_URL, data).then(function() {
-            // Synchronize the user's name now that we've saved it to the server.
-            User.current.name = settings.name;
-            return settings;
+        return sendFormData(UserSettings.DETAIL_URL, data).then(function(xhr) {
+            var errorData = parseFormErrorData(xhr.response);
+            if (!errorData) {
+                // Synchronize the user's name now that we've saved it to the server.
+                return User.loadCurrentUser(true).then(function() {
+                    return settings;
+                });
+            }
+            var error = new Error(errorData.message);
+            error.fieldName = UserSettings.FIELD_NAME_MAP[errorData.fieldName] || errorData.fieldName;
+            throw error;
         });
     });
 };
@@ -53,7 +67,7 @@ UserSettings.prototype.createSaveData = function()
     return User.loadCurrentUser(true).then(function(user) {
         return {
             nickname: settings.name,
-            xsrfToken: user.xsrfToken,
+            xsrf_token: user.xsrfToken,
             notify_by_chat: settings.notifyByChat ? "on" : "",
             notify_by_email: "on",
             column_width: settings.columnWidth,

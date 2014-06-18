@@ -16,6 +16,7 @@
 <script src="../model/search_result.js"></script>
 <script src="../model/try_job_result.js"></script>
 <script src="../model/try_job_result_step.js"></script>
+<script src="../model/try_servers.js"></script>
 <script src="../model/user.js"></script>
 <script src="../model/user_settings.js"></script>
 
@@ -27,6 +28,7 @@
 <link rel="import" href="../views/cr-inbox-view.html">
 <link rel="import" href="../views/cr-issue-view.html">
 <link rel="import" href="../views/cr-login-view.html">
+<link rel="import" href="../views/cr-settings-view.html">
 <link rel="import" href="../views/cr-user-view.html">
 
 <polymer-element name="cr-app" noscript>
@@ -62,13 +64,19 @@
                 text-decoration: none;
             }
 
-            .bug-report a {
-                color: #D99E05;
+            .view-links {
+                display: flex;
             }
 
-            .bug-report {
+            .view-links a {
+                color: white;
                 flex-shrink: 0;
-                padding-right: 16px;
+                margin-right: 16px;
+                display: block;
+            }
+
+            .view-links .bug-report {
+                color: #D99E05;
             }
 
             header img {
@@ -82,16 +90,16 @@
                     <span>Chromium Code Review</span>
                 </a>
             </div>
-            <div class="bug-report">
-                <a href="https://github.com/esprehn/chromium-codereview/issues/new" target="_blank">
-                    Report a bug
-                </a>
+            <div class="view-links">
+                <a class="bug-report" href="https://github.com/esprehn/chromium-codereview/issues/new" target="_blank">Report a bug</a>
+                <a href="/settings">Settings</a>
             </div>
         </header>
         <cr-document-title titlesuffix="Code Review"></cr-document-title>
         <cr-view pathprefix="/static/app">
             <cr-route path="/" element="cr-inbox-view"></cr-route>
             <cr-route path="/login" element="cr-login-view"></cr-route>
+            <cr-route path="/settings" element="cr-settings-view"></cr-route>
             <cr-route path="/user/:username" element="cr-user-view"></cr-route>
             <cr-route path="/:issueid" element="cr-issue-view"></cr-route>
         </cr-view>

@@ -14,7 +14,7 @@
 
             <h1>Edit Issue</h1>
 
-            <cr-issue-editor id="editor" issue="{{ issue }}" errors="{{ errors }}" disabled?="{{ saving }}"></cr-issue-editor>
+            <cr-issue-editor id="editor" issue="{{ issue }}" errors="{{ errors }}" disabled="{{ saving }}"></cr-issue-editor>
 
             <cr-toolbar>
                 <cr-button primary on-tap="{{ save }}">Save</cr-button>

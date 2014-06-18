@@ -1,0 +1,73 @@
+
+<link rel="import" href="cr-action.html">
+
+<polymer-element name="cr-try-results" attributes="results showmore">
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <style>
+            :host {
+                display: block;
+            }
+
+            #jobs {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                margin: 0 16px 0 16px;
+            }
+
+            cr-action {
+                margin: 0.5em 8px 0.5em 0;
+            }
+
+            .try-job:link,
+            .try-job:visited {
+                color: black;
+            }
+
+            .try-job {
+                margin: 0.5em 8px 0.5em 0;
+                padding: 0.25em 16px;
+                background-color: #E0E0E0;
+            }
+
+            .try-job.pending {
+                background-color: #F9EDBE;
+            }
+
+            .try-job.success {
+                background-color: #8fdf5f;
+                color: #222121;
+            }
+
+            .try-job.warnings,
+            .try-hob.exception,
+            .try-job.failure {
+                background-color: #E75D54;
+                color: #F4F4F4;
+            }
+        </style>
+        <div id="jobs">
+            <template repeat="{{ job in results }}">
+                <template if="{{ job.url }}">
+                    <a class="try-job {{ job.result }}" href="{{ job.url }}" title="{{ job.result }}" target="_blank">{{ job.builder }}</a>
+                </template>
+                <template if="{{ !job.url }}">
+                    <span class="try-job" title="unscheduled">{{ job.builder }}</span>
+                </template>
+            </template>
+            <template if="{{ showmore }}">
+                <cr-action on-tap="{{ handleAddMore }}">Add more</cr-action>
+            </template>
+        </div>
+    </template>
+    <script>
+        Polymer("cr-try-results", {
+            results: [],
+            showmore: false,
+            handleAddMore: function() {
+                this.fire("show-try-dialog");
+            },
+        });
+    </script>
+</polymer-element>

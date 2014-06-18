@@ -4,85 +4,59 @@
 <polymer-element name="cr-issue-editor" attributes="issue errors disabled fields">
     <template>
         <link rel="stylesheet" href="common.css">
-        <style>
-            .issue-edit-fields {
-                display: table;
-                width: 100%;
-            }
+        <link rel="stylesheet" href="forms.css">
 
-            .issue-edit-row {
-                display: table-row;
-            }
-
-            .issue-edit-label {
-                font-weight: bold;
-                color: #959595;
-                -webkit-user-select: none;
-                cursor: default;
-            }
-
-            .issue-edit-field {
-                width: 100%;
-                position: relative;
-            }
-
-            .issue-edit-label,
-            .issue-edit-field {
-                display: table-cell;
-                padding: 1em 16px;
-                vertical-align: top;
-            }
-
-            .issue-edit-error {
-                display: block;
-                color: #DD4B39;
-                font-weight: bold;
-                padding-top: 0.5em;
-            }
-
-        </style>
-
-        <fieldset class="issue-edit-fields" disabled?="{{ disabled }}">
+        <fieldset class="form-fields" disabled?="{{ disabled }}">
             <template if="{{ fields | contains('subject') }}">
-                <div class="issue-edit-row">
-                    <label class="issue-edit-label" for="subject">Title</label>
-                    <div class="issue-edit-field">
+                <div class="form-row">
+                    <label class="form-label" for="subject">Title</label>
+                    <div class="form-field">
                         <input type="text" id="subject" value="{{ subject }}" autocomplete="off" class="{{ {invalid: errors.subject} | tokenList }}">
-                        <div class="issue-edit-error">{{ errors.subject }}</div>
+                        <div class="form-error">{{ errors.subject }}</div>
                     </div>
                 </div>
             </template>
 
             <template if="{{ fields | contains('reviewers') }}">
-                <div class="issue-edit-row">
-                    <label class="issue-edit-label" for="reviewers">Reviewers</label>
-                    <div class="issue-edit-field">
+                <div class="form-row">
+                    <label class="form-label" for="reviewers">Reviewers</label>
+                    <div class="form-field">
                         <cr-user-autocomplete id="reviewerAutocomplete" value="{{ reviewers }}">
                             <input type="text" id="reviewers" value="{{ reviewers }}" autocomplete="off" class="{{ {invalid: errors.reviewers} | tokenList }}">
                         </cr-user-autocomplete>
-                        <div class="issue-edit-error">{{ errors.reviewers }}</div>
+                        <div class="form-error">{{ errors.reviewers }}</div>
                     </div>
                 </div>
             </template>
 
             <template if="{{ fields | contains('cc') }}">
-                <div class="issue-edit-row">
-                    <label class="issue-edit-label" for="cc">CC</label>
-                    <div class="issue-edit-field">
+                <div class="form-row">
+                    <label class="form-label" for="cc">CC</label>
+                    <div class="form-field">
                         <cr-user-autocomplete id="ccAutocomplete" value="{{ cc }}">
                             <input type="text" id="cc" value="{{ cc }}" autocomplete="off" class="{{ {invalid: errors.cc} | tokenList }}">
                         </cr-user-autocomplete>
-                        <div class="issue-edit-error">{{ errors.cc }}</div>
+                        <div class="form-error">{{ errors.cc }}</div>
                     </div>
                 </div>
             </template>
 
             <template if="{{ fields | contains('description') }}">
-                <div class="issue-edit-row">
-                    <label class="issue-edit-label" for="description">Description</label>
-                    <div class="issue-edit-field">
-                        <textarea id="description" value="{{ description }}" rows="20" class="{{ {invalid: errors.description} | tokenList }}"></textarea>
-                        <div class="issue-edit-error">{{ errors.description }}</div>
+                <div class="form-row">
+                    <label class="form-label" for="description">Description</label>
+                    <div class="form-field">
+                        <textarea id="description" value="{{ description }}" rows="15" class="{{ {invalid: errors.description} | tokenList }}"></textarea>
+                        <div class="form-error">{{ errors.description }}</div>
+                    </div>
+                </div>
+            </template>
+
+            <template if="{{ fields | contains('private') }}">
+                <div class="form-row">
+                    <label class="form-label" for="private">Private</label>
+                    <div class="form-field">
+                        <input id="private" type="checkbox" checked="{{ private }}">
+                        <div class="form-error">{{ errors.private }}</div>
                     </div>
                 </div>
             </template>
@@ -97,7 +71,8 @@
             description: "",
             errors: null,
             disabled: false,
-            fields: "subject description reviewers cc",
+            private: false,
+            fields: "subject description reviewers cc private",
             reset: function() {
                 this.disabled = false;
                 if (!this.issue)
@@ -106,6 +81,7 @@
                 this.description = this.issue.description;
                 this.reviewers = this.issue.reviewerEmails();
                 this.cc = this.issue.ccEmails();
+                this.private = this.issue.private;
             },
             dismissAutocomplete: function() {
                 if (this.$.reviewerAutocomplete.active || this.$.ccAutocomplete.active) {
@@ -122,6 +98,7 @@
                     cc: this.cc,
                     description: this.description,
                     closed: this.issue.closed,
+                    private: this.private,
                 };
                 return data;
             },

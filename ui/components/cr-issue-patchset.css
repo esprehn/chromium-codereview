@@ -22,6 +22,6 @@ header .ui-actions {
     flex-shrink: 0;
 }
 
-cr-issue-try-results {
+cr-try-results {
     margin-bottom: 0.5em;
 }

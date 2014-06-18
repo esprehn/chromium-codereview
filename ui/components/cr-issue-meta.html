@@ -20,6 +20,10 @@
                 display: table-cell;
             }
 
+            .issue-base-url {
+                word-break: break-word;
+            }
+
             .issue-meta-type {
                 color: #959595;
                 font-weight: bold;
@@ -75,6 +79,18 @@
                     </template>
                 </div>
             </div>
+            <div class="issue-base-url issue-meta-item">
+                <div class="issue-meta-type">Base url</div>
+                <div class="issue-meta-value">
+                    {{ issue.baseUrl }}
+                </div>
+            </div>
+            <template if="{{ issue.private }}">
+                <div class="issue-private issue-meta-item">
+                    <div class="issue-meta-type">Private</div>
+                    <div class="issue-meta-value">Yes</div>
+                </div>
+            </template>
         </template>
     </template>
     <script>

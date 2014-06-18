@@ -28,7 +28,7 @@ Issue.DETAIL_URL = "/api/{1}?messages=true";
 Issue.PUBLISH_URL = "/{1}/publish";
 Issue.EDIT_URL = "/{1}/edit";
 Issue.CLOSE_URL = "/{1}/close";
-Issue.COMMIT_URL = "/{1}/edit_flags";
+Issue.FLAGS_URL = "/{1}/edit_flags";
 
 Issue.prototype.getDetailUrl = function()
 {
@@ -45,9 +45,9 @@ Issue.prototype.getEditUrl = function()
     return Issue.EDIT_URL.assign(encodeURIComponent(this.id));
 };
 
-Issue.prototype.getCommitUrl = function()
+Issue.prototype.getFlagsUrl = function()
 {
-    return Issue.COMMIT_URL.assign(encodeURIComponent(this.id));
+    return Issue.FLAGS_URL.assign(encodeURIComponent(this.id));
 };
 
 Issue.prototype.getCloseUrl = function()
@@ -109,8 +109,11 @@ Issue.prototype.parseData = function(data)
     this.updateScores();
     this.reviewers.sort(User.compare);
     this.cc.sort(User.compare);
-    if (this.patchsets.length && this.commit)
-        this.patchsets.last().commit = true;
+    if (this.patchsets.length) {
+        var last = this.patchsets.last();
+        last.commit = this.commit;
+        last.mostRecent = true;
+    }
     // Overwrite the count in case they differ (ex. new comments were added since
     // the summary list was loaded).
     this.messageCount = this.messages.length;
@@ -154,6 +157,7 @@ Issue.prototype.toggleClosed = function()
             reviewers: this.reviewerEmails(),
             cc: this.ccEmails(),
             closed: false,
+            private: this.private,
         });
     }
     var issue = this;
@@ -169,14 +173,11 @@ Issue.prototype.edit = function(options)
     var issue = this;
     return this.createEditData(options).then(function(data) {
         return sendFormData(issue.getEditUrl(), data).then(function(xhr) {
-            var li = xhr.response.querySelector(".errorlist li")
-            if (!li)
-                return xhr;
-            var input = li.parentNode.parentNode.querySelector("input");
-            if (!input)
-                return xhr;
-            var error = new Error(li.textContent);
-            error.fieldName = input.name;
+            var errorData = parseFormErrorData(xhr.response);
+            if (!errorData)
+                return issue;
+            var error = new Error(errorData.message);
+            error.fieldName = errorData.fieldName;
             throw error;
         });
     });
@@ -192,6 +193,7 @@ Issue.prototype.createEditData = function(options)
             reviewers: options.reviewers,
             cc: options.cc,
             closed: options.closed ? "on" : "",
+            private: options.private ? "on" : "",
         };
     });
 };
@@ -235,24 +237,28 @@ Issue.prototype.createPublishData = function(options)
     });
 };
 
-Issue.prototype.setCommit = function(status)
+Issue.prototype.setFlags = function(options)
 {
     var issue = this;
-    return this.createCommitData(status).then(function(data) {
-        return sendFormData(issue.getCommitUrl(), data).then(function() {
+    return this.createFlagsData(options).then(function(data) {
+        return sendFormData(issue.getFlagsUrl(), data).then(function() {
             return issue;
         });
     });
 };
 
-Issue.prototype.createCommitData = function(status)
+Issue.prototype.createFlagsData = function(options)
 {
     var lastPatchsetId = this.patchsets.last().id;
     return User.loadCurrentUser(true).then(function(user) {
-        return {
+        var data = {
             xsrf_token: user.xsrfToken,
             last_patchset: lastPatchsetId,
-            commit: status ? 1 : 0,
         };
+        if (Object.has(options, "commit"))
+            data.commit = options.commit ? 1 : 0;
+        if (options.builders && options.builders.length)
+            data.builders = TryServers.createFlagValue(options.builders);
+        return data;
     });
 };

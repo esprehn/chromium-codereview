@@ -1,10 +1,10 @@
 
 var APPSPOT_URL_PATTERN = /^https?:\/\/chromiumcodereview\.appspot\.com/;
-var APP_REDIRECT_URL_PATTERN = /^https?:\/\/codereview\.chromium\.org\/((\d+)|login|user\/[^\/]+)?(#.*)?\/?$/;
-var LEGACY_REDIRECT_URL_PATTERN = /^https:\/\/codereview.chromium.org\/static\/app\/#\/issue\/(\d+)?\/?$/;
+var APP_REDIRECT_URL_PATTERN = /^https?:\/\/([^\/]+)\/((\d+)|login|user\/[^\/]+|settings)?\/?(#.*)?$/;
+var LEGACY_REDIRECT_URL_PATTERN = /^https:\/\/(codereview.chromium.org)\/static\/app\/#\/issue\/(\d+)?\/?$/;
 
 var CHROMIUM_URL = "https://codereview.chromium.org";
-var APP_URL = "https://codereview.chromium.org/static/app/";
+var APP_PREFIX = "/static/app/";
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.type != "main_frame" && details.type != "sub_frame")
@@ -19,12 +19,13 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         match = url.match(LEGACY_REDIRECT_URL_PATTERN);
     if (!match)
         return;
-    var url = APP_URL + (match[1] || "");
+    var url = "https://" + match[1] + APP_PREFIX + (match[2] || "");
     return {redirectUrl: url};
 }, {
     urls: [
         "*://chromiumcodereview.appspot.com/*",
-        "*://codereview.chromium.org/*"
+        "*://codereview.chromium.org/*",
+        "*://codereview.appspot.com/*",
     ]
 }, [
     "blocking"
