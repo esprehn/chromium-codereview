@@ -50,8 +50,9 @@ UserSettings.prototype.save = function()
             var errorData = parseFormErrorData(xhr.response);
             if (!errorData) {
                 // Synchronize the user's name now that we've saved it to the server.
-                User.current.name = settings.name;
-                return settings;
+                return User.loadCurrentUser(true).then(function() {
+                    return settings;
+                });
             }
             var error = new Error(errorData.message);
             error.fieldName = UserSettings.FIELD_NAME_MAP[errorData.fieldName] || errorData.fieldName;
