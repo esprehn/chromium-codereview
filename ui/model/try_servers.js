@@ -147,8 +147,15 @@ var TryServers = (function() {
         });
     });
 
+    function createFlagValue(builders) {
+        return builders.map(function(builder) {
+            return builderToServerMap[builder] + ":" + builder;
+        }).join(",");
+    }
+
     return {
         SERVERS: servers,
         BUILDER_TO_SERVER: builderToServerMap,
+        createFlagValue: createFlagValue,
     };
 })();

@@ -242,7 +242,7 @@ Issue.prototype.setFlags = function(options)
     });
 };
 
-Issue.prototype.createFlagsData = function(status)
+Issue.prototype.createFlagsData = function(options)
 {
     var lastPatchsetId = this.patchsets.last().id;
     return User.loadCurrentUser(true).then(function(user) {
@@ -252,8 +252,8 @@ Issue.prototype.createFlagsData = function(status)
         };
         if (Object.has(options, "commit"))
             data.commit = options.commit ? 1 : 0;
-        if (Object.has(options, "builders"))
-            data.builders = options.builders;
+        if (options.builders && options.builders.length)
+            data.builders = TryServers.createFlagValue(options.builders);
         return data;
     });
 };
