@@ -4,12 +4,12 @@
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-issue-message-reply.html">
 
-<polymer-element name="cr-issue-messages" attributes="messages">
+<polymer-element name="cr-issue-messages" attributes="messages, selectionId, activeId">
     <template>
         <link rel="stylesheet" href="cr-issue-messages.css">
 
         <template repeat="{{ message, i in messages }}">
-            <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval, selected: i == messages.selectionId } | tokenList }}" active?="{{ i == messages.activeId }}">
+            <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval, selected: i === selectionId } | tokenList }}" active?="{{ i === activeId }}">
                 <div class="message-header polymer-ui-collapsible-header" on-tap="{{ scrollMessageToVisibleIfNeeded }}">
                     <div class="message-title">
                         <div class="message-author">{{ message.author.displayName }}</div>
@@ -32,9 +32,25 @@
         var REPLY_HEADER = /^On \d+\/\d+\/\d+ (at )?\d+:\d+:\d+, .*? wrote:$/;
         var FILE_HEADER = /^https:\/\/codereview.chromium.org\/\d+\/diff\/\d+\/.*$/;
         var MAX_PREVIEW_LENGTH = 300;
+        var SELECTION_PREFIX = "#msg";
 
         Polymer("cr-issue-messages", {
             messages: null,
+            selectionId: null,
+            activeId: null,
+            messagesChanged: function() {
+                if (window.location.hash.startsWith(SELECTION_PREFIX)) {
+                    var num = window.location.hash.replace(SELECTION_PREFIX, "");
+                    if (/^[0-9]+$/.test(num) && num > 0 && num <= this.messages.length) {
+                        this.selectionId = num - 1;
+                        this.activeId = num - 1;
+                    }
+                }
+
+                if (this.activeId === null) {
+                    this.activeId = this.messages.length - 1;
+                }
+            },
             toggleAll: function(options) {
                 var messages = toArray(this.shadowRoot.querySelectorAll(".message"));
                 messages.forEach(function(message) {

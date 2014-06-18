@@ -114,19 +114,6 @@ Issue.prototype.parseData = function(data)
     // Overwrite the count in case they differ (ex. new comments were added since
     // the summary list was loaded).
     this.messageCount = this.messages.length;
-
-    var selectionPrefix = "#msg";
-    if (window.location.hash.startsWith(selectionPrefix)) {
-        var num = window.location.hash.replace(selectionPrefix, "");
-        if (/^[0-9]+$/.test(num) && num > 0 && num <= this.messages.length) {
-            this.messages.selectionId = num - 1;
-            this.messages.activeId = num - 1;
-        }
-    }
-
-    if (this.messages.activeId === undefined) {
-        this.messages.activeId = this.messages.length - 1;
-    }
 };
 
 Issue.prototype.updateScores = function() {
