@@ -100,7 +100,7 @@ Google Code style (c) Aahan Krish <geekpanth3r@gmail.com>
 
 .hljs-value .hljs-important {
   color: #ff7700;
-  font-weight: bold;
+  /*font-weight: bold;*/
 }
 
 .hljs-rules .hljs-keyword {
@@ -127,7 +127,7 @@ Google Code style (c) Aahan Krish <geekpanth3r@gmail.com>
 .diff .hljs-header,
 .hljs-chunk {
   color: #808080;
-  font-weight: bold;
+  /*font-weight: bold;*/
 }
 
 .diff .hljs-change {
@@ -143,5 +143,5 @@ Google Code style (c) Aahan Krish <geekpanth3r@gmail.com>
 }
 
 .hljs-comment .hljs-yardoctag {
-  font-weight: bold;
+  /*font-weight: bold;*/
 }

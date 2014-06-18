@@ -129,7 +129,7 @@ Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiac
 .markdown .hljs-strong,
 .hljs-request,
 .hljs-status {
-  font-weight: bold;
+  /*font-weight: bold;*/
 }
 
 .asciidoc .hljs-emphasis,
