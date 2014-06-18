@@ -94,7 +94,7 @@
             toggleCommit: function() {
                 var self = this;
                 this.butterbarMessage = "Saving...";
-                this.issue.setCommit(!this.issue.commit).then(function() {
+                this.issue.setFlags({commit: !this.issue.commit}).then(function() {
                     self.butterbarMessage = "";
                     self.fire("issue-refresh");
                 }).catch(function(e) {

@@ -28,7 +28,7 @@ Issue.DETAIL_URL = "/api/{1}?messages=true";
 Issue.PUBLISH_URL = "/{1}/publish";
 Issue.EDIT_URL = "/{1}/edit";
 Issue.CLOSE_URL = "/{1}/close";
-Issue.COMMIT_URL = "/{1}/edit_flags";
+Issue.FLAGS_URL = "/{1}/edit_flags";
 
 Issue.prototype.getDetailUrl = function()
 {
@@ -45,9 +45,9 @@ Issue.prototype.getEditUrl = function()
     return Issue.EDIT_URL.assign(encodeURIComponent(this.id));
 };
 
-Issue.prototype.getCommitUrl = function()
+Issue.prototype.getFlagsUrl = function()
 {
-    return Issue.COMMIT_URL.assign(encodeURIComponent(this.id));
+    return Issue.FLAGS_URL.assign(encodeURIComponent(this.id));
 };
 
 Issue.prototype.getCloseUrl = function()
@@ -232,24 +232,28 @@ Issue.prototype.createPublishData = function(options)
     });
 };
 
-Issue.prototype.setCommit = function(status)
+Issue.prototype.setFlags = function(options)
 {
     var issue = this;
-    return this.createCommitData(status).then(function(data) {
-        return sendFormData(issue.getCommitUrl(), data).then(function() {
+    return this.createFlagsData(options).then(function(data) {
+        return sendFormData(issue.getFlagsUrl(), data).then(function() {
             return issue;
         });
     });
 };
 
-Issue.prototype.createCommitData = function(status)
+Issue.prototype.createFlagsData = function(status)
 {
     var lastPatchsetId = this.patchsets.last().id;
     return User.loadCurrentUser(true).then(function(user) {
-        return {
+        var data = {
             xsrf_token: user.xsrfToken,
             last_patchset: lastPatchsetId,
-            commit: status ? 1 : 0,
         };
+        if (Object.has(options, "commit"))
+            data.commit = options.commit ? 1 : 0;
+        if (Object.has(options, "builders"))
+            data.builders = options.builders;
+        return data;
     });
 };
