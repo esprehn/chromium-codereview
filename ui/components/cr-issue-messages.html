@@ -10,7 +10,7 @@
 
         <template repeat="{{ message, i in messages }}">
             <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval, selected: i === selectionId } | tokenList }}" active?="{{ i === activeId }}">
-                <div class="message-header polymer-ui-collapsible-header" on-tap="{{ scrollMessageToVisibleIfNeeded }}">
+                <div id="message-{{ i }}" class="message-header polymer-ui-collapsible-header" on-tap="{{ handleHeaderTap }}">
                     <div class="message-title">
                         <div class="message-author">{{ message.author.displayName }}</div>
                         <div class="message-preview">{{ message.text | messagePreview }}</div>
@@ -45,6 +45,11 @@
                     if (/^[0-9]+$/.test(num) && num > 0 && num <= this.messages.length) {
                         this.selectionId = num - 1;
                         this.activeId = num - 1;
+                        this.async(function() {
+                            var message = this.shadowRoot.getElementById("message-" + this.selectionId);
+                            if (message)
+                                this.scrollMessageToVisibleIfNeeded(message);
+                        });
                     }
                 }
             },
@@ -59,12 +64,14 @@
                     return "";
                 return date.relative();
             },
-            scrollMessageToVisibleIfNeeded: function(event) {
+            handleHeaderTap: function(event) {
+                this.scrollMessageToVisibleIfNeeded(event.currentTarget.parentNode);
+            },
+            scrollMessageToVisibleIfNeeded: function(message) {
                 // If you click the header then scroll the message until you can read it. This is
                 // racy with the <polymer-ui-collapsible> animation but it's the best we have
                 // until polymer exposes some events. We could listen for on-transitionend but
                 // then expand/collapse all would make us do this for each item.
-                var message = event.currentTarget.parentNode;
                 this.async(function() {
                     message.scrollIntoViewIfNeeded();
                 }, null, 350);
