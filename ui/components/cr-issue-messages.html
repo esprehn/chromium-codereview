@@ -39,16 +39,13 @@
             selectionId: null,
             activeId: null,
             messagesChanged: function() {
+                this.activeId = this.messages.length - 1;
                 if (window.location.hash.startsWith(SELECTION_PREFIX)) {
                     var num = window.location.hash.replace(SELECTION_PREFIX, "");
                     if (/^[0-9]+$/.test(num) && num > 0 && num <= this.messages.length) {
                         this.selectionId = num - 1;
                         this.activeId = num - 1;
                     }
-                }
-
-                if (this.activeId === null) {
-                    this.activeId = this.messages.length - 1;
                 }
             },
             toggleAll: function(options) {
