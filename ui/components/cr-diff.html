@@ -169,7 +169,8 @@
                         self.emitLine(section, line, language);
                         if (language == file.language) {
                             language = file.selectEmbeddedLanguage(line.text);
-                            self.highlightData = null;
+                            if (language != file.language)
+                                self.highlightData = null;
                         }
                     });
                 });
