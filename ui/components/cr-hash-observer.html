@@ -26,13 +26,17 @@
         });
 
         var currentHash = "";
-        function handleHashChange() {
+        function notifyInstancesIfNeeded() {
             if (window.location.hash == currentHash)
                 return;
             currentHash = window.location.hash;
             instances.forEach(function(instance) {
                 instance.asyncFire("hash-changed");
             });
+        }
+
+        function handleHashChange() {
+            setTimeout(notifyInstancesIfNeeded);
         }
 
         document.addEventListener("navigate", handleHashChange);
