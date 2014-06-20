@@ -1,11 +1,16 @@
 
 <link rel="import" href="../../bower_components/polymer-ui-collapsible/polymer-ui-collapsible.html">
 
-<link rel="import" href="cr-linkified-text.html">
+<link rel="import" href="cr-hash-observer.html">
 <link rel="import" href="cr-issue-message-reply.html">
+<link rel="import" href="cr-linkified-text.html">
+<link rel="import" href="cr-view-handler.html">
 
 <polymer-element name="cr-issue-messages" attributes="messages selectionId activeId">
     <template>
+        <cr-view-handler></cr-view-handler>
+        <cr-hash-observer on-hash-changed="{{ hashChanged }}"></cr-hash-observer>
+
         <link rel="stylesheet" href="cr-issue-messages.css">
 
         <template repeat="{{ message, i in messages }}">
@@ -40,17 +45,20 @@
             activeId: null,
             messagesChanged: function() {
                 this.activeId = this.messages.length - 1;
-                if (window.location.hash.startsWith(SELECTION_PREFIX)) {
-                    var num = window.location.hash.replace(SELECTION_PREFIX, "");
-                    if (/^[0-9]+$/.test(num) && num > 0 && num <= this.messages.length) {
-                        this.selectionId = num - 1;
-                        this.activeId = num - 1;
-                        this.async(function() {
-                            var message = this.shadowRoot.getElementById("message-" + this.selectionId);
-                            if (message)
-                                this.scrollMessageToVisibleIfNeeded(message);
-                        });
-                    }
+                this.hashChanged();
+            },
+            hashChanged: function() {
+                if (!window.location.hash.startsWith(SELECTION_PREFIX))
+                    return;
+                var num = window.location.hash.replace(SELECTION_PREFIX, "");
+                if (/^[0-9]+$/.test(num) && num > 0 && num <= this.messages.length) {
+                    this.selectionId = num - 1;
+                    this.activeId = num - 1;
+                    this.async(function() {
+                        var message = this.shadowRoot.getElementById("message-" + this.selectionId);
+                        if (message)
+                            this.scrollMessageToVisibleIfNeeded(message);
+                    });
                 }
             },
             toggleAll: function(options) {

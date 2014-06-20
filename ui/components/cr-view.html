@@ -9,6 +9,7 @@
         Polymer("cr-view", {
             activeView: null,
             pathprefix: "",
+            currentPath: "",
             created: function() {
                 this.routeChanged = this.routeChanged.bind(this);
                 this.handleNavigate = this.handleNavigate.bind(this);
@@ -39,6 +40,9 @@
             routeChanged: function() {
                 var self = this;
                 var path = window.location.pathname;
+                if (path == this.currentPath)
+                    return;
+                this.currentPath = path;
                 var routes = toArray(this.querySelectorAll("cr-route"));
                 routes.any(function(route) {
                     var newView = route.createView(path);

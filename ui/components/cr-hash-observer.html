@@ -1,0 +1,42 @@
+<!--
+    Use to observe to dynamically observe changes to the hash in the url.
+
+    ex.
+        <cr-hash-observer on-hash-changed="{{ handleHashChange }}"></cr-hash-observer>
+-->
+<polymer-element name="cr-hash-observer">
+    <template>
+        <style>
+            :host { display: none; }
+        </style>
+    </template>
+    <script>
+    (function() {
+        var instances = [];
+
+        Polymer("cr-hash-observer", {
+            attached: function() {
+                instances.push(this);
+            },
+            detached: function() {
+                var i = instances.indexOf(this);
+                if (i >= 0)
+                    instances.splice(i, 1);
+            },
+        });
+
+        var currentHash = "";
+        function handleHashChange() {
+            if (window.location.hash == currentHash)
+                return;
+            currentHash = window.location.hash;
+            instances.forEach(function(instance) {
+                instance.asyncFire("hash-changed");
+            });
+        }
+
+        document.addEventListener("navigate", handleHashChange);
+        window.addEventListener("hashchange", handleHashChange);
+    })();
+    </script>
+</polymer-element>
