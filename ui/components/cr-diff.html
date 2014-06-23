@@ -18,8 +18,10 @@
     </template>
     <script>
         Polymer("cr-diff", {
+            publish: {
+                active: { value: false, reflect: true },
+            },
             file: null,
-            active: false,
             diff: null,
             highlightData: null,
             fileChanged: function(oldValue, newValue) {

@@ -2,7 +2,7 @@
 :host { display: block; }
 
 .file {
-    padding: 0 16px;
+    padding: 0.25em 16px;
     display: flex;
 }
 
