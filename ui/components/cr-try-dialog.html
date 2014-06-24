@@ -7,6 +7,7 @@
 <polymer-element name="cr-try-dialog" attributes="issue">
     <template>
         <link rel="stylesheet" href="common.css">
+        <link rel="stylesheet" href="forms.css">
         <style>
             #servers {
                 height: 500px;
@@ -34,8 +35,15 @@
 
             <h1>Add try jobs</h1>
 
+            <div class="form-row">
+                <label class="form-label" for="filter">Filter</label>
+                <div class="form-field" id="filter">
+                    <input type="text" value="{{ filter }}">
+                </div>
+            </div>
+
             <fieldset id="servers" disabled?="{{ sending }}">
-                <template repeat="{{ server in servers }}">
+                <template repeat="{{ server in filteredServers }}">
                     <h2>{{ server.master }}</h2>
                     <div class="builders">
                         <template repeat="{{ builder in server.builders }}">
@@ -56,11 +64,12 @@
     </template>
     <script>
         Polymer("cr-try-dialog", {
-            servers: TryServers.SERVERS,
+            filteredServers: TryServers.SERVERS,
             issue: null,
             checked: {},
             butterbarMessage: "",
             saving: false,
+            filter: "",
             cancel: function(event) {
                 this.close();
             },
@@ -68,6 +77,7 @@
                 this.saving = false;
                 this.butterbarMessage = "";
                 this.checked = {};
+                this.filter = "";
             },
             close: function() {
                 this.reset();
@@ -98,6 +108,21 @@
                 if (!this.issue)
                     return;
                 this.$.dialog.showModal();
+            },
+            filterChanged: function() {
+                this.filteredServers = TryServers.SERVERS;
+                var filter = this.filter;
+                if (!filter.length)
+                    return;
+                this.filteredServers = TryServers.SERVERS.map(function(server) {
+                    server = Object.clone(server);
+                    server.builders = server.builders.filter(function(builder) {
+                        return builder.contains(filter);
+                    });
+                    return server;
+                }).filter(function(server) {
+                    return server.builders.length;
+                });
             },
         });
     </script>

@@ -43,7 +43,7 @@
 
             <template if="{{ fields | contains('description') }}">
                 <div class="form-row">
-                    <label class="form-label" for="description">Description</label>
+                    <label class="form-label form-label-textarea" for="description">Description</label>
                     <div class="form-field">
                         <textarea id="description" value="{{ description }}" rows="15" class="{{ {invalid: errors.description} | tokenList }}"></textarea>
                         <div class="form-error">{{ errors.description }}</div>
