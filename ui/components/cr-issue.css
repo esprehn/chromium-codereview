@@ -37,7 +37,7 @@ cr-issue-messages {
 cr-issue-meta {
     flex-shrink: 0;
     width: 300px;
-    padding: 1em 16px;
+    padding: 0.5em 16px;
 }
 
 header {
