@@ -89,7 +89,8 @@ IssueList.updateListDates = function(a, b)
 
 IssueList.convertRelativeDate = function(value)
 {
-    var result = new Date();
+    var result = Date.create("today");
+    var args = {};
     value.split(",").each(function(value) {
         var tokens = value.trim().split(" ");
         if (tokens.length != 2)
@@ -98,11 +99,9 @@ IssueList.convertRelativeDate = function(value)
         var amount = parseInt(tokens[0], 10);
         if (isNaN(amount) || amount <= 0)
             return;
-        var args = {};
         args[type] = amount;
-        result.rewind(args);
     });
-    return result;
+    return result.rewind(args);
 };
 
 IssueList.convertToUser = function(name)
