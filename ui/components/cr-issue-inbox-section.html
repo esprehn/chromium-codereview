@@ -43,14 +43,19 @@
                 }
                 if (!this.issues)
                     return;
-                var date = Date.create("tomorrow").rewind({
-                    weeks: parseInt(this.weeks, 10) + 1
-                });
+                var date = this.filterDate();
                 this.issues.forEach(function(issue) {
                     if (issue.lastModified >= date)
                         self.visibleIssues.push(issue);
                     else
                         self.hiddenIssues.push(issue);
+                });
+            },
+            filterDate: function() {
+                if (this.weeks == "today")
+                    return Date.create().rewind({days: 1});
+                return Date.create().rewind({
+                    weeks: parseInt(this.weeks, 10) + 1,
                 });
             },
             pluralize: function(text, value) {
