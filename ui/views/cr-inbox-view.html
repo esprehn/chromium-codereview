@@ -25,6 +25,7 @@
             .filter-form {
                 display: flex;
                 margin: 0 16px;
+                align-items: center;
             }
 
             .filter-form label {
@@ -44,7 +45,7 @@
                     <label for="filter">
                         Filter
                     </label>
-                    <select value="{{ filter }}">
+                    <select id="filter" value="{{ filter }}">
                         <option value="0">Past week</option>
                         <option value="2">2 weeks</option>
                         <option value="4">4 weeks</option>
