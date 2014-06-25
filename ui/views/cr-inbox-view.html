@@ -12,15 +12,55 @@
                 padding: 1em;
                 font-size: 2em;
             }
+
+            header {
+                display: flex;
+                align-items: center;
+            }
+
+            .app-header {
+                flex: 1;
+            }
+
+            .filter-form {
+                display: flex;
+                margin: 0 16px;
+            }
+
+            .filter-form label {
+                font-weight: bold;
+                color: #959595;
+                -webkit-user-select: none;
+                cursor: default;
+                white-space: nowrap;
+                margin-right: 16px;
+            }
         </style>
         <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
         <template if="{{ issues && !failed }}">
-            <h1 class="app-header">My Issues</h1>
-            <cr-issue-inbox issues="{{ issues }}"></cr-issue-inbox>
+            <header>
+                <h1 class="app-header">My Issues</h1>
+                <div class="filter-form">
+                    <label for="filter">
+                        Filter
+                    </label>
+                    <select value="{{ filter }}">
+                        <option value="0">Past week</option>
+                        <option value="2">2 weeks</option>
+                        <option value="4">4 weeks</option>
+                        <option value="all">All issues</option>
+                    </select>
+                </div>
+            </header>
+            <cr-issue-inbox issues="{{ issues }}" weeks="{{ filter }}"></cr-issue-inbox>
         </template>
     </template>
     <script>
+    (function() {
+        var FILTER_KEY = "cr-inbox-view.filter";
+
         Polymer("cr-inbox-view", {
+            filter: "2",
             issues: null,
             loading: true,
             failed: false,
@@ -30,6 +70,7 @@
                 this.fire("title-change", {
                     value: "My issues"
                 });
+                this.filter = localStorage.getItem(FILTER_KEY) || this.filter;
                 this.issues = IssueList.getCachedIssues();
                 this.butterbarMessage = "Loading your issues.";
                 var issues = new IssueList();
@@ -47,6 +88,10 @@
                     self.butterbarMessage = "Failed to load your issues. :(";
                 });
             },
+            filterChanged: function() {
+                localStorage.setItem(FILTER_KEY, this.filter);
+            },
         });
+    })();
     </script>
 </polymer-element>

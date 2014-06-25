@@ -1,0 +1,63 @@
+
+<link rel="import" href="../../bower_components/polymer-ui-collapsible/polymer-ui-collapsible.html">
+
+<link rel="import" href="cr-issue-list.html">
+
+<polymer-element name="cr-issue-inbox-section" attributes="issues weeks">
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <style>
+            .polymer-ui-collapsible-header {
+                padding: 0.5em 16px;
+                display: block;
+            }
+        </style>
+
+        <cr-issue-list issues="{{ visibleIssues }}"></cr-issue-list>
+        <template if="{{ hiddenIssues.length }}">
+            <polymer-ui-collapsible>
+                <cr-action class="polymer-ui-collapsible-header">
+                    {{ hiddenIssues.length }} older
+                    {{ "issue" | pluralize(hiddenIssues.length) }}
+                </cr-action>
+                <cr-issue-list issues="{{ hiddenIssues }}"></cr-issue-list>
+            </polymer-ui-collapsible>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-issue-inbox-section", {
+            weeks: "all",
+            issues: null,
+            visibleIssues: [],
+            hiddenIssues: [],
+            computed: {
+                state: "[issues, weeks]",
+            },
+            stateChanged: function() {
+                var self = this;
+                this.visibleIssues = [];
+                this.hiddenIssues = [];
+                if (this.weeks == "all") {
+                    this.visibleIssues = this.issues;
+                    return;
+                }
+                if (!this.issues)
+                    return;
+                var date = Date.create("tomorrow").rewind({
+                    weeks: parseInt(this.weeks, 10) + 1
+                });
+                this.issues.forEach(function(issue) {
+                    if (issue.lastModified >= date)
+                        self.visibleIssues.push(issue);
+                    else
+                        self.hiddenIssues.push(issue);
+                });
+            },
+            pluralize: function(text, value) {
+                if (value > 1)
+                    return text.pluralize();
+                return text;
+            },
+        });
+    </script>
+</polymer-element>
