@@ -10,5 +10,6 @@ html, body {
 
 body {
     overflow-y: scroll;
-    padding-bottom: 0.5em;
+    /* Avoid the overlay chrome status bar. */
+    padding-bottom: 20px;
 }
