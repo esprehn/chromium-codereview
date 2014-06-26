@@ -10,17 +10,15 @@ function DiffBuilder(diff, file, output)
 
 DiffBuilder.prototype.createDiff = function()
 {
-    var output = this.output;
-    var self = this;
     if (this.diff.isImage) {
         var image = document.createElement("cr-diff-image");
         image.file = this.file;
-        output.appendChild(image);
+        this.output.appendChild(image);
         return;
     }
     if (this.diff.from) {
         var section = document.createElement("div");
-        output.appendChild(section);
+        this.output.appendChild(section);
         this.emitLine(section, {
             type: "header",
             beforeNumber: 0,
@@ -31,13 +29,17 @@ DiffBuilder.prototype.createDiff = function()
             text: this.diff.from,
         });
     }
-    this.diff.groups.forEach(function(group) {
-        var section = document.createElement("div");
-        output.appendChild(section);
-        group.forEach(function(line) {
-            self.emitLine(section, line);
-        });
-    });
+    var groups = this.diff.groups;
+    for (var i = 0; i < groups.length; ++i)
+        this.emitGroup(groups[i]);
+};
+
+DiffBuilder.prototype.emitGroup = function(group)
+{
+    var section = document.createElement("div");
+    for (var i = 0; i < group.length; ++i)
+        this.emitLine(section, group[i]);
+    this.output.appendChild(section);
 };
 
 DiffBuilder.prototype.emitLine = function(section, line)
