@@ -3,6 +3,7 @@ function DiffBuilder(diff, file, output)
 {
     this.diff = diff;
     this.file = file;
+    this.language = file.language;
     this.output = output;
     this.highlightData = null;
 }
@@ -10,12 +11,10 @@ function DiffBuilder(diff, file, output)
 DiffBuilder.prototype.createDiff = function()
 {
     var output = this.output;
-    var file = this.file;
-    var language = file.language;
     var self = this;
     if (this.diff.isImage) {
         var image = document.createElement("cr-diff-image");
-        image.file = file;
+        image.file = this.file;
         output.appendChild(image);
         return;
     }
@@ -35,32 +34,29 @@ DiffBuilder.prototype.createDiff = function()
     this.diff.groups.forEach(function(group) {
         var section = document.createElement("div");
         output.appendChild(section);
-
         group.forEach(function(line) {
-            if (language != file.language && file.shouldResetEmbeddedLanguage(language, line.text)) {
-                language = file.language;
-                self.highlightData = null;
-            }
-            self.emitLine(section, line, language);
-            if (language == file.language) {
-                language = file.selectEmbeddedLanguage(line.text);
-                if (language != file.language)
-                    self.highlightData = null;
-            }
+            self.emitLine(section, line);
         });
     });
 };
 
-DiffBuilder.prototype.emitLine = function(section, line, language)
+DiffBuilder.prototype.emitLine = function(section, line)
 {
+    var file = this.file;
+
+    if (this.language != file.language && file.shouldResetEmbeddedLanguage(this.language, line.text)) {
+        this.language = file.language;
+        this.highlightData = null;
+    }
+
     var row = document.createElement("div");
     row.className = "row " + line.type;
 
     row.appendChild(this.createLineNumber(line, line.beforeNumber, "remove"));
     row.appendChild(this.createLineNumber(line, line.afterNumber, "add"));
-    row.appendChild(this.createText(line, language));
+    row.appendChild(this.createText(line));
 
-    var contextAction = this.createContextAction(section, line, language);
+    var contextAction = this.createContextAction(section, line);
     if (contextAction)
         row.appendChild(contextAction);
 
@@ -69,9 +65,15 @@ DiffBuilder.prototype.emitLine = function(section, line, language)
     var messages = this.createMessages(line);
     if (messages)
         section.appendChild(messages);
+
+    if (this.language == file.language) {
+        this.language = file.selectEmbeddedLanguage(line.text);
+        if (this.language != file.language)
+            this.highlightData = null;
+    }
 };
 
-DiffBuilder.prototype.createContextAction = function(section, line, language)
+DiffBuilder.prototype.createContextAction = function(section, line)
 {
     if (!line.context)
         return null;
@@ -81,8 +83,9 @@ DiffBuilder.prototype.createContextAction = function(section, line, language)
     action.onclick = function() {
         self.file.loadContext(line.contextLinesStart, line.contextLinesEnd).then(function(lines) {
             section.innerHTML = "";
+            self.language = self.file.language;
             lines.forEach(function(line) {
-                self.emitLine(section, line, language);
+                self.emitLine(section, line);
             });
         }).catch(function(e) {
             console.log(e);
@@ -102,16 +105,16 @@ DiffBuilder.prototype.createLineNumber = function(line, number, type)
     return div;
 };
 
-DiffBuilder.prototype.createText = function(line, language)
+DiffBuilder.prototype.createText = function(line)
 {
     var text = document.createElement("div");
     text.className = "text";
-    if (!language) {
+    if (!this.language) {
         text.textContent = line.text;
         return text;
     }
     try {
-        var code = hljs.highlight(language, line.text, true, this.highlightData);
+        var code = hljs.highlight(this.language, line.text, true, this.highlightData);
         this.highlightData = code.top;
         text.innerHTML = code.value;
     } catch (e) {
