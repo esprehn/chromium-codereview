@@ -105,4 +105,10 @@ PatchSet.prototype.parseData = function(data)
         result.parseData(resultData);
         return result;
     });
+
+    this.tryJobResults.sort(function(a, b) {
+        if (a.resultGroup == b.resultGroup)
+            return a.builder.localeCompare(b.builder);
+        return a.resultGroup - b.resultGroup;
+    });
 };
