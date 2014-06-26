@@ -57,10 +57,7 @@ DiffBuilder.prototype.emitLine = function(section, line)
 {
     var file = this.file;
 
-    if (this.language != file.language && file.shouldResetEmbeddedLanguage(this.language, line.text)) {
-        this.language = file.language;
-        this.highlightData = null;
-    }
+    this.resetLanguageIfNeeded(line);
 
     var row = document.createElement("div");
     row.className = "row " + line.type;
@@ -79,11 +76,26 @@ DiffBuilder.prototype.emitLine = function(section, line)
     if (messages)
         section.appendChild(messages);
 
-    if (this.language == file.language) {
-        this.language = file.selectEmbeddedLanguage(line.text);
-        if (this.language != file.language)
-            this.highlightData = null;
-    }
+    this.selectEmbeddedLanguage(line);
+};
+
+DiffBuilder.prototype.resetLanguageIfNeeded = function(line)
+{
+    if (this.language == this.file.language)
+        return;
+    if (!this.file.shouldResetEmbeddedLanguage(this.language, line.text))
+        return;
+    this.language = this.file.language;
+    this.highlightData = null;
+};
+
+DiffBuilder.prototype.selectEmbeddedLanguage = function(line)
+{
+    if (this.language != this.file.language)
+        return;
+    this.language = this.file.selectEmbeddedLanguage(line.text);
+    if (this.language != this.file.language)
+        this.highlightData = null;
 };
 
 DiffBuilder.prototype.createContextAction = function(section, line)
