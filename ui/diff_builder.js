@@ -149,7 +149,7 @@ DiffBuilder.prototype.createText = function(line)
     return text;
 };
 
-DiffBuilder.prototype.messageForLine = function(line, number, type)
+DiffBuilder.prototype.messagesForLine = function(line, number, type)
 {
     if (line.type == "both" || line.type == type)
         return this.file.messages[number];
@@ -158,8 +158,8 @@ DiffBuilder.prototype.messageForLine = function(line, number, type)
 
 DiffBuilder.prototype.createMessages = function(line)
 {
-    var beforeMessages = this.messageForLine(line, line.beforeNumber, "remove");
-    var afterMessages = this.messageForLine(line, line.afterNumber, "add");
+    var beforeMessages = this.messagesForLine(line, line.beforeNumber, "remove");
+    var afterMessages = this.messagesForLine(line, line.afterNumber, "add");
 
     if (!beforeMessages && !afterMessages)
         return null;
