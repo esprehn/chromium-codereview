@@ -22,22 +22,27 @@ DiffBuilder.prototype.createDiff = function()
         this.output.appendChild(image);
         return;
     }
-    if (this.diff.from) {
-        var section = document.createElement("div");
-        this.output.appendChild(section);
-        this.emitLine(section, {
-            type: "header",
-            beforeNumber: 0,
-            afterNumber: 0,
-            contextLinesStart: 0,
-            contextLinesEnd: 0,
-            context: false,
-            text: this.diff.from,
-        });
-    }
+    if (this.diff.from)
+        this.emitMoveHeader();
     var groups = this.diff.groups;
     for (var i = 0; i < groups.length; ++i)
         this.emitGroup(groups[i]);
+};
+
+// Moves and copies need a header at the start of the file.
+DiffBuilder.prototype.emitMoveHeader = function()
+{
+    var section = document.createElement("div");
+    this.output.appendChild(section);
+    this.emitLine(section, {
+        type: "header",
+        beforeNumber: 0,
+        afterNumber: 0,
+        contextLinesStart: 0,
+        contextLinesEnd: 0,
+        context: false,
+        text: this.diff.from,
+    });
 };
 
 DiffBuilder.prototype.emitGroup = function(group)
