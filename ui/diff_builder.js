@@ -53,55 +53,53 @@ DiffBuilder.prototype.createDiff = function()
 
 DiffBuilder.prototype.emitLine = function(section, line, language)
 {
-    var self = this;
-    var file = this.file;
-
     var row = document.createElement("div");
     row.className = "row " + line.type;
-    section.appendChild(row);
 
-    var beforeMessages;
-    var before = row.appendChild(document.createElement("div"));
-    before.className = "line-number";
-    if (line.type == "both" || line.type == "remove") {
-        beforeMessages = file.messages[line.beforeNumber];
-        before.textContent = line.beforeNumber;
-    } else if (line.type == "header") {
-        before.textContent = "@@";
-    }
-    row.appendChild(before);
-
-    var afterMessages;
-    var after = row.appendChild(document.createElement("div"));
-    after.className = "line-number";
-    if (line.type == "both" || line.type == "add") {
-        afterMessages = file.messages[line.afterNumber];
-        after.textContent = line.afterNumber;
-    } else if (line.type == "header") {
-        after.textContent = "@@";
-    }
-    row.appendChild(after);
-
+    row.appendChild(this.createLineNumber(line, line.beforeNumber, "remove"));
+    row.appendChild(this.createLineNumber(line, line.afterNumber, "add"));
     row.appendChild(this.createText(line, language));
 
-    if (line.context) {
-        var action = row.appendChild(document.createElement("cr-action"));
-        action.textContent = "Show context";
-        action.onclick = function() {
-            file.loadContext(line.contextLinesStart, line.contextLinesEnd).then(function(lines) {
-                section.innerHTML = "";
-                lines.forEach(function(line) {
-                    self.emitLine(section, line, language);
-                });
-            }).catch(function(e) {
-                console.log(e);
-            });
-        };
-    }
+    var contextAction = this.createContextAction(section, line, language);
+    if (contextAction)
+        row.appendChild(contextAction);
 
-    var messages = this.createMessages(beforeMessages, afterMessages);
+    section.appendChild(row);
+
+    var messages = this.createMessages(line);
     if (messages)
         section.appendChild(messages);
+};
+
+DiffBuilder.prototype.createContextAction = function(section, line, language)
+{
+    if (!line.context)
+        return null;
+    var self = this;
+    var action = document.createElement("cr-action");
+    action.textContent = "Show context";
+    action.onclick = function() {
+        self.file.loadContext(line.contextLinesStart, line.contextLinesEnd).then(function(lines) {
+            section.innerHTML = "";
+            lines.forEach(function(line) {
+                self.emitLine(section, line, language);
+            });
+        }).catch(function(e) {
+            console.log(e);
+        });
+    };
+    return action;
+};
+
+DiffBuilder.prototype.createLineNumber = function(line, number, type)
+{
+    var div = document.createElement("div");
+    div.className = "line-number";
+    if (line.type == "both" || line.type == type)
+        div.textContent = number;
+    else if (line.type == "header")
+        div.textContent = "@@";
+    return div;
 };
 
 DiffBuilder.prototype.createText = function(line, language)
@@ -123,8 +121,18 @@ DiffBuilder.prototype.createText = function(line, language)
     return text;
 };
 
-DiffBuilder.prototype.createMessages = function(beforeMessages, afterMessages)
+DiffBuilder.prototype.messageForLine = function(line, number, type)
 {
+    if (line.type == "both" || line.type == type)
+        return this.file.messages[number];
+    return null;
+};
+
+DiffBuilder.prototype.createMessages = function(line)
+{
+    var beforeMessages = this.messageForLine(line, line.beforeNumber, "remove");
+    var afterMessages = this.messageForLine(line, line.afterNumber, "add");
+
     if (!beforeMessages && !afterMessages)
         return null;
 
