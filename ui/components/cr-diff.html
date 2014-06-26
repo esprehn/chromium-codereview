@@ -22,8 +22,6 @@
                 active: { value: false, reflect: true },
             },
             file: null,
-            diff: null,
-            highlightData: null,
             fileChanged: function(oldValue, newValue) {
                 var output = this.$.output;
                 output.innerHTML = "";
@@ -100,20 +98,19 @@
                 });
             },
             showDiff: function() {
+                var self = this;
                 if (this.active)
                     return Promise.resolve(this);
                 this.active = true;
-                if (!this.diff) {
-                    var self = this;
-                    return this.file.loadDiff().then(function(diff) {
-                        self.diff = diff;
-                        return self.createDiffAsync();
-                    }).catch(function(e) {
-                        this.active = false;
-                        console.log(e);
-                    });
-                }
-                return this.createDiffAsync();
+                return this.file.loadDiff().then(function(diff) {
+                    if (!self.active)
+                        return;
+                    var builder = new DiffBuilder(diff, self.file, self.$.output);
+                    builder.createDiff();
+                }).catch(function(e) {
+                    self.active = false;
+                    console.log(e);
+                });
             },
             hideDiff: function() {
                 if (!this.active)
@@ -124,20 +121,6 @@
             },
             toggleDiff: function() {
                 return this.active ? this.hideDiff() : this.showDiff();
-            },
-            createDiffAsync: function() {
-                var builder = new DiffBuilder(this.diff, this.file, this.$.output);
-                return new Promise(function(fulfill, reject) {
-                    this.async(function() {
-                        try {
-                            if (this.active)
-                                builder.createDiff();
-                            fulfill();
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }, null, 1);
-                }.bind(this));
             },
         });
     </script>

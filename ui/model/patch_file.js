@@ -16,6 +16,7 @@ function PatchFile(patchset, name)
     this.messages = {}; // Map<line number, Array<PatchFileMessage>>
     this.messageCount = 0;
     this.draftCount = 0;
+    this.diff = null;
 }
 
 PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
@@ -216,8 +217,18 @@ PatchFile.prototype.createDraftData = function(message)
 PatchFile.prototype.loadDiff = function()
 {
     var file = this;
+    var diff = this.diff;
+    if (diff) {
+        return new Promise(function(resolve, reject) {
+            setTimeout(function() {
+                resolve(diff);
+            });
+        });
+    }
     return loadText(this.getDiffUrl()).then(function(text) {
-        return file.parseDiff(text);
+        var diff = file.parseDiff(text);
+        file.diff = diff;
+        return diff;
     });
 };
 
