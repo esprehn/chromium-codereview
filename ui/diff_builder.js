@@ -82,21 +82,7 @@ DiffBuilder.prototype.emitLine = function(section, line, language)
     }
     row.appendChild(after);
 
-    var text = row.appendChild(document.createElement("div"));
-    text.className = "text";
-    if (language) {
-        try {
-            var code = hljs.highlight(language, line.text, true, self.highlightData);
-            self.highlightData = code.top;
-            text.innerHTML = code.value;
-        } catch (e) {
-            console.log("Syntax highlighter error", e);
-            text.textContent = line.text;
-        }
-    } else {
-        text.textContent = line.text;
-    }
-    row.appendChild(text);
+    row.appendChild(this.createText(line, language));
 
     if (line.context) {
         var action = row.appendChild(document.createElement("cr-action"));
@@ -113,8 +99,34 @@ DiffBuilder.prototype.emitLine = function(section, line, language)
         };
     }
 
+    var messages = this.createMessages(beforeMessages, afterMessages);
+    if (messages)
+        section.appendChild(messages);
+};
+
+DiffBuilder.prototype.createText = function(line, language)
+{
+    var text = document.createElement("div");
+    text.className = "text";
+    if (!language) {
+        text.textContent = line.text;
+        return text;
+    }
+    try {
+        var code = hljs.highlight(language, line.text, true, this.highlightData);
+        this.highlightData = code.top;
+        text.innerHTML = code.value;
+    } catch (e) {
+        console.log("Syntax highlighter error", e);
+        text.textContent = line.text;
+    }
+    return text;
+};
+
+DiffBuilder.prototype.createMessages = function(beforeMessages, afterMessages)
+{
     if (!beforeMessages && !afterMessages)
-        return;
+        return null;
 
     var messages = document.createElement("div");
     messages.className = "messages";
@@ -139,6 +151,5 @@ DiffBuilder.prototype.emitLine = function(section, line, language)
         });
     }
 
-    if (messages.firstChild)
-        section.appendChild(messages);
+    return messages;
 };
