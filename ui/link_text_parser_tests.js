@@ -57,7 +57,7 @@ describe("LinkTextParser", function() {
             {href:"http://code.google.com/p/chromium/issues/detail?id=678", text:"678"},
         ]);
     });
-    it("should parse multiple bugs in a BUG= line", function() {
+    it("should parse tracker prefix in a BUG= line", function() {
         expectTokens("abc\nBUG=456,   v8:678,chromium-os:123456", [
             "abc\n",
             "BUG=",
