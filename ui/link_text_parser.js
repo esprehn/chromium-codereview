@@ -34,7 +34,6 @@ LinkTextParser.prototype.addBugText = function(text, tracker, bugId)
 
 LinkTextParser.prototype.parse = function(text)
 {
-    var self = this;
     linkify(text, {
         callback: this.parseChunk.bind(this)
     });
