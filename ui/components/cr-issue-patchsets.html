@@ -51,7 +51,7 @@
                 <polymer-ui-collapsible class="patchset" active="{{ patchset.active }}">
                     <div class="patchset-header polymer-ui-collapsible-header">
                         <div class="patchset-title">
-                            Patch set {{ i + 1 }}<template if="{{ patchset.message }}">: {{ patchset.message }}</template>
+                            Patch {{ i + 1 }}<template if="{{ patchset.message }}">: {{ patchset.message }}</template>
                         </div>
                         <div class="patchset-comments">{{ patchset.commentCount | commentCount }}</div>
                         <div class="patchset-date">{{ patchset.created | formatDate }}</div>
