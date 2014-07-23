@@ -52,7 +52,7 @@ DiffParser.prototype.nextLineType = function()
     if (c == " ")
         return "both";
     if (c == "\\")
-        return "empty";
+        return "skip";
     throw new Error("Parse error: Unable to classify line: '{1}'".assign(line));
 };
 
@@ -69,6 +69,11 @@ DiffParser.prototype.parseFile = function()
         var type = this.nextLineType();
         if (type == "index" || type == "empty")
             break; // We're done with this file.
+
+        if (type == "skip") {
+            this.currentLine++
+            continue;
+        }
 
         var groupType = type;
         var line = {
