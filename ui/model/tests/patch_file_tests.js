@@ -40,7 +40,8 @@ describe("PatchFile", function() {
         expect(text.selectEmbeddedLanguage("<style></style>")).toBe("cpp");
     });
     it("should maintain message counts", function() {
-        var file = new PatchFile();
+        var issue = new Issue(1);
+        var file = new PatchFile(new PatchSet(issue, 2));
 
         expect(file.messageCount).toBe(0);
         expect(file.draftCount).toBe(0);
@@ -57,18 +58,21 @@ describe("PatchFile", function() {
         draft.draft = true;
         file.addMessage(draft);
         expect(file.messages[10]).toEqual([message, draft]);
-        expect(file.messageCount).toBe(1);
+        expect(file.messageCount).toBe(2);
         expect(file.draftCount).toBe(1);
+        expect(issue.draftCount).toBe(1);
 
         file.removeMessage(message);
         expect(file.messages[10]).toEqual([draft]);
-        expect(file.messageCount).toBe(0);
+        expect(file.messageCount).toBe(1);
         expect(file.draftCount).toBe(1);
+        expect(issue.draftCount).toBe(1);
 
         file.removeMessage(draft);
         expect(file.messages[10]).toEqual([]);
         expect(file.messageCount).toBe(0);
         expect(file.draftCount).toBe(0);
+        expect(issue.draftCount).toBe(0);
     });
     it("should only parse positive or zero delta numbers", function() {
         var file = new PatchFile();
