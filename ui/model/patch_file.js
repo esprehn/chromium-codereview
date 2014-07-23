@@ -90,6 +90,8 @@ PatchFile.prototype.addMessage = function(message)
 {
     if (!this.messages[message.line])
         this.messages[message.line] = [];
+    if (this.messages[message.line].find(message))
+        return;
     this.messages[message.line].push(message);
     if (message.draft)
         this.draftCount++;
