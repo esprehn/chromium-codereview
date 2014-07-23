@@ -7,7 +7,7 @@ document.documentElement.style.display = 'none';
 onload = function() {
     document.write(
         "<!DOCTYPE html>" +
-        "<meta name=viewport content='width=device-width, user-scalable=no'>" +
+        "<meta name=viewport content='initial-scale=1, maximum-scale=1, user-scalable=no'>" +
         "<title>Chromium Code Review</title>" +
         "<script src='" + resolveUrl("bower_components/platform/platform.js") + "'></script>" +
         "<link rel='import' href='" + resolveUrl("bower_components/polymer/polymer.html") + "'>" +
