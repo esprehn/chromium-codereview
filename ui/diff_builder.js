@@ -62,6 +62,13 @@ DiffBuilder.prototype.emitLine = function(section, line)
     var row = document.createElement("div");
     row.className = "row " + line.type;
 
+    // FIXME: Editing a multi line comment can end up making an entire file
+    // look like a comment. For now we reset the syntax highlighter between
+    // sections to avoid this in the common case. This will break headers
+    // in the middle of multi line comments, but that's very rare.
+    if (line.type == "header")
+        this.highlightData = null;
+
     row.appendChild(this.createLineNumber(line, line.beforeNumber, "remove"));
     row.appendChild(this.createLineNumber(line, line.afterNumber, "add"));
     row.appendChild(this.createText(line));
