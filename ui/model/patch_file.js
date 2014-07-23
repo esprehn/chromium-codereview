@@ -15,7 +15,7 @@ function PatchFile(patchset, name)
     this.isBinary = false;
     this.messages = {}; // Map<line number, Array<PatchFileMessage>>
     this.messageCount = 0;
-    this.drafts = {}; // Map<line number, Array<PatchFileMessage>>
+    this.drafts = []; // Array<PatchFileMessage>
     this.draftCount = 0;
     this.diff = null;
 }
@@ -96,10 +96,12 @@ PatchFile.prototype.addMessage = function(message)
     this.messages[message.line].push(message);
     this.messageCount++;
     if (message.draft) {
-        if (!this.drafts[message.line])
-            this.drafts[message.line] = [];
-        this.drafts[message.line].push(message);
+        this.drafts.push(message);
+        this.drafts.sort(function(a, b) {
+            return a.line - b.line;
+        });
         this.draftCount++;
+        this.patchset.issue.draftCount++;
     }
 };
 
@@ -111,8 +113,9 @@ PatchFile.prototype.removeMessage = function(message)
     messages.remove(message);
     this.messageCount--;
     if (message.draft) {
-        this.drafts[message.line].remove(message);
+        this.drafts.remove(message);
         this.draftCount--;
+        this.patchset.issue.draftCount--;
     }
 };
 

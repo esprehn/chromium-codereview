@@ -20,6 +20,51 @@
             .issue-publish-label {
                 padding: 0.5em 16px;
             }
+
+            h2 {
+                font-size: 1em;
+                color: #959595;
+                margin: 0;
+            }
+
+            .polymer-ui-collapsible-header {
+                margin: 0.5em 16px;
+            }
+
+            .file-header {
+                margin: 0;
+                padding: 0 16px;
+                font-size: 1.1em;
+                display: flex;
+            }
+
+            .file-header .file-name {
+                flex: 1;
+            }
+
+            .messages {
+                border: 1px solid #ccc;
+                margin: 0.5em 16px;
+            }
+
+            .message {
+                background-color: #ffd;
+                border-bottom: 1px solid #ccc;
+                padding: 0.5em 16px;
+            }
+
+            .message:last-child {
+                border-bottom: none;
+            }
+
+            .message-header {
+                margin: 0;
+                font-size: 1em;
+            }
+
+            .message-text {
+                margin-top: 0.5em;
+            }
         </style>
 
         <dialog is="cr-dialog" id="dialog" on-cancel="{{ cancel }}">
@@ -37,9 +82,52 @@
             <fieldset class="issue-publish-fields" disabled?="{{ sending }}">
                 <label class="issue-publish-label" for="message">Message</label>
                 <div class="issue-publish-field">
-                    <textarea id="message" value="{{ message }}" rows="20"></textarea>
+                    <textarea id="message" value="{{ message }}" rows="{{ issue.draftCount | editorHeight }}"></textarea>
                 </div>
             </fieldset>
+
+            <div id="drafts">
+                <polymer-ui-collapsible active="{{ draftsVisible }}">
+                    <div class="polymer-ui-collapsible-header">
+                        <cr-action>
+                            <template if="{{ !draftsVisible }}">
+                                Show Drafts
+                            </template>
+                            <template if="{{ draftsVisible }}">
+                                Hide Drafts
+                            </template>
+                        </cr-action>
+                    </div>
+                    <!-- FIXME: This should use <cr-patch-file-message> and allow editing. -->
+                    <!--
+                        Don't repeat over the patchsets unless we have some drafts,
+                        otherwise we'll output tons of <template> elements into the
+                        page on rebaseline patches that are not needed.
+                    -->
+                    <template if="{{ issue.draftCount }}">
+                        <template repeat="{{ patchset, i in issue.patchsets }}">
+                            <template repeat="{{ file in patchset.files }}">
+                                <template if="{{ file.draftCount }}">
+                                    <h3 class="file-header">
+                                        <span class="file-name">{{ file.name }}</span>
+                                        <span class="patchset">Patch {{ i }}</span>
+                                    </h3>
+                                    <div class="messages">
+                                        <template repeat="{{ draft in file.drafts }}">
+                                            <div class="message">
+                                                <h4 class="message-header">Line {{ draft.line }}</h4>
+                                                <div class="message-text">
+                                                    <cr-linkified-text text="{{ draft.text }}" pre></cr-linkified-text>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+                        </template>
+                    </template>
+                </polymer-ui-collapsible>
+            </div>
 
             <cr-toolbar>
                 <cr-button primary on-tap="{{ send }}">Send</cr-button>
@@ -64,6 +152,7 @@
             sending: false,
             addAsReviewer: true,
             userIsOwner: true,
+            draftsVisible: false,
             cancel: function(event) {
                 if (this.$.editor.dismissAutocomplete()) {
                     event.preventDefault();
@@ -79,6 +168,7 @@
                 this.message = "";
                 this.$.editor.dismissAutocomplete();
                 this.userIsOwner = this.issue.owner.isCurrentUser();
+                this.draftsVisible = false;
             },
             close: function() {
                 this.reset();
@@ -113,6 +203,9 @@
                     return;
                 this.reset();
                 this.$.dialog.showModal();
+            },
+            editorHeight: function(draftCount) {
+                return draftCount ? 15 : 20;
             },
         });
     </script>
