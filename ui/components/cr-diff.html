@@ -40,9 +40,11 @@
                 }
                 var messages = toArray(row.nextSibling.querySelectorAll("cr-patch-file-message"));
                 var existingDraft = messages.find(function(fileMessage) {
-                    return !fileMessage.message.date;
+                    return fileMessage.message.draft;
                 });
                 if (existingDraft) {
+                    if (!existingDraft.expanded)
+                        existingDraft.expand();
                     existingDraft.focusInput();
                     return;
                 }
