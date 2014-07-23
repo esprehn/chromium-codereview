@@ -8,25 +8,24 @@
             white-space: pre-wrap;
             font-family: Monaco, monospace;
         }
-    </style><div id="text"></div></template>
+    </style><div id="output"></div></template>
     <script>
     Polymer("cr-linkified-text", {
         text: "",
         textChanged: function(oldValue, newValue) {
-            var self = this;
-            var root = this.shadowRoot.getElementById("text");
+            var output = this.$.output;
 
-            while (root.firstChild)
-                root.firstChild.remove();
+            while (output.firstChild)
+                output.firstChild.remove();
 
             if (!newValue)
                 return;
 
             var parser = new LinkTextParser(function(text, href) {
                 if (href)
-                    root.appendChild(createAnchor(href, text));
+                    output.appendChild(createAnchor(href, text));
                 else
-                    root.appendChild(document.createTextNode(text));
+                    output.appendChild(document.createTextNode(text));
             });
             parser.parse(newValue);
         },
