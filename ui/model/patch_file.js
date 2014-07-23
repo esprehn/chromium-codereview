@@ -172,6 +172,7 @@ PatchFile.prototype.getContextUrl = function(start, end)
 
 PatchFile.prototype.saveDraft = function(message, newText)
 {
+    var self = this;
     return this.createDraftData(message).then(function(data) {
         data.text = newText;
         return sendFormData(PatchFile.COMMENT_URL, data).then(function(xhr) {
@@ -183,6 +184,7 @@ PatchFile.prototype.saveDraft = function(message, newText)
             message.date = Date.utc.create();
             message.messageId = id;
             message.text = newText;
+            self.addMessage(message);
             return true;
         });
     });
@@ -190,11 +192,13 @@ PatchFile.prototype.saveDraft = function(message, newText)
 
 PatchFile.prototype.discardDraft = function(message)
 {
+    var self = this;
     return this.createDraftData(message).then(function(data) {
         data.old_text = message.text;
         data.text = "";
         data.file = "";
         return sendFormData(PatchFile.COMMENT_URL, data).then(function() {
+            self.removeMessage(message);
             return true;
         });
     });

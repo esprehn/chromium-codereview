@@ -90,7 +90,6 @@
                 });
                 this.file.discardDraft(message).then(function() {
                     self.fire("butterbar-update");
-                    self.file.removeMessage(message);
                     target.remove();
                 }).catch(function(e) {
                     self.fire("butterbar-update");
