@@ -110,7 +110,7 @@
                                 <template if="{{ file.draftCount }}">
                                     <h3 class="file-header">
                                         <span class="file-name">{{ file.name }}</span>
-                                        <span class="patchset">Patch {{ i }}</span>
+                                        <span class="patchset">Patch {{ i + 1 }}</span>
                                     </h3>
                                     <div class="messages">
                                         <template repeat="{{ draft in file.drafts }}">
