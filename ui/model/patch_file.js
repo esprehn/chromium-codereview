@@ -15,6 +15,7 @@ function PatchFile(patchset, name)
     this.isBinary = false;
     this.messages = {}; // Map<line number, Array<PatchFileMessage>>
     this.messageCount = 0;
+    this.drafts = {}; // Map<line number, Array<PatchFileMessage>>
     this.draftCount = 0;
     this.diff = null;
 }
@@ -93,10 +94,13 @@ PatchFile.prototype.addMessage = function(message)
     if (this.messages[message.line].find(message))
         return;
     this.messages[message.line].push(message);
-    if (message.draft)
+    this.messageCount++;
+    if (message.draft) {
+        if (!this.drafts[message.line])
+            this.drafts[message.line] = [];
+        this.drafts[message.line].push(message);
         this.draftCount++;
-    else
-        this.messageCount++;
+    }
 };
 
 PatchFile.prototype.removeMessage = function(message)
@@ -105,10 +109,11 @@ PatchFile.prototype.removeMessage = function(message)
     if (!messages || !messages.find(message))
         return;
     messages.remove(message);
-    if (message.draft)
+    this.messageCount--;
+    if (message.draft) {
+        this.drafts[message.line].remove(message);
         this.draftCount--;
-    else
-        this.messageCount--;
+    }
 };
 
 PatchFile.prototype.parseData = function(data)
@@ -170,17 +175,6 @@ PatchFile.prototype.getContextUrl = function(start, end)
         encodeURIComponent(this.id),
         encodeURIComponent(start),
         encodeURIComponent(end));
-};
-
-PatchFile.prototype.getDrafts = function()
-{
-    return Object.values(this.messages)
-        .flatten()
-        .filter(function(message) {
-            return message.draft;
-        }).sort(function(a, b) {
-            return a.line - b.line;
-        });
 };
 
 PatchFile.prototype.saveDraft = function(message, newText)
