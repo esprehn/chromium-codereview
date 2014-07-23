@@ -170,6 +170,17 @@ PatchFile.prototype.getContextUrl = function(start, end)
         encodeURIComponent(end));
 };
 
+PatchFile.prototype.getDrafts = function()
+{
+    return Object.values(this.messages)
+        .flatten()
+        .filter(function(message) {
+            return message.draft;
+        }).sort(function(a, b) {
+            return a.line - b.line;
+        });
+};
+
 PatchFile.prototype.saveDraft = function(message, newText)
 {
     var self = this;
