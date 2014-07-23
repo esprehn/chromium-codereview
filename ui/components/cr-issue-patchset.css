@@ -22,6 +22,10 @@ header .ui-actions {
     flex-shrink: 0;
 }
 
+#files {
+    overflow-x: auto;
+}
+
 cr-try-results {
     margin-bottom: 0.5em;
 }

@@ -2,6 +2,10 @@
 <polymer-element name="cr-button">
     <template>
         <style>
+            :host {
+                display: flex;
+            }
+
             :host-context(cr-toolbar) {
                 margin-right: 16px;
             }
@@ -20,6 +24,7 @@
                 white-space: nowrap;
                 padding: 0 16px;
                 vertical-align: middle;
+                flex: 1;
             }
 
             button:active,
@@ -87,6 +92,13 @@
                 background-color: #b0281a;
                 background-image: -webkit-linear-gradient(top, #dd4b39, #b0281a);
                 border: 1px solid #992a1b;
+            }
+
+            @media (max-width: 800px) {
+                button {
+                    padding: 16px;
+                    height: auto;
+                }
             }
         </style>
         <button on-keypress="{{ handleKeypress }}"><content></content></button>

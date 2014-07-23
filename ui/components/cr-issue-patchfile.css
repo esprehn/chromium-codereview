@@ -1,5 +1,8 @@
 
-:host { display: block; }
+:host {
+    display: block;
+    min-width: -webkit-min-content;
+}
 
 .file {
     padding: 0.25em 16px;
@@ -34,6 +37,10 @@
 
 .file-removed {
     color: #DD4B39;
+}
+
+.file-messages {
+    margin-left: 1em;
 }
 
 cr-diff[active] {

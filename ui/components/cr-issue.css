@@ -60,3 +60,25 @@ header h2 {
     justify-content: flex-end;
     align-items: center;
 }
+
+@media (max-width: 800px) {
+    .issue-body {
+        flex-direction: column;
+    }
+
+    .issue-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .issue-toolbar cr-button {
+        margin: 8px;
+        flex: 1;
+    }
+
+    .issue-toolbar cr-action {
+        margin: 8px;
+        flex: 1;
+        text-align: center;
+    }
+}
