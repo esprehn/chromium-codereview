@@ -86,25 +86,25 @@
                 </div>
             </fieldset>
 
-            <div id="drafts">
-                <polymer-ui-collapsible active="{{ draftsVisible }}">
-                    <div class="polymer-ui-collapsible-header">
-                        <cr-action>
-                            <template if="{{ !draftsVisible }}">
-                                Show Drafts
-                            </template>
-                            <template if="{{ draftsVisible }}">
-                                Hide Drafts
-                            </template>
-                        </cr-action>
-                    </div>
-                    <!-- FIXME: This should use <cr-patch-file-message> and allow editing. -->
-                    <!--
-                        Don't repeat over the patchsets unless we have some drafts,
-                        otherwise we'll output tons of <template> elements into the
-                        page on rebaseline patches that are not needed.
-                    -->
-                    <template if="{{ issue.draftCount }}">
+            <template if="{{ issue.draftCount }}">
+                <div id="drafts">
+                    <polymer-ui-collapsible active="{{ draftsVisible }}">
+                        <div class="polymer-ui-collapsible-header">
+                            <cr-action>
+                                <template if="{{ !draftsVisible }}">
+                                    Show Drafts
+                                </template>
+                                <template if="{{ draftsVisible }}">
+                                    Hide Drafts
+                                </template>
+                            </cr-action>
+                        </div>
+                        <!-- FIXME: This should use <cr-patch-file-message> and allow editing. -->
+                        <!--
+                            Don't repeat over the patchsets unless we have some drafts,
+                            otherwise we'll output tons of <template> elements into the
+                            page on rebaseline patches that are not needed.
+                        -->
                         <template repeat="{{ patchset, i in issue.patchsets }}">
                             <template repeat="{{ file in patchset.files }}">
                                 <template if="{{ file.draftCount }}">
@@ -125,9 +125,9 @@
                                 </template>
                             </template>
                         </template>
-                    </template>
-                </polymer-ui-collapsible>
-            </div>
+                    </polymer-ui-collapsible>
+                </div>
+            </template>
 
             <cr-toolbar>
                 <cr-button primary on-tap="{{ send }}">Send</cr-button>
