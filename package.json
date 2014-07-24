@@ -1,0 +1,16 @@
+{
+  "name": "ChromeReview",
+  "version": "0.0.32",
+  "description": "A better code review tool for chrome and blink developers.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:esprehn/chromium-codereview"
+  },
+  "author": "Elliott Sprehn",
+  "license": "https://chromium.googlesource.com/chromium/src.git/+/master/LICENSE",
+  "devDependencies": {
+    "karma": "^0.12.17",
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-jasmine": "^0.1.5"
+  }
+}
