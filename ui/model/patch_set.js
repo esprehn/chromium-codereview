@@ -5,7 +5,8 @@ function PatchSet(issue, id)
     this.files = []; // Array<PatchFile>
     this.tryJobResults = []; // Array<tryJobResults>
     this.created = ""; // Date
-    this.commentCount = 0;
+    this.messageCount = 0;
+    this.draftCount = 0;
     this.lastModified = ""; // Date
     this.issue = issue || null;
     this.owner = null // User
@@ -83,7 +84,6 @@ PatchSet.prototype.parseData = function(data)
     this.owner = new User(data.owner);
     this.message = data.message || "";
     this.lastModified = Date.utc.create(data.modified);
-    this.commentCount = data.num_comments || 0;
     this.created = Date.utc.create(data.created);
 
     Object.keys(data.files || {}, function(name, value) {

@@ -53,7 +53,13 @@
                         <div class="patchset-title">
                             Patch {{ i + 1 }}<template if="{{ patchset.message }}">: {{ patchset.message }}</template>
                         </div>
-                        <div class="patchset-comments">{{ patchset.commentCount | commentCount }}</div>
+                        <div class="patchset-comments">
+                            {{ patchset.messageCount - patchset.draftCount | pluralize("comment") }}
+                            <template if="{{ patchset.draftCount }}">
+                                <template if="{{ patchset.messageCount - patchset.draftCount }}">,</template>
+                                {{ patchset.draftCount | pluralize("draft") }}
+                            </template>
+                        </div>
                         <div class="patchset-date">{{ patchset.created | formatDate }}</div>
                     </div>
                     <template if="{{ patchset.active }}">
@@ -77,12 +83,12 @@
                     return "";
                 return date.relative();
             },
-            commentCount: function(messageCount) {
-                if (!messageCount)
+            pluralize: function(count, text) {
+                if (!count)
                     return "";
-                if (messageCount == 1)
-                    return messageCount + " comment";
-                return messageCount + " comments";
+                if (count == 1)
+                    return count + " " + text;
+                return count + " " + text.pluralize();
             },
             handleExpandKey: function(event) {
                 event.preventDefault();

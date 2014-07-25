@@ -8,6 +8,7 @@ function Issue(id)
     this.reviewers = []; // Array<User>
     this.messages = []; // Array<IssueMessage>
     this.messageCount = 0;
+    this.draftCount = 0;
     this.owner = null; // User
     this.private = false;
     this.baseUrl = "";
@@ -21,7 +22,6 @@ function Issue(id)
     this.scores = {}; // Map<email, (-1, 1)>
     this.approvalCount = 0;
     this.disapprovalCount = 0;
-    this.draftCount = 0;
     this.recentActivity = false;
 }
 

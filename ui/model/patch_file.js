@@ -95,6 +95,7 @@ PatchFile.prototype.addMessage = function(message)
         return;
     this.messages[message.line].push(message);
     this.messageCount++;
+    this.patchset.messageCount++;
     if (message.draft) {
         this.drafts.push(message);
         this.drafts.sort(function(a, b) {
@@ -102,6 +103,7 @@ PatchFile.prototype.addMessage = function(message)
         });
         this.draftCount++;
         this.patchset.issue.draftCount++;
+        this.patchset.draftCount++;
     }
 };
 
@@ -112,10 +114,12 @@ PatchFile.prototype.removeMessage = function(message)
         return;
     messages.remove(message);
     this.messageCount--;
+    this.patchset.messageCount--;
     if (message.draft) {
         this.drafts.remove(message);
         this.draftCount--;
         this.patchset.issue.draftCount--;
+        this.patchset.draftCount--;
     }
 };
 

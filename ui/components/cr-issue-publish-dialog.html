@@ -101,27 +101,29 @@
                         </div>
                         <!-- FIXME: This should use <cr-patch-file-message> and allow editing. -->
                         <!--
-                            Don't repeat over the patchsets unless we have some drafts,
-                            otherwise we'll output tons of <template> elements into the
-                            page on rebaseline patches that are not needed.
+                            FIXME: We should select which files in advance so we don't add tons of
+                            extra <template>'s into the page. That requires some way to re-eval the
+                            template when it changes though.
                         -->
                         <template repeat="{{ patchset, i in issue.patchsets }}">
-                            <template repeat="{{ file in patchset.files }}">
-                                <template if="{{ file.draftCount }}">
-                                    <h3 class="file-header">
-                                        <span class="file-name">{{ file.name }}</span>
-                                        <span class="patchset">Patch {{ i + 1 }}</span>
-                                    </h3>
-                                    <div class="messages">
-                                        <template repeat="{{ draft in file.drafts }}">
-                                            <div class="message">
-                                                <h4 class="message-header">Line {{ draft.line }}</h4>
-                                                <div class="message-text">
-                                                    <cr-linkified-text text="{{ draft.text }}" pre></cr-linkified-text>
+                            <template if="{{ patchset.draftCount }}">
+                                <template repeat="{{ file in patchset.files }}">
+                                    <template if="{{ file.draftCount }}">
+                                        <h3 class="file-header">
+                                            <span class="file-name">{{ file.name }}</span>
+                                            <span class="patchset">Patch {{ i + 1 }}</span>
+                                        </h3>
+                                        <div class="messages">
+                                            <template repeat="{{ draft in file.drafts }}">
+                                                <div class="message">
+                                                    <h4 class="message-header">Line {{ draft.line }}</h4>
+                                                    <div class="message-text">
+                                                        <cr-linkified-text text="{{ draft.text }}" pre></cr-linkified-text>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </template>
-                                    </div>
+                                            </template>
+                                        </div>
+                                    </template>
                                 </template>
                             </template>
                         </template>
