@@ -13,8 +13,7 @@
             on-file-message-save="{{ saveDraft }}"
             on-file-message-discard="{{ discardDraft }}"
             on-file-message-cancel="{{ cancelDraft }}"
-            on-tap="{{ handleTap }}">
-        </div>
+            on-tap="{{ handleTap }}"></div>
     </template>
     <script>
         Polymer("cr-diff", {
@@ -24,7 +23,8 @@
             file: null,
             fileChanged: function(oldValue, newValue) {
                 var output = this.$.output;
-                output.innerHTML = "";
+                if (output.firstChild)
+                    output.innerHTML = "";
             },
             handleTap: function(event) {
                 var element = event.target;
