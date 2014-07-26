@@ -23,10 +23,15 @@
                 <cr-issue-patchfile file="{{ file }}"></cr-issue-patchfile>
             </template>
         </div>
-        <template if="{{ (patchset.tryJobResults.length || patchset.mostRecent) && !patchset.commit }}">
-            <h2>Try job results</h2>
-            <cr-try-results results="{{ patchset.tryJobResults }}" showmore="{{ patchset.mostRecent && !patchset.issue.closed }}"></cr-try-results>
-        </template>
+        <div id="try-job-results">
+            <template if="{{ (patchset.tryJobResults.length || patchset.mostRecent) && !patchset.commit }}">
+                <h2>Try job results</h2>
+                <cr-try-results results="{{ patchset.tryJobResults }}"></cr-try-results>
+                <template if="{{ patchset.mostRecent && !patchset.issue.closed }}">
+                    <cr-action on-tap="{{ handleAddMore }}">Add more</cr-action>
+                </template>
+            </template>
+        </div>
     </template>
     <script>
         Polymer("cr-issue-patchset", {
@@ -43,6 +48,9 @@
                 return Promise.all(this.getFiles().map(function(file) {
                     return file.hideDiff();
                 }));
+            },
+            handleAddMore: function() {
+                this.fire("show-try-dialog");
             },
         });
     </script>

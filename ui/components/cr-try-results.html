@@ -1,7 +1,5 @@
 
-<link rel="import" href="cr-action.html">
-
-<polymer-element name="cr-try-results" attributes="results showmore">
+<polymer-element name="cr-try-results" attributes="results">
     <template>
         <link rel="stylesheet" href="common.css">
         <style>
@@ -31,10 +29,6 @@
             .job:last-child {
                 max-width: none;
                 margin-right: none;
-            }
-
-            cr-action {
-                margin: 0.25em 4px 0.25em 0;
             }
 
             .try-job:link,
@@ -79,18 +73,11 @@
                     </template>
                 </div>
             </template>
-            <template if="{{ showmore }}">
-                <cr-action on-tap="{{ handleAddMore }}">Add more</cr-action>
-            </template>
         </div>
     </template>
     <script>
         Polymer("cr-try-results", {
-            results: null,
-            showmore: false,
-            handleAddMore: function() {
-                this.fire("show-try-dialog");
-            },
+            results: null
         });
     </script>
 </polymer-element>

@@ -11,15 +11,19 @@
 -->
 <polymer-element name="cr-action" on-keyup="{{ handleKeyup }}" on-click="{{ handleClick }}">
     <template><style>
+            :host {
+                display: inline-block;
+            }
+
+            :host(:not([selectable])) {
+                -webkit-user-select: none;
+            }
+
             a {
                 color: #1155CC;
                 cursor: pointer;
                 display: inline-block;
                 text-decoration: none;
-            }
-
-            :host(:not([selectable])) {
-                -webkit-user-select: none;
             }
 
             a:hover {

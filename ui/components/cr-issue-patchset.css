@@ -26,6 +26,7 @@ header .ui-actions {
     overflow-x: auto;
 }
 
-cr-try-results {
-    margin-bottom: 0.5em;
+#try-job-results cr-action {
+    margin: 0 16px 0.5em 16px;
+    display: inline-block;
 }
