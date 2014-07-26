@@ -109,7 +109,7 @@ PatchSet.prototype.parseData = function(data)
                 var result = new TryJobResult();
                 result.parseData(resultData);
                 return result;
-            });
+            }).reverse();
             return jobSet;
         });
 };
