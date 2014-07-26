@@ -28,7 +28,7 @@
                 margin-right: 1px;
             }
 
-            .job-1 {
+            .job:last-child {
                 max-width: none;
                 margin-right: none;
             }
@@ -68,7 +68,7 @@
             <template repeat="{{ set in results }}">
                 <div class="builder">
                     <template repeat="{{ job, i in set.results }}">
-                        <div class="job job-{{ set.results.length - i }}">
+                        <div class="job">
                             <template if="{{ job.url }}">
                                 <a class="try-job {{ job.result }}" href="{{ job.url }}" title="{{ job.result }}" target="_blank">{{ job.builder }}</a>
                             </template>
