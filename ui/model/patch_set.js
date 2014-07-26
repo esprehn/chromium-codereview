@@ -100,15 +100,16 @@ PatchSet.prototype.parseData = function(data)
         return a.name.localeCompare(b.name);
     });
 
-    this.tryJobResults = (data.try_job_results || []).map(function(resultData) {
-        var result = new TryJobResult();
-        result.parseData(resultData);
-        return result;
-    });
-
-    this.tryJobResults.sort(function(a, b) {
-        if (a.resultGroup == b.resultGroup)
-            return a.builder.localeCompare(b.builder);
-        return a.resultGroup - b.resultGroup;
-    });
+    var tryResults = (data.try_job_results || []).groupBy("builder");
+    this.tryJobResults = Object.keys(tryResults)
+        .sort()
+        .map(function(builder) {
+            var jobSet = new TryJobResultSet(builder);
+            jobSet.results = tryResults[builder].map(function(resultData) {
+                var result = new TryJobResult();
+                result.parseData(resultData);
+                return result;
+            });
+            return jobSet;
+        });
 };

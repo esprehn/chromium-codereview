@@ -9,15 +9,32 @@
                 display: block;
             }
 
-            #jobs {
+            #builders {
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
                 margin: 0 16px 0 16px;
             }
 
+            .builder {
+                display: flex;
+                border: 1px solid #ccc;
+                margin: 0.25em 4px;
+            }
+
+            .job {
+                max-width: 16px;
+                overflow: hidden;
+                border-left: 1px solid #ccc;
+            }
+
+            .job-0 {
+                max-width: none;
+                border-left: none;
+            }
+
             cr-action {
-                margin: 0.5em 8px 0.5em 0;
+                margin: 0.25em 4px 0.25em 0;
             }
 
             .try-job:link,
@@ -26,10 +43,9 @@
             }
 
             .try-job {
-                margin: 0.5em 8px 0.5em 0;
+                display: block;
                 padding: 0.25em 16px;
                 background-color: #E0E0E0;
-                border: 1px solid #ccc;
             }
 
             .try-job.pending {
@@ -48,14 +64,20 @@
                 color: #F4F4F4;
             }
         </style>
-        <div id="jobs">
-            <template repeat="{{ job in results }}">
-                <template if="{{ job.url }}">
-                    <a class="try-job {{ job.result }}" href="{{ job.url }}" title="{{ job.result }}" target="_blank">{{ job.builder }}</a>
-                </template>
-                <template if="{{ !job.url }}">
-                    <span class="try-job" title="unscheduled">{{ job.builder }}</span>
-                </template>
+        <div id="builders">
+            <template repeat="{{ set in results }}">
+                <div class="builder">
+                    <template repeat="{{ job, i in set.results }}">
+                        <div class="job job-{{ i }}">
+                            <template if="{{ job.url }}">
+                                <a class="try-job {{ job.result }}" href="{{ job.url }}" title="{{ job.result }}" target="_blank">{{ job.builder }}</a>
+                            </template>
+                            <template if="{{ !job.url }}">
+                                <div class="try-job" title="unscheduled">{{ job.builder }}</div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
             </template>
             <template if="{{ showmore }}">
                 <cr-action on-tap="{{ handleAddMore }}">Add more</cr-action>
@@ -64,7 +86,7 @@
     </template>
     <script>
         Polymer("cr-try-results", {
-            results: [],
+            results: null,
             showmore: false,
             handleAddMore: function() {
                 this.fire("show-try-dialog");
