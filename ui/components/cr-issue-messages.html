@@ -62,7 +62,7 @@
                 }
             },
             toggleAll: function(options) {
-                var messages = toArray(this.shadowRoot.querySelectorAll(".message"));
+                var messages = this.shadowRoot.querySelectorAll(".message").array();
                 messages.forEach(function(message) {
                     message.active = options.active;
                 });

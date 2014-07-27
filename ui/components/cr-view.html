@@ -43,7 +43,7 @@
                 if (path == this.currentPath)
                     return;
                 this.currentPath = path;
-                var routes = toArray(this.querySelectorAll("cr-route"));
+                var routes = this.querySelectorAll("cr-route").array();
                 routes.any(function(route) {
                     var newView = route.createView(path);
                     if (!newView)

@@ -37,7 +37,7 @@
         Polymer("cr-issue-patchset", {
             patchset: null,
             getFiles: function() {
-                return toArray(this.$.files.querySelectorAll("cr-issue-patchfile"));
+                return this.$.files.querySelectorAll("cr-issue-patchfile").array();
             },
             expandAllDiffs: function() {
                 return Promise.all(this.getFiles().map(function(file) {

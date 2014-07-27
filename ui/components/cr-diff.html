@@ -38,7 +38,7 @@
                     messages.className = "messages";
                     row.parentNode.insertBefore(messages, row.nextSibling);
                 }
-                var messages = toArray(row.nextSibling.querySelectorAll("cr-patch-file-message"));
+                var messages = row.nextSibling.querySelectorAll("cr-patch-file-message").array();
                 var existingDraft = messages.find(function(fileMessage) {
                     return fileMessage.message.draft;
                 });

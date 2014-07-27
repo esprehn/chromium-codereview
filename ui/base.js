@@ -1,7 +1,10 @@
 
-function toArray(value)
-{
-    return Array.prototype.slice.call(value);
+// Polymer provides this, but we add it just in case so you can use models
+// without polymer.
+if (!NodeList.prototype.array) {
+    NodeList.prototype.array = function() {
+        return Array.prototype.slice.call(this);
+    };
 }
 
 // Manually implement this so that Shadow DOM polyfill works.
@@ -11,12 +14,12 @@ if (!Element.prototype.remove) {
         if (!this.parentNode)
             return;
         this.parentNode.removeChild(this);
-    }
+    };
 }
 
 // We only have String#contains if "Experimental JavaScript is enabled."
 if (!String.prototype.contains) {
     String.prototype.contains = function(text) {
         return this.indexOf(text) != -1;
-    }
+    };
 }

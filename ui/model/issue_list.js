@@ -133,7 +133,7 @@ IssueList.convertToReviewers = function(node, issue)
     for (var i = 0; i < links.length; ++i)
         addUser(links[i]);
 
-    var me = toArray(node.querySelectorAll("span")).find(function(node) {
+    var me = node.querySelectorAll("span").array().find(function(node) {
         return node.textContent == "me";
     });
     if (me)
