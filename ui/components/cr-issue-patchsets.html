@@ -28,17 +28,38 @@
                 cursor: default;
                 -webkit-user-select: none;
             }
+
+            cr-toolbar {
+                margin: 0;
+                margin-bottom: 1em;
+                padding: 0;
+            }
         </style>
 
+        <template if="{{ !showOlderPatchsets && olderPatchsets.length }}">
+            <cr-toolbar>
+                <cr-action on-tap="{{ handleShowOlderPatchsets }}">
+                    Show {{ olderPatchsets.length }} older
+                    {{ "patch" | pluralize(olderPatchsets.length) }}
+                </cr-action>
+            </cr-toolbar>
+        </template>
+
         <div class="patchsets">
-            <template repeat="{{ patchset in patchsets }}">
-                <polymer-ui-collapsible class="patchset" active="{{ patchset.active }}">
-                    <cr-patchset-header class="polymer-ui-collapsible-header" patchset="{{ patchset }}"></cr-patchset-header>
-                    <template if="{{ patchset.active }}">
-                        <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
-                    </template>
-                </polymer-ui-collapsible>
+            <template if="{{ showOlderPatchsets }}">
+                <template repeat="{{ patchset in olderPatchsets }}">
+                    <polymer-ui-collapsible class="patchset" active="{{ patchset.active }}">
+                        <cr-patchset-header class="polymer-ui-collapsible-header" patchset="{{ patchset }}"></cr-patchset-header>
+                        <template if="{{ patchset.active }}">
+                            <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
+                        </template>
+                    </polymer-ui-collapsible>
+                </template>
             </template>
+            <polymer-ui-collapsible class="patchset" active>
+                <cr-patchset-header class="polymer-ui-collapsible-header" patchset="{{ currentPatchset }}"></cr-patchset-header>
+                <cr-issue-patchset patchset="{{ currentPatchset }}"></cr-issue-patchset>
+            </polymer-ui-collapsible>
         </div>
 
         <cr-keyboard on-key-e="{{ handleExpandKey }}" global></cr-keyboard>
@@ -46,6 +67,25 @@
     <script>
         Polymer("cr-issue-patchsets", {
             patchsets: null,
+            showOlderPatchsets: false,
+            olderPatchsets: null,
+            currentPatchset: null,
+            patchsetsChanged: function(oldValue, newValue) {
+                var value = newValue || [];
+                this.olderPatchsets = value.to(-1);
+                this.currentPatchset = value.last();
+                this.showOlderPatchsets = false;
+            },
+            pluralize: function(text, count) {
+                if (!count)
+                    return "";
+                if (count == 1)
+                    return text;
+                return text.pluralize();
+            },
+            handleShowOlderPatchsets: function() {
+                this.showOlderPatchsets = true;
+            },
             handleExpandKey: function(event) {
                 event.preventDefault();
                 var sections = this.shadowRoot.querySelectorAll(".patchset");
