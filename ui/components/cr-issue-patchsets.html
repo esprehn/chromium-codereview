@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/polymer-ui-collapsible/polymer-ui-collapsible.html">
 
 <link rel="import" href="cr-issue-patchset.html">
+<link rel="import" href="cr-patchset-header.html">
 
 <polymer-element name="cr-issue-patchsets" attributes="patchsets">
     <template>
@@ -18,24 +19,7 @@
                 border-width: 1px;
             }
 
-            .patchset-header {
-                background: #F6F6F6;
-                border-bottom: 1px solid #ebebeb;
-                display: flex;
-                padding: 0.5em 16px;
-                position: relative;
-            }
-
-            .patchset-title {
-                flex: 1;
-                font-weight: bold;
-            }
-
-            .patchset-comments {
-                padding: 0 16px;
-            }
-
-            .patchset:not([active]) .patchset-header:hover {
+            .patchset:not([active]) cr-patchset-header:hover {
                 box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
                 z-index: 1;
             }
@@ -47,21 +31,9 @@
         </style>
 
         <div class="patchsets">
-            <template repeat="{{ patchset, i in patchsets }}">
+            <template repeat="{{ patchset in patchsets }}">
                 <polymer-ui-collapsible class="patchset" active="{{ patchset.active }}">
-                    <div class="patchset-header polymer-ui-collapsible-header">
-                        <div class="patchset-title">
-                            Patch {{ i + 1 }}<template if="{{ patchset.message }}">: {{ patchset.message }}</template>
-                        </div>
-                        <div class="patchset-comments">
-                            {{ patchset.messageCount - patchset.draftCount | pluralize("comment") }}
-                            <template if="{{ patchset.draftCount }}">
-                                <template if="{{ patchset.messageCount - patchset.draftCount }}">,</template>
-                                {{ patchset.draftCount | pluralize("draft") }}
-                            </template>
-                        </div>
-                        <div class="patchset-date">{{ patchset.created | formatDate }}</div>
-                    </div>
+                    <cr-patchset-header class="polymer-ui-collapsible-header" patchset="{{ patchset }}"></cr-patchset-header>
                     <template if="{{ patchset.active }}">
                         <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
                     </template>
@@ -74,18 +46,6 @@
     <script>
         Polymer("cr-issue-patchsets", {
             patchsets: null,
-            formatDate: function(date) {
-                if (!date)
-                    return "";
-                return date.relative();
-            },
-            pluralize: function(count, text) {
-                if (!count)
-                    return "";
-                if (count == 1)
-                    return count + " " + text;
-                return count + " " + text.pluralize();
-            },
             handleExpandKey: function(event) {
                 event.preventDefault();
                 var sections = this.shadowRoot.querySelectorAll(".patchset");

@@ -1,6 +1,6 @@
 
 // https://codereview.chromium.org/api/148223004/70001/?comments=true
-function PatchSet(issue, id)
+function PatchSet(issue, id, sequence)
 {
     this.files = []; // Array<PatchFile>
     this.tryJobResults = []; // Array<tryJobResults>
@@ -12,6 +12,7 @@ function PatchSet(issue, id)
     this.owner = null // User
     this.message = "";
     this.id = id || 0;
+    this.sequence = sequence || 0;
     this.commit = false;
     this.mostRecent = false;
     this.active = false;

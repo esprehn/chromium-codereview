@@ -1,0 +1,52 @@
+
+<polymer-element name="cr-patchset-header" attributes="patchset">
+    <template>
+        <style>
+            :host {
+                display: block;
+                background: #F6F6F6;
+                border-bottom: 1px solid #ebebeb;
+                display: flex;
+                padding: 0.5em 16px;
+                position: relative;
+            }
+
+            .patchset-title {
+                flex: 1;
+                font-weight: bold;
+            }
+
+            .patchset-comments {
+                padding: 0 16px;
+            }
+        </style>
+        <div class="patchset-title">
+            Patch {{ patchset.sequence }}<template if="{{ patchset.message }}">: {{ patchset.message }}</template>
+        </div>
+        <div class="patchset-comments">
+            {{ patchset.messageCount - patchset.draftCount | pluralize("comment") }}
+            <template if="{{ patchset.draftCount }}">
+                <template if="{{ patchset.messageCount - patchset.draftCount }}">,</template>
+                {{ patchset.draftCount | pluralize("draft") }}
+            </template>
+        </div>
+        <div class="patchset-date">{{ patchset.created | formatDate }}</div>
+    </template>
+    <script>
+        Polymer("cr-patchset-header", {
+            patchset: null,
+            pluralize: function(count, text) {
+                if (!count)
+                    return "";
+                if (count == 1)
+                    return count + " " + text;
+                return count + " " + text.pluralize();
+            },
+            formatDate: function(date) {
+                if (!date)
+                    return "";
+                return date.relative();
+            },
+        });
+    </script>
+</polymer-element>

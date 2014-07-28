@@ -99,8 +99,8 @@ Issue.prototype.parseData = function(data)
     this.reviewers = (data.reviewers || []).map(function(email) {
         return User.forMailingListEmail(email);
     });
-    this.patchsets = (data.patchsets || []).map(function(patchsetId) {
-        return new PatchSet(issue, patchsetId);
+    this.patchsets = (data.patchsets || []).map(function(patchsetId, i) {
+        return new PatchSet(issue, patchsetId, i + 1);
     });
     this.messages = (data.messages || []).map(function(messageData) {
         var message = new IssueMessage(issue);
