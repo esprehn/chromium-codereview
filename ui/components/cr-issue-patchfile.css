@@ -44,7 +44,13 @@
 }
 
 cr-diff[active] {
-    border-bottom: 1px solid #ccc;
+    margin: 0.25em 16px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
 }
 
 :host(:last-child) cr-diff[active] {
