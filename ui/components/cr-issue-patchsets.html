@@ -74,10 +74,6 @@
     <script>
         Polymer("cr-issue-patchsets", {
             patchsets: null,
-            patchsetsChanged: function(oldValue, newValue) {
-                if (newValue)
-                    newValue.last().active = true;
-            },
             formatDate: function(date) {
                 if (!date)
                     return "";

@@ -14,6 +14,7 @@ function PatchSet(issue, id)
     this.id = id || 0;
     this.commit = false;
     this.mostRecent = false;
+    this.active = false;
 }
 
 PatchSet.DETAIL_URL = "/api/{1}/{2}/?comments=true"

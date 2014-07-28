@@ -114,6 +114,7 @@ Issue.prototype.parseData = function(data)
         var last = this.patchsets.last();
         last.commit = this.commit;
         last.mostRecent = true;
+        last.active = true;
     }
     // Overwrite the count in case they differ (ex. new comments were added since
     // the summary list was loaded).
