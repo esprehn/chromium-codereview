@@ -39,3 +39,7 @@
     font-weight: bold;
     padding-top: 0.5em;
 }
+
+.form-error:empty {
+    padding: 0;
+}
