@@ -24,7 +24,7 @@
             </template>
         </div>
         <div id="try-job-results">
-            <template if="{{ (patchset.tryJobResults.length || patchset.mostRecent) && !patchset.commit }}">
+            <template if="{{ patchset.tryJobResults.length && (patchset.mostRecent || !patchset.commit }}">
                 <h2>Try job results</h2>
                 <cr-try-results results="{{ patchset.tryJobResults }}"></cr-try-results>
                 <template if="{{ patchset.mostRecent && !patchset.issue.closed }}">
