@@ -8,7 +8,7 @@
     <template>
         <link rel="stylesheet" href="common.css">
         <link rel="stylesheet" href="cr-issue-patchset.css">
-        <template if="{{ patchset.files.length }}">
+        <template if="{{ patchset.sourceFiles.length }}">
             <header>
                 <h2>Files</h2>
                 <div class="ui-actions">
@@ -17,14 +17,23 @@
                     <a href="/download/issue{{ patchset.issue.id }}_{{ patchset.id }}.diff" target="_blank">Raw diff</a>
                 </div>
             </header>
+            <div class="files">
+                <template repeat="{{ file in patchset.sourceFiles }}">
+                    <cr-issue-patchfile file="{{ file }}"></cr-issue-patchfile>
+                </template>
+            </div>
         </template>
-        <div class="files">
-            <template repeat="{{ file in patchset.sourceFiles }}">
-                <cr-issue-patchfile file="{{ file }}"></cr-issue-patchfile>
-            </template>
-        </div>
-        <template if="{{ patchset.testFiles }}">
-            <h2>LayoutTests</h2>
+        <template if="{{ patchset.testFiles.length }}">
+            <header>
+                <h2>LayoutTests</h2>
+                <template if="{{ !patchset.sourceFiles.length }}">
+                    <div class="ui-actions">
+                        <cr-action on-tap="{{ expandAllDiffs }}">Show diffs</cr-action> /
+                        <cr-action on-tap="{{ collapseAllDiffs }}">Hide diffs</cr-action> /
+                        <a href="/download/issue{{ patchset.issue.id }}_{{ patchset.id }}.diff" target="_blank">Raw diff</a>
+                    </div>
+                </template>
+            </header>
             <div class="files">
                 <template repeat="{{ file in patchset.testFiles }}">
                     <cr-issue-patchfile file="{{ file }}"></cr-issue-patchfile>
