@@ -81,3 +81,9 @@
 .selected .message-preview {
     background-color: lemonchiffon;
 }
+
+cr-toolbar {
+    margin: 0;
+    margin-bottom: 1em;
+    padding: 0;
+}

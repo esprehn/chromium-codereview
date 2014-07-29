@@ -102,8 +102,8 @@ Issue.prototype.parseData = function(data)
     this.patchsets = (data.patchsets || []).map(function(patchsetId, i) {
         return new PatchSet(issue, patchsetId, i + 1);
     });
-    this.messages = (data.messages || []).map(function(messageData) {
-        var message = new IssueMessage(issue);
+    this.messages = (data.messages || []).map(function(messageData, i) {
+        var message = new IssueMessage(issue, i + 1);
         message.parseData(messageData);
         return message;
     });

@@ -13,9 +13,18 @@
 
         <link rel="stylesheet" href="cr-issue-messages.css">
 
-        <template repeat="{{ message, i in messages }}">
-            <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval, selected: i === selectionId } | tokenList }}" active?="{{ i === activeId }}">
-                <div id="message-{{ i }}" class="message-header polymer-ui-collapsible-header" on-tap="{{ handleHeaderTap }}">
+        <template if="{{ visibleMessages.length != messages.length }}">
+            <cr-toolbar>
+                <cr-action on-tap="{{ handleShowOlderMessages }}">
+                    Show {{ messages.length - visibleMessages.length }} older
+                    {{ "message" | pluralize(messages.length - visibleMessages.length) }}
+                </cr-action>
+            </cr-toolbar>
+        </template>
+
+        <template repeat="{{ message in visibleMessages }}">
+            <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval, selected: message.sequence == selectionId } | tokenList }}" active="{{ message.sequence == activeId }}">
+                <div id="message-{{ message.sequence }}" class="message-header polymer-ui-collapsible-header" on-tap="{{ handleHeaderTap }}">
                     <div class="message-title">
                         <div class="message-author">{{ message.author.displayName }}</div>
                         <div class="message-preview">{{ message.text | messagePreview }}</div>
@@ -23,7 +32,7 @@
                     <div class="message-date">
                         {{ message.date | formatDate }}
                     </div>
-                    <a class="message-number" href="#msg{{ i + 1 }}">#{{ i + 1 }}</a>
+                    <a class="message-number" href="#msg{{ message.sequence }}">#{{ message.sequence }}</a>
                 </div>
                 <div class="message-text">
                     <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
@@ -38,13 +47,15 @@
         var FILE_HEADER = /^https:\/\/codereview.chromium.org\/\d+\/diff\/\d+\/.*$/;
         var MAX_PREVIEW_LENGTH = 300;
         var SELECTION_PREFIX = "#msg";
+        var MAX_MESSAGES = 5;
 
         Polymer("cr-issue-messages", {
             messages: null,
+            visibleMessages: null,
             selectionId: null,
             activeId: null,
             messagesChanged: function() {
-                this.activeId = this.messages.length - 1;
+                this.activeId = this.messages.length;
                 this.hashChanged();
             },
             hashChanged: function() {
@@ -52,8 +63,9 @@
                     return;
                 var num = window.location.hash.replace(SELECTION_PREFIX, "");
                 if (/^[0-9]+$/.test(num) && num > 0 && num <= this.messages.length) {
-                    this.selectionId = num - 1;
-                    this.activeId = num - 1;
+                    this.selectionId = num;
+                    console.log(num);
+                    this.activeId = num;
                     this.async(function() {
                         var message = this.shadowRoot.getElementById("message-" + this.selectionId);
                         if (message)
@@ -61,11 +73,24 @@
                     });
                 }
             },
+            activeIdChanged: function() {
+                this.visibleMessages = this.messages.from(Math.max(this.activeId - MAX_MESSAGES, 0));
+            },
+            handleShowOlderMessages: function() {
+                this.visibleMessages = this.messages;
+            },
             toggleAll: function(options) {
                 var messages = this.shadowRoot.querySelectorAll(".message").array();
                 messages.forEach(function(message) {
                     message.active = options.active;
                 });
+            },
+            pluralize: function(text, count) {
+                if (!count)
+                    return "";
+                if (count == 1)
+                    return text;
+                return text.pluralize();
             },
             formatDate: function(date) {
                 if (!date)

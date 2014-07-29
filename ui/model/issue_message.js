@@ -1,5 +1,5 @@
 
-function IssueMessage(issue)
+function IssueMessage(issue, sequence)
 {
     this.issue = issue || null; // Issue
     this.author = null; // User
@@ -8,6 +8,7 @@ function IssueMessage(issue)
     this.disapproval = false;
     this.date = ""; // Date
     this.approval = false;
+    this.sequence = sequence || 0;
 }
 
 IssueMessage.prototype.parseData = function(data)
