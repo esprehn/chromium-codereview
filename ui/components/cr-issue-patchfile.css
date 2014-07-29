@@ -50,9 +50,3 @@ cr-diff[active] {
     border-radius: 2px;
     overflow: hidden;
 }
-
-}
-
-:host(:last-child) cr-diff[active] {
-    border-bottom: none;
-}
