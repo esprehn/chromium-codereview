@@ -3,6 +3,8 @@
 function PatchSet(issue, id, sequence)
 {
     this.files = []; // Array<PatchFile>
+    this.sourceFiles = []; // Array<PatchFile>
+    this.testFiles = []; // Array<PatchFile>
     this.tryJobResults = []; // Array<tryJobResults>
     this.created = ""; // Date
     this.messageCount = 0;
@@ -107,6 +109,14 @@ PatchSet.prototype.parseData = function(data)
             return 1;
         return a.name.localeCompare(b.name);
     });
+
+    this.files.forEach(function(file) {
+        // FIXME: Expand this to support other things that count as tests?
+        if (file.name.startsWith("LayoutTests/"))
+            this.testFiles.push(file);
+        else
+            this.sourceFiles.push(file);
+    }, this);
 
     var tryResults = (data.try_job_results || []).groupBy("builder");
     this.tryJobResults = Object.keys(tryResults)

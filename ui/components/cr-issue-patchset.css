@@ -22,7 +22,7 @@ header .ui-actions {
     flex-shrink: 0;
 }
 
-#files {
+.files {
     overflow-x: auto;
 }
 

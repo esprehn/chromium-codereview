@@ -18,11 +18,19 @@
                 </div>
             </header>
         </template>
-        <div id="files">
-            <template repeat="{{ file in patchset.files }}">
+        <div class="files">
+            <template repeat="{{ file in patchset.sourceFiles }}">
                 <cr-issue-patchfile file="{{ file }}"></cr-issue-patchfile>
             </template>
         </div>
+        <template if="{{ patchset.testFiles }}">
+            <h2>LayoutTests</h2>
+            <div class="files">
+                <template repeat="{{ file in patchset.testFiles }}">
+                    <cr-issue-patchfile file="{{ file }}"></cr-issue-patchfile>
+                </template>
+            </div>
+        </template>
         <div id="try-job-results">
             <template if="{{ patchset.tryJobResults.length && (patchset.mostRecent || !patchset.commit) }}">
                 <h2>Try job results</h2>
@@ -37,7 +45,8 @@
         Polymer("cr-issue-patchset", {
             patchset: null,
             getFiles: function() {
-                return this.$.files.querySelectorAll("cr-issue-patchfile").array();
+                // FIXME: Use an id instead.
+                return this.shadowRoot.querySelectorAll("cr-issue-patchfile").array();
             },
             expandAllDiffs: function() {
                 return Promise.all(this.getFiles().map(function(file) {
