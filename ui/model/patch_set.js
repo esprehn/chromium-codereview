@@ -99,6 +99,12 @@ PatchSet.prototype.parseData = function(data)
             return -1;
         if (PatchSet.isSourcePair(b.name, a.name))
             return 1;
+        var isTestA = a.name.startsWith("LayoutTests/");
+        var isTestB = b.name.startsWith("LayoutTests/");
+        if (!isTestA && isTestB)
+            return -1;
+        if (isTestA && !isTestB)
+            return 1;
         return a.name.localeCompare(b.name);
     });
 
