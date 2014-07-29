@@ -73,6 +73,11 @@ cr-patch-file-message:last-child {
     border-bottom: none;
 }
 
+.spinner {
+    margin: 0.5em auto;
+    display: block;
+}
+
 /* FIXME: This selector is bad, we shouldn't use it. */
 .messages:empty {
     display: none;

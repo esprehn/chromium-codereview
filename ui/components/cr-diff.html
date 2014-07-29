@@ -9,6 +9,9 @@
         <link rel="stylesheet" href="cr-diff.css">
         <link rel="stylesheet" href="../lib/highlight/styles/default.css">
         <link rel="stylesheet" href="../lib/highlight/styles/googlecode.css">
+        <template if="{{ loading }}">
+            <img src="../images/dots16.gif" class="spinner">
+        </template>
         <div id="output"
             on-file-message-save="{{ saveDraft }}"
             on-file-message-discard="{{ discardDraft }}"
@@ -20,6 +23,7 @@
             publish: {
                 active: { value: false, reflect: true },
             },
+            loading: false,
             file: null,
             fileChanged: function(oldValue, newValue) {
                 var output = this.$.output;
@@ -103,12 +107,15 @@
                 if (this.active)
                     return Promise.resolve(this);
                 this.active = true;
+                this.loading = true;
                 return this.file.loadDiff().then(function(diff) {
+                    self.loading = false;
                     if (!self.active)
                         return;
                     var builder = new DiffBuilder(diff, self.file, self.$.output);
                     builder.createDiff();
                 }).catch(function(e) {
+                    self.loading = false;
                     self.active = false;
                     console.log(e);
                 });
