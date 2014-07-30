@@ -1,58 +1,41 @@
+"use strict";
 
-// Borrowed from sugar.js HEAD since startsWith/endsWith were very slow when
-// they supported regexps.
 (function() {
-    function getCoercedStringSubject(obj) {
-        if(obj == null) {
-            throw new TypeError();
-        }
-        return String(obj);
-    }
 
-    function getCoercedSearchString(obj, errorOnRegex) {
-        if(errorOnRegex && obj instanceof RegExp) {
-            throw new TypeError();
-        }
-        return String(obj);
-    }
+function clampToLength(value, defaultValue, maxValue) {
+    if (value === undefined)
+        return defaultValue;
+    return Math.min(Math.max(value, 0), maxValue) || 0;
+}
 
-    String.prototype.startsWith = function(searchString) {
-        var str, start, pos, len, searchLength, position = arguments[1];
-        str = getCoercedStringSubject(this);
-        searchString = getCoercedSearchString(searchString, true);
-        pos = Number(position) || 0;
-        len = str.length;
-        start = Math.min(Math.max(pos, 0), len);
-        searchLength = searchString.length;
-        if(searchLength + start > len) {
-            return false;
-        }
-        if(str.substr(start, searchLength) === searchString) {
-            return true;
-        }
-        return false;
-    };
+// FIXME: Remove this once sugar is updated. 1.4.1 has very slow startsWith
+// because of the regex code in it.
+String.prototype.startsWith = function(input) {
+    if (this == null)
+        throw new TypeError();
+    var subject = String(this);
+    if (input instanceof RegExp)
+        throw new TypeError();
+    var search = String(input);
+    var position = clampToLength(arguments[1], 0, subject.length);
+    return subject.lastIndexOf(search, position) == position;
+};
 
-    String.prototype.endsWith = function(searchString) {
-        var str, start, end, pos, len, searchLength, endPosition = arguments[1];
-        str = getCoercedStringSubject(this);
-        searchString = getCoercedSearchString(searchString, true);
-        len = str.length;
-        pos = len;
-        if(endPosition != undefined) {
-            pos = Number(endPosition) || 0;
-        }
-        end = Math.min(Math.max(pos, 0), len);
-        searchLength = searchString.length;
-        start = end - searchLength;
-        if(start < 0) {
-            return false;
-        }
-        if(str.substr(start, searchLength) === searchString) {
-            return true;
-        }
-        return false;
-    };
+// FIXME: Remove this once sugar is updated. 1.4.1 has very slow endsWith
+// because of the regex code in it.
+String.prototype.endsWith = function(input) {
+    if (this == null)
+        throw new TypeError();
+    var subject = String(this);
+    if (input instanceof RegExp)
+        throw new TypeError();
+    var search = String(input);
+    var position = clampToLength(arguments[1], subject.length, subject.length);
+    position -= search.length;
+    var lastIndex = subject.indexOf(search, position);
+    return lastIndex != -1 && lastIndex == position;
+};
+
 })();
 
 // Polymer provides this, but we add it just in case so you can use models
