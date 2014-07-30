@@ -4,8 +4,14 @@
         <style>
             :host {
                 display: flex;
-                padding: 1em 0;
-                margin: 0 16px;
+                /*
+                    Use padding on the bottom so the margin doesn't overflow
+                    when the toolbar is the last thing, and use margin on the
+                    top so it collapses with sections before the toolbar.
+                */
+                /* FIXME: Can we do this simpler? */
+                padding-bottom: 1em;
+                margin: 1em 16px 0 16px;
                 flex-wrap: wrap;
                 align-items: center;
             }
