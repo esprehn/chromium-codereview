@@ -23,15 +23,6 @@ function PatchSet(issue, id, sequence)
 PatchSet.DETAIL_URL = "/api/{1}/{2}/?comments=true"
 PatchSet.REVERT_URL = "/api/{1}/{2}/revert";
 
-PatchSet.isSourcePair = function(header, impl)
-{
-    if (!header.endsWith(".h") || !impl.endsWith(".cpp"))
-        return false;
-    var headerPrefix = header.substring(0, header.length - 2);
-    var implPrefix = impl.substring(0, impl.length - 4);
-    return headerPrefix == implPrefix;
-};
-
 PatchSet.prototype.getDetailUrl = function()
 {
     return PatchSet.DETAIL_URL.assign(
@@ -101,23 +92,10 @@ PatchSet.prototype.parseData = function(data)
         patchset.files.push(file);
     });
 
-    this.files.sort(function(a, b) {
-        if (PatchSet.isSourcePair(a.name, b.name))
-            return -1;
-        if (PatchSet.isSourcePair(b.name, a.name))
-            return 1;
-        var isTestA = a.name.startsWith("LayoutTests/");
-        var isTestB = b.name.startsWith("LayoutTests/");
-        if (!isTestA && isTestB)
-            return -1;
-        if (isTestA && !isTestB)
-            return 1;
-        return a.name.localeCompare(b.name);
-    });
+    this.files.sort(PatchFile.compare);
 
     this.files.forEach(function(file) {
-        // FIXME: Expand this to support other things that count as tests?
-        if (file.name.startsWith("LayoutTests/"))
+        if (file.isLayoutTest)
             this.testFiles.push(file);
         else
             this.sourceFiles.push(file);

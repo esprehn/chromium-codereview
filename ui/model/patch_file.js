@@ -2,8 +2,10 @@
 function PatchFile(patchset, name)
 {
     this.name = name || "";
-    this.language = PatchFile.computeLanguage(name);
-    this.containsEmbeddedLanguages = PatchFile.MIXED_LANGUAGES[this.language];
+    this.extension = "";
+    this.prefix = "";
+    this.language = "";
+    this.containsEmbeddedLanguages = false;
     this.status = "";
     this.chunks = 0;
     this.missingBaseFile = false;
@@ -18,6 +20,15 @@ function PatchFile(patchset, name)
     this.drafts = []; // Array<PatchFileMessage>
     this.draftCount = 0;
     this.diff = null;
+    this.isLayoutTest = this.name.startsWith("LayoutTests/");
+
+    var dotIndex = this.name.lastIndexOf(".");
+    if (dotIndex != -1) {
+        this.extension = this.name.from(dotIndex + 1);
+        this.prefix = this.name.to(dotIndex);
+        this.language = PatchFile.SYNTAX_LANGUAGES[this.extension] || "";
+        this.containsEmbeddedLanguages = PatchFile.MIXED_LANGUAGES[this.language];
+    }
 }
 
 PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
@@ -54,13 +65,21 @@ PatchFile.SYNTAX_LANGUAGES = {
     "idl": "actionscript",
 };
 
-PatchFile.computeLanguage = function(name)
+PatchFile.compare = function(a, b)
 {
-    if (!name)
-        return "";
-    var index = name.lastIndexOf(".");
-    var extension = name.from(index + 1);
-    return PatchFile.SYNTAX_LANGUAGES[extension] || "";
+    if (a.isLayoutTest && b.isLayoutTest)
+        return a.name.localeCompare(b.name);
+    if (a.isLayoutTest)
+        return 1;
+    if (b.isLayoutTest)
+        return -1;
+    if (a.prefix != b.prefix)
+        return a.name.localeCompare(b.name);
+    if (a.extension == "h" && (b.extension == "cpp" || b.extension == "cc"))
+        return -1;
+    if (b.extension == "h" && (a.extension == "cpp" || a.extension == "cc"))
+        return 1;
+    return a.extension.localeCompare(b.extension);
 };
 
 PatchFile.prototype.shouldResetEmbeddedLanguage = function(language, text)

@@ -1,27 +1,27 @@
 
 describe("PatchFile", function() {
     it("should parse file extensions into syntax highlighting languages", function() {
-        expect(PatchFile.computeLanguage("")).toBe("");
-        expect(PatchFile.computeLanguage("Document.h")).toBe("cpp");
-        expect(PatchFile.computeLanguage("Document.cpp")).toBe("cpp");
-        expect(PatchFile.computeLanguage("path/test.html")).toBe("html");
-        expect(PatchFile.computeLanguage("dir/test.xhtml")).toBe("html");
-        expect(PatchFile.computeLanguage("example.js")).toBe("javascript");
-        expect(PatchFile.computeLanguage("this_is.file.css")).toBe("css");
-        expect(PatchFile.computeLanguage("image.xml")).toBe("xml");
-        expect(PatchFile.computeLanguage("image.svg")).toBe("xml");
-        expect(PatchFile.computeLanguage("horror.pl")).toBe("perl");
-        expect(PatchFile.computeLanguage("horror2.pm")).toBe("perl");
-        expect(PatchFile.computeLanguage("//./.py/horror1.cgi")).toBe("perl");
-        expect(PatchFile.computeLanguage("snakesonaplane.py")).toBe("python");
-        expect(PatchFile.computeLanguage("gems.rb")).toBe("ruby");
-        expect(PatchFile.computeLanguage("cocoa.mm")).toBe("objectivec");
-        expect(PatchFile.computeLanguage("../.file/data.json")).toBe("json");
-        expect(PatchFile.computeLanguage("Document.idl")).toBe("actionscript");
-        expect(PatchFile.computeLanguage("Document.map")).toBe("");
-        expect(PatchFile.computeLanguage("Document.h.")).toBe("");
-        expect(PatchFile.computeLanguage("Document.cpp/")).toBe("");
-        expect(PatchFile.computeLanguage("prefetch_messages.cc")).toBe("cpp");
+        expect(new PatchFile(null, "").language).toBe("");
+        expect(new PatchFile(null, "Document.h").language).toBe("cpp");
+        expect(new PatchFile(null, "Document.cpp").language).toBe("cpp");
+        expect(new PatchFile(null, "path/test.html").language).toBe("html");
+        expect(new PatchFile(null, "dir/test.xhtml").language).toBe("html");
+        expect(new PatchFile(null, "example.js").language).toBe("javascript");
+        expect(new PatchFile(null, "this_is.file.css").language).toBe("css");
+        expect(new PatchFile(null, "image.xml").language).toBe("xml");
+        expect(new PatchFile(null, "image.svg").language).toBe("xml");
+        expect(new PatchFile(null, "horror.pl").language).toBe("perl");
+        expect(new PatchFile(null, "horror2.pm").language).toBe("perl");
+        expect(new PatchFile(null, "//./.py/horror1.cgi").language).toBe("perl");
+        expect(new PatchFile(null, "snakesonaplane.py").language).toBe("python");
+        expect(new PatchFile(null, "gems.rb").language).toBe("ruby");
+        expect(new PatchFile(null, "cocoa.mm").language).toBe("objectivec");
+        expect(new PatchFile(null, "../.file/data.json").language).toBe("json");
+        expect(new PatchFile(null, "Document.idl").language).toBe("actionscript");
+        expect(new PatchFile(null, "Document.map").language).toBe("");
+        expect(new PatchFile(null, "Document.h.").language).toBe("");
+        expect(new PatchFile(null, "Document.cpp/").language).toBe("");
+        expect(new PatchFile(null, "prefetch_messages.cc").language).toBe("cpp");
     });
     it("should handle embedded language selection", function() {
         var html = new PatchFile(null, "example.html");

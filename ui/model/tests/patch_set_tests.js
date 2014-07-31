@@ -9,11 +9,14 @@ describe("PatchSet", function() {
                 "Source/rendering/FrameView.h": {},
                 "Source/frame/Frame.cpp": {},
                 "Source/core/Document.cpp": {},
+                "LayoutTests/foo/bar.js": {},
                 "Source/core/DocumentImplementation.h": {},
                 "Source/frame/Frame.h": {},
+                "LayoutTests/foo/bar.html": {},
                 "Source/rendering/FrameView.cpph": {},
                 "Source/rendering/FrameView.cpp": {},
                 "public/rendering/FrameView.cpp": {},
+                "LayoutTests/foo/ack.html": {},
                 "Source/rendering/FrameView.html": {},
                 "Source/core/Document.h": {},
             },
@@ -32,6 +35,9 @@ describe("PatchSet", function() {
             "Source/rendering/FrameView.h",
             "Source/rendering/FrameView.cpp",
             "Source/rendering/FrameView.html",
+            "LayoutTests/foo/ack.html",
+            "LayoutTests/foo/bar.html",
+            "LayoutTests/foo/bar.js",
         ]);
     });
 });
