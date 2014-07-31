@@ -102,8 +102,9 @@ PatchFile.prototype.addMessage = function(message)
             return a.line - b.line;
         });
         this.draftCount++;
-        this.patchset.issue.draftCount++;
         this.patchset.draftCount++;
+        this.patchset.issue.draftCount++;
+        this.patchset.issue.updateDraftFiles();
     }
 };
 
@@ -118,8 +119,9 @@ PatchFile.prototype.removeMessage = function(message)
     if (message.draft) {
         this.drafts.remove(message);
         this.draftCount--;
-        this.patchset.issue.draftCount--;
         this.patchset.draftCount--;
+        this.patchset.issue.draftCount--;
+        this.patchset.issue.updateDraftFiles();
     }
 };
 

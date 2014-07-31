@@ -100,31 +100,22 @@
                             </cr-action>
                         </div>
                         <!-- FIXME: This should use <cr-patch-file-message> and allow editing. -->
-                        <!--
-                            FIXME: We should select which files in advance so we don't add tons of
-                            extra <template>'s into the page. That requires some way to re-eval the
-                            template when it changes though.
-                        -->
-                        <template repeat="{{ patchset, i in issue.patchsets }}">
-                            <template if="{{ patchset.draftCount }}">
-                                <template repeat="{{ file in patchset.files }}">
-                                    <template if="{{ file.draftCount }}">
-                                        <h3 class="file-header">
-                                            <span class="file-name">{{ file.name }}</span>
-                                            <span class="patchset">Patch {{ i + 1 }}</span>
-                                        </h3>
-                                        <div class="messages">
-                                            <template repeat="{{ draft in file.drafts }}">
-                                                <div class="message">
-                                                    <h4 class="message-header">Line {{ draft.line }}</h4>
-                                                    <div class="message-text">
-                                                        <cr-linkified-text text="{{ draft.text }}" pre></cr-linkified-text>
-                                                    </div>
-                                                </div>
-                                            </template>
+                        <template repeat="{{ draftPatchset in issue.draftPatchsets }}">
+                            <template repeat="{{ file in draftPatchset.files }}">
+                                <h3 class="file-header">
+                                    <span class="file-name">{{ file.name }}</span>
+                                    <span class="patchset">Patch {{ file.patchset.sequence }}</span>
+                                </h3>
+                                <div class="messages">
+                                    <template repeat="{{ draft in file.drafts }}">
+                                        <div class="message">
+                                            <h4 class="message-header">Line {{ draft.line }}</h4>
+                                            <div class="message-text">
+                                                <cr-linkified-text text="{{ draft.text }}" pre></cr-linkified-text>
+                                            </div>
                                         </div>
                                     </template>
-                                </template>
+                                </div>
                             </template>
                         </template>
                     </polymer-ui-collapsible>

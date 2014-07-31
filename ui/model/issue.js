@@ -15,6 +15,8 @@ function Issue(id)
     this.subject = "";
     this.created = ""; // Date
     this.patchsets = []; // Array<PatchSet>
+    this.draftPatchsets = []; // Array<DraftPatchSet>
+    this.shouldUpdateDraftFiles = true;
     this.lastModified = ""; // Date
     this.closed = false;
     this.commit = false;
@@ -263,4 +265,23 @@ Issue.prototype.createFlagsData = function(options)
             data.builders = TryServers.createFlagValue(options.builders);
         return data;
     });
+};
+
+Issue.prototype.updateDraftFiles = function()
+{
+    if (!this.shouldUpdateDraftFiles)
+        return;
+    var draftPatchsets = {};
+    this.draftPatchsets.forEach(function(draftPatchset) {
+        if (draftPatchset.patchset.draftCount)
+            draftPatchsets[draftPatchset.sequence] = draftPatchset;
+    });
+    this.draftPatchsets = [];
+    this.patchsets.forEach(function(patchset) {
+        if (!patchset.draftCount)
+            return;
+        var draftPatchset = draftPatchsets[patchset.sequence] || new DraftPatchSet(patchset);
+        draftPatchset.updateFiles();
+        this.draftPatchsets.push(draftPatchset);
+    }, this);
 };

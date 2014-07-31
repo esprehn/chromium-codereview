@@ -90,6 +90,11 @@ PatchSet.prototype.parseData = function(data)
     this.lastModified = Date.utc.create(data.modified);
     this.created = Date.utc.create(data.created);
 
+    // Disable the updating the patchset drafts to avoid the n^2 below and
+    // because inside PatchFile#parseData() the file has not been added yet
+    // so the tree update won't find the new file.
+    this.issue.shouldUpdateDraftFiles = false;
+
     Object.keys(data.files || {}, function(name, value) {
         var file = new PatchFile(patchset, name);
         file.parseData(value);
@@ -130,4 +135,7 @@ PatchSet.prototype.parseData = function(data)
             }).reverse();
             return jobSet;
         });
+
+    this.issue.shouldUpdateDraftFiles = true;
+    this.issue.updateDraftFiles();
 };
