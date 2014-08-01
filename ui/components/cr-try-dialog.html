@@ -112,11 +112,11 @@
             filterServers: function(value, builderFilter) {
                 if (!value || !builderFilter)
                     return value;
-                builderFilter = builderFilter.trim();
+                builderFilter = builderFilter.trim().toLowerCase();
                 return value.map(function(server) {
                     server = Object.clone(server);
                     server.builders = server.builders.filter(function(builder) {
-                        return builder.contains(builderFilter);
+                        return builder.toLowerCase().contains(builderFilter);
                     });
                     return server;
                 }).filter(function(server) {
