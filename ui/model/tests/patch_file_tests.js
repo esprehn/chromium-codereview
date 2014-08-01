@@ -1,3 +1,4 @@
+"use strict";
 
 describe("PatchFile", function() {
     it("should parse file extensions into syntax highlighting languages", function() {

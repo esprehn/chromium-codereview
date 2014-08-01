@@ -1,3 +1,4 @@
+"use strict";
 
 describe("PatchSet", function() {
     it("should sort headers before implementation files", function() {

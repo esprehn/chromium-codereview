@@ -1,3 +1,4 @@
+"use strict";
 
 // Blank the document so the 404 page doesn't show up visibly.
 document.documentElement.style.display = 'none';

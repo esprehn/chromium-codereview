@@ -1,3 +1,4 @@
+"use strict";
 
 // https://codereview.chromium.org/api/148223004/?messages=true
 // FIXME: support loading all drafts by parsing /publish and then doing PatchFile.loadDrafts()

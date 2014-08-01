@@ -1,3 +1,4 @@
+"use strict";
 
 var APPSPOT_URL_PATTERN = /^https?:\/\/chromiumcodereview\.appspot\.com/;
 var APP_REDIRECT_URL_PATTERN = /^https?:\/\/([^\/]+)\/(((\d+)|login|user\/[^\/]+|settings)?\/?(#.*)?)$/;

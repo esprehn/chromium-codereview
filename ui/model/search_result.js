@@ -1,3 +1,4 @@
+"use strict";
 
 function SearchResult(issues, cursor)
 {

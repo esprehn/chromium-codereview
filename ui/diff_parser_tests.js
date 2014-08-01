@@ -1,3 +1,4 @@
+"use strict";
 
 describe("DiffParser", function() {
     it("should not show context link for file deletes", function() {

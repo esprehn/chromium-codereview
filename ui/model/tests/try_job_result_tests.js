@@ -1,3 +1,4 @@
+"use strict";
 
 describe("TryJobResult", function() {
     var URL = "http://build.chromium.org/p/tryserver.blink/builders/win_blink_rel/builds/12456";

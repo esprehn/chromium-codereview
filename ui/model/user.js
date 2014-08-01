@@ -1,3 +1,4 @@
+"use strict";
 
 function User(name, email, displayName)
 {

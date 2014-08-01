@@ -1,3 +1,4 @@
+"use strict";
 
 describe("Search", function() {
     asyncIt("should encode url parameters", function() {

@@ -1,3 +1,4 @@
+"use strict";
 
 function DiffBuilder(diff, file, output)
 {

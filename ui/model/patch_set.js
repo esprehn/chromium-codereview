@@ -1,3 +1,4 @@
+"use strict";
 
 // https://codereview.chromium.org/api/148223004/70001/?comments=true
 function PatchSet(issue, id, sequence)

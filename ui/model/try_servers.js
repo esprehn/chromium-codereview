@@ -1,3 +1,4 @@
+"use strict";
 
 var TryServers = (function() {
     var servers = [
