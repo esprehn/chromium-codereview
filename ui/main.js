@@ -5,7 +5,7 @@ document.documentElement.style.display = 'none';
 
 // Can't use DOMContentLoaded, calling document.write or document.close inside it from
 // inside an extension causes a crash.
-onload = function() {
+window.addEventListener("load", function() {
     document.write(
         "<!DOCTYPE html>" +
         "<meta name=viewport content='initial-scale=1, maximum-scale=1, user-scalable=no'>" +
@@ -18,4 +18,4 @@ onload = function() {
     );
     document.close();
     document.documentElement.style.display = '';
-};
+});
