@@ -79,12 +79,14 @@
                     </template>
                 </div>
             </div>
-            <div class="issue-base-url issue-meta-item">
-                <div class="issue-meta-type">Base url</div>
-                <div class="issue-meta-value">
-                    {{ issue.baseUrl }}
+            <template if="{{ issue.project }}">
+                <div class="issue-base-url issue-meta-item">
+                    <div class="issue-meta-type">Project</div>
+                    <div class="issue-meta-value">
+                        {{ issue.project }}
+                    </div>
                 </div>
-            </div>
+            </template>
             <template if="{{ issue.private }}">
                 <div class="issue-private issue-meta-item">
                     <div class="issue-meta-type">Private</div>
