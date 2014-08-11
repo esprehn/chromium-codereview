@@ -46,7 +46,9 @@
                 this.fire("title-change", {
                     value: "Issue " + this.issueId
                 });
-                var issue = new Issue(this.issueId);
+                if (this.issue && this.issueId != this.issue.id)
+                    this.issue = null;
+                var issue = this.issue || new Issue(this.issueId);
                 return issue.loadDetails().then(function() {
                     self.fire("title-change", {
                         value: "Issue " + issue.id + ": " + issue.subject

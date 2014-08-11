@@ -12,6 +12,17 @@ function IssueMessage(issue, sequence)
     this.sequence = sequence || 0;
 }
 
+IssueMessage.get = function(issue, sequence)
+{
+    var key = ["IssueMessage", sequence];
+    var object = issue.getCachedObject(key);
+    if (!object) {
+        object = new IssueMessage(issue, sequence);
+        issue.addCachedObject(key, object);
+    }
+    return object;
+};
+
 IssueMessage.prototype.parseData = function(data)
 {
     this.author = User.forMailingListEmail(data.sender);

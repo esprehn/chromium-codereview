@@ -27,6 +27,7 @@ function Issue(id)
     this.approvalCount = 0;
     this.disapprovalCount = 0;
     this.recentActivity = false;
+    this.objectCache = {};
 }
 
 Issue.DETAIL_URL = "/api/{1}?messages=true";
@@ -34,6 +35,16 @@ Issue.PUBLISH_URL = "/{1}/publish";
 Issue.EDIT_URL = "/{1}/edit";
 Issue.CLOSE_URL = "/{1}/close";
 Issue.FLAGS_URL = "/{1}/edit_flags";
+
+Issue.prototype.getCachedObject = function(key)
+{
+    return this.objectCache[key.join(":")];
+};
+
+Issue.prototype.addCachedObject = function(key, object)
+{
+    this.objectCache[key.join(":")] = object;
+};
 
 Issue.prototype.getDetailUrl = function()
 {
@@ -105,10 +116,10 @@ Issue.prototype.parseData = function(data)
         return User.forMailingListEmail(email);
     });
     this.patchsets = (data.patchsets || []).map(function(patchsetId, i) {
-        return new PatchSet(issue, patchsetId, i + 1);
+        return PatchSet.get(issue, patchsetId, i + 1);
     });
     this.messages = (data.messages || []).map(function(messageData, i) {
-        var message = new IssueMessage(issue, i + 1);
+        var message = IssueMessage.get(issue, i + 1);
         message.parseData(messageData);
         return message;
     });

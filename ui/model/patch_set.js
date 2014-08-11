@@ -21,6 +21,16 @@ function PatchSet(issue, id, sequence)
     this.active = false;
 }
 
+PatchSet.get = function(issue, id, sequence) {
+    var key = ["PatchSet", id, sequence];
+    var object = issue.getCachedObject(key);
+    if (!object) {
+        object = new PatchSet(issue, id, sequence);
+        issue.addCachedObject(key, object);
+    }
+    return object;
+};
+
 PatchSet.DETAIL_URL = "/api/{1}/{2}/?comments=true"
 PatchSet.REVERT_URL = "/api/{1}/{2}/revert";
 
@@ -87,13 +97,17 @@ PatchSet.prototype.parseData = function(data)
     // so the tree update won't find the new file.
     this.issue.shouldUpdateDraftFiles = false;
 
-    Object.keys(data.files || {}, function(name, value) {
-        var file = new PatchFile(patchset, name);
-        file.parseData(value);
-        patchset.files.push(file);
+    var fileData = data.files || {};
+    this.files = Object.keys(fileData).map(function(name) {
+        var file = PatchFile.get(patchset, name);
+        file.parseData(fileData[name]);
+        return file;
     });
 
     this.files.sort(PatchFile.compare);
+
+    this.testFiles = [];
+    this.sourceFiles = [];
 
     this.files.forEach(function(file) {
         if (file.isLayoutTest)

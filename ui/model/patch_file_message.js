@@ -1,15 +1,28 @@
 "use strict";
 
-function PatchFileMessage()
+function PatchFileMessage(file, id)
 {
+    this.file = file || null;
     this.author = null; // User
     this.text = "";
     this.draft = false;
     this.line = 0;
     this.date = ""; // Date
     this.left = false;
-    this.messageId = "";
+    this.messageId = id || "";
 }
+
+PatchFileMessage.get = function(file, id)
+{
+    var key = ["PatchFileMessage", id];
+    var issue = file.patchset.issue;
+    var object = issue.getCachedObject(key);
+    if (!object) {
+        object = new PatchFileMessage(file, id);
+        issue.addCachedObject(key, object);
+    }
+    return object;
+};
 
 PatchFileMessage.createDraft = function()
 {

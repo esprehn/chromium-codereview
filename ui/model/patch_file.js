@@ -32,6 +32,18 @@ function PatchFile(patchset, name)
     }
 }
 
+PatchFile.get = function(patchset, name)
+{
+    var key = ["PatchFile", patchset.id, name];
+    var issue = patchset.issue;
+    var object = issue.getCachedObject(key);
+    if (!object) {
+        object = new PatchFile(patchset, name);
+        issue.addCachedObject(key, object);
+    }
+    return object;
+};
+
 PatchFile.DIFF_URL = "/download/issue{1}_{2}_{3}.diff";
 PatchFile.CONTEXT_URL = "/{1}/diff_skipped_lines/{2}/{3}/{4}/{5}/a/2000";
 PatchFile.COMMENT_URL = "/inline_draft";
@@ -158,7 +170,7 @@ PatchFile.prototype.parseData = function(data)
 
     var self = this;
     (data.messages || []).forEach(function(messageData) {
-        var message = new PatchFileMessage();
+        var message = PatchFileMessage.get(self, messageData.message_id);
         message.parseData(messageData);
         self.addMessage(message);
     });
