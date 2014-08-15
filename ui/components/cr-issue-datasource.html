@@ -15,11 +15,24 @@
                 var self = this;
                 var issue = this.issue;
                 issue.loadDetails().then(function() {
-                    if (self.issue == issue)
+                    if (self.issue == issue) {
                         self.fire("change");
+                        self.loadPatchSets();
+                    }
                 }).catch(function(e) {
                     if (self.issue == issue)
                         self.fire("error", e);
+                });
+            },
+            loadPatchSets: function() {
+                // FIXME: We should load patchsets on demand, unfortunately we can't
+                // get the patchset titles from the JSON we load. We could switch to
+                // screen scraping the issue page but that would be really slow.
+                this.issue.patchsets.forEach(function(patchset) {
+                    patchset.loadDetails().catch(function(e) {
+                        // FIXME: Show an error message.
+                        console.log(e);
+                    });
                 });
             },
         });
