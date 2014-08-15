@@ -56,7 +56,7 @@
                     </polymer-ui-collapsible>
                 </template>
             </template>
-            <polymer-ui-collapsible class="patchset" active>
+            <polymer-ui-collapsible class="patchset" active="{{ currentPatchset.active }}">
                 <cr-patchset-header class="polymer-ui-collapsible-header" patchset="{{ currentPatchset }}"></cr-patchset-header>
                 <cr-issue-patchset patchset="{{ currentPatchset }}"></cr-issue-patchset>
             </polymer-ui-collapsible>
@@ -74,6 +74,7 @@
                 var value = newValue || [];
                 this.olderPatchsets = value.to(-1);
                 this.currentPatchset = value.last();
+                this.currentPatchset.active = true;
                 this.showOlderPatchsets = false;
             },
             pluralize: function(text, count) {

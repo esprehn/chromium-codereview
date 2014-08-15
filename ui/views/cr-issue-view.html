@@ -1,5 +1,6 @@
 
 <link rel="import" href="../components/cr-issue.html">
+<link rel="import" href="../components/cr-issue-datasource.html">
 
 <polymer-element name="cr-issue-view" attributes="issueId">
     <template>
@@ -17,54 +18,62 @@
                 font-size: 1.5em;
             }
         </style>
-        <template if="{{ !issue && !failed }}">
+        <template if="{{ state == 'loading' }}">
             <p>
                 Loading issue {{ issueId }}...
             </p>
         </template>
-        <template if="{{ failed }}">
+        <template if="{{ state == 'error' }}">
             <p>
                 Failed to load issue {{ issueId }}. :(
             </p>
         </template>
-        <template if="{{ issue && !failed }}">
+        <template if="{{ state == 'loaded' }}">
             <cr-issue
                 issue="{{ issue }}"
                 on-issue-refresh="{{ loadIssue }}"></cr-issue>
         </template>
+        <cr-issue-datasource
+            id="datasource"
+            issueId="{{ issueId }}"
+            issue="{{ issue }}"
+            on-change="{{ handleIssueChange }}"
+            on-error="{{ handleIssueError }}"></cr-issue-datasource>
     </template>
     <script>
         Polymer("cr-issue-view", {
-            issue: null,
-            issueId: 0,
-            attached: function() {
-                var self = this;
-                this.loadIssue();
+            created: function() {
+                this.issue = null;
+                this.issueId = 0;
+                this.state = "";
+            },
+            issueIdChanged: function() {
+                this.state = "loading";
+                this.fire("title-change", {
+                    value: "Issue " + this.issueId,
+                });
+            },
+            handleIssueChange: function() {
+                this.state = "loaded";
+                this.fire("title-change", {
+                    value: "Issue " + this.issue.id + ": " + this.issue.subject,
+                });
+                // FIXME: We should load patchsets on demand, unfortunately we can't
+                // get the patchset titles from the JSON we load. We could switch to
+                // screen scraping the issue page but that would be really slow.
+                this.issue.patchsets.forEach(function(patchset) {
+                    patchset.loadDetails().catch(function(e) {
+                        // FIXME: Show an error message.
+                        console.log(e);
+                    });
+                });
+            },
+            handleIssueError: function(event) {
+                console.log(event.detail);
+                this.state = "error";
             },
             loadIssue: function() {
-                var self = this;
-                this.fire("title-change", {
-                    value: "Issue " + this.issueId
-                });
-                var issue = new Issue(this.issueId);
-                return issue.loadDetails().then(function() {
-                    self.fire("title-change", {
-                        value: "Issue " + issue.id + ": " + issue.subject
-                    });
-                    // FIXME: We should load patchsets on demand, unfortunately we can't
-                    // get the patchset titles from the JSON we load. We could switch to
-                    // screen scraping the issue page but that would be really slow.
-                    issue.patchsets.forEach(function(patchset) {
-                        patchset.loadDetails().catch(function(e) {
-                            // FIXME: We should show an error message.
-                            console.log(e);
-                        });
-                    });
-                    self.issue = issue;
-                }).catch(function(error) {
-                    console.log(error);
-                    self.failed = true;
-                });
+                this.$.datasource.sync();
             },
         });
     </script>

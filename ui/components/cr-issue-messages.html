@@ -57,6 +57,7 @@
             messagesChanged: function() {
                 this.activeId = this.messages.length;
                 this.hashChanged();
+                this.updateVisibleMessages();
             },
             hashChanged: function() {
                 if (!window.location.hash.startsWith(SELECTION_PREFIX))
@@ -64,7 +65,6 @@
                 var num = window.location.hash.replace(SELECTION_PREFIX, "");
                 if (/^[0-9]+$/.test(num) && num > 0 && num <= this.messages.length) {
                     this.selectionId = num;
-                    console.log(num);
                     this.activeId = num;
                     this.async(function() {
                         var message = this.shadowRoot.getElementById("message-" + this.selectionId);
@@ -74,6 +74,9 @@
                 }
             },
             activeIdChanged: function() {
+                this.updateVisibleMessages();
+            },
+            updateVisibleMessages: function() {
                 this.visibleMessages = this.messages.from(Math.max(this.activeId - MAX_MESSAGES, 0));
             },
             handleShowOlderMessages: function() {

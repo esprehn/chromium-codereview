@@ -9,13 +9,13 @@ function Issue(id)
     this.reviewers = []; // Array<User>
     this.messages = []; // Array<IssueMessage>
     this.messageCount = 0;
-    this.draftCount = 0;
     this.owner = null; // User
     this.private = false;
     this.baseUrl = "";
     this.subject = "";
     this.created = ""; // Date
     this.patchsets = []; // Array<PatchSet>
+    this.draftCount = 0;
     this.draftPatchsets = []; // Array<DraftPatchSet>
     this.shouldUpdateDraftFiles = true;
     this.lastModified = ""; // Date
@@ -96,6 +96,8 @@ Issue.prototype.parseData = function(data)
     this.owner = User.forName(data.owner, data.owner_email);
     this.private = data.private;
     this.subject = data.subject || "";
+    this.draftPatchsets = [];
+    this.draftCount = 0;
     this.cc = (data.cc || []).map(function(email) {
         return User.forMailingListEmail(email);
     });
@@ -126,6 +128,9 @@ Issue.prototype.parseData = function(data)
 
 Issue.prototype.updateScores = function() {
     var issue = this;
+    this.scores = {};
+    this.approvalCount = 0;
+    this.disapprovalCount = 0;
     var reviewerEmails = {};
     this.reviewers.forEach(function(user) {
         reviewerEmails[user.email] = true;
