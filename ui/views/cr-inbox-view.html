@@ -73,12 +73,10 @@
                     value: "My issues"
                 });
                 this.filter = localStorage.getItem(FILTER_KEY) || this.filter;
-                this.issues = IssueList.getCachedIssues();
+                this.issues = new IssueList({cached:true});
                 this.butterbarMessage = "Loading your issues.";
-                var issues = new IssueList();
-                issues.loadIssues(true).then(function() {
+                this.issues.loadIssues().then(function() {
                     self.butterbarMessage = "";
-                    self.issues = issues;
                 }).catch(function(error) {
                     console.log(error);
                     self.failed = true;

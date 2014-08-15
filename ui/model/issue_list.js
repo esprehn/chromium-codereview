@@ -1,6 +1,6 @@
 "use strict";
 
-function IssueList()
+function IssueList(options)
 {
     this.owner = null; // User
     this.incoming = []; // Array<Issue>
@@ -9,32 +9,37 @@ function IssueList()
     this.cc = []; // Array<Issue>
     this.draft = []; // Array<Issue>
     this.closed = []; // Array<Issue>
+    this.cachedIssues = {};
+    this.cached = options && options.cached;
 }
 
 IssueList.ISSUE_LIST_URL = "/";
 IssueList.CACHE_KEY = "IssueList.cachedIssues";
 
-IssueList.getCachedIssues = function()
+IssueList.prototype.loadIssues = function()
 {
-    var html = localStorage.getItem(IssueList.CACHE_KEY);
-    if (!html)
-        return null;
-    var list = new IssueList();
-    var doc = document.implementation.createHTMLDocument();
-    doc.body.innerHTML = html;
-    list.parseDocument(doc);
-    return list;
+    var self = this;
+    if (this.cached) {
+        var html = localStorage.getItem(IssueList.CACHE_KEY);
+        if (html) {
+            var doc = document.implementation.createHTMLDocument();
+            doc.body.innerHTML = html;
+            this.parseDocument(doc);
+        }
+    }
+    return loadDocument(IssueList.ISSUE_LIST_URL).then(function(doc) {
+        if (self.cached)
+            localStorage.setItem(IssueList.CACHE_KEY, doc.body.innerHTML);
+        self.parseDocument(doc);
+        return self;
+    });
 };
 
-IssueList.prototype.loadIssues = function(cache)
+IssueList.prototype.getIssue = function(id)
 {
-    var issues = this;
-    return loadDocument(IssueList.ISSUE_LIST_URL).then(function(doc) {
-        if (cache)
-            localStorage.setItem(IssueList.CACHE_KEY, doc.body.innerHTML);
-        issues.parseDocument(doc);
-        return issues;
-    });
+    if (!this.cachedIssues[id])
+        this.cachedIssues[id] = new Issue(id);
+    return this.cachedIssues[id];
 };
 
 IssueList.convertRelativeDate = function(value)
@@ -161,7 +166,8 @@ IssueList.prototype.parseDocument = function(document)
 
     function processHeaderRow(row) {
         var type = row.classList[1];
-        currentType = issueList[type];
+        currentType = [];
+        issueList[type] = currentType;
     }
 
     function processIssueRow(row) {
@@ -179,7 +185,7 @@ IssueList.prototype.parseDocument = function(document)
         }
         if (!fields.id)
             return;
-        var issue = Issue.from(fields.id.node.textContent);
+        var issue = issueList.getIssue(fields.id.node.textContent);
         Object.keys(fields, function(key, value) {
             issue[value.definition.name] = value.definition.converter(value.definition.serializer(value.node), issue);
         });
