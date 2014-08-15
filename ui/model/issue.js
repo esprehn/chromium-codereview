@@ -28,6 +28,15 @@ function Issue(id)
     this.recentActivity = false;
 }
 
+Issue.cachedIssues = {};
+
+Issue.from = function(id)
+{
+    if (!Issue.cachedIssues[id])
+        Issue.cachedIssues[id] = new Issue(id);
+    return Issue.cachedIssues[id];
+};
+
 Issue.DETAIL_URL = "/api/{1}?messages=true";
 Issue.PUBLISH_URL = "/{1}/publish";
 Issue.EDIT_URL = "/{1}/edit";
