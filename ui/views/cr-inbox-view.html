@@ -47,6 +47,12 @@
                 <h1 class="app-header">My Issues</h1>
                 <div class="filter-form">
                     <div class="form-field">
+                        <label for="recent-activity">
+                            Highlight activity
+                        </label>
+                        <input id="recent-activity" type="checkbox" checked="{{ showRecentActivity }}">
+                    </div>
+                    <div class="form-field">
                         <label for="filter">
                             Filter
                         </label>
@@ -57,12 +63,6 @@
                             <option value="4">4 weeks</option>
                             <option value="all">All issues</option>
                         </select>
-                    </div>
-                    <div class="form-field">
-                        <label for="recent-activity">
-                            Recent activity
-                        </label>
-                        <input id="recent-activity" type="checkbox" checked="{{ showRecentActivity }}">
                     </div>
                 </div>
             </header>
