@@ -11,6 +11,7 @@ function IssueList(options)
     this.closed = []; // Array<Issue>
     this.issues = {};
     this.cached = options && options.cached;
+    this.recentActivity = options && options.recentActivity;
 }
 
 IssueList.ISSUE_LIST_URL = "/";
@@ -148,7 +149,7 @@ IssueList.prototype.parseDocument = function(document)
             var serializer = SERIALIZERS[i] || IssueList.serializeWithInnerText;
             issue[FIELDS[i]] = HANDLERS[i](serializer(td), issue);
         }
-        issue.recentActivity = row.classList.contains("updated");
+        issue.recentActivity = issueList.recentActivity && row.classList.contains("updated");
         currentType.push(issue);
     }
 

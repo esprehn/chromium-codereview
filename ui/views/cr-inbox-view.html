@@ -34,7 +34,11 @@
                 -webkit-user-select: none;
                 cursor: default;
                 white-space: nowrap;
-                margin-right: 16px;
+                margin-right: 8px;
+            }
+
+            .form-field {
+                margin: 0 8px;
             }
         </style>
         <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
@@ -42,16 +46,24 @@
             <header>
                 <h1 class="app-header">My Issues</h1>
                 <div class="filter-form">
-                    <label for="filter">
-                        Filter
-                    </label>
-                    <select id="filter" value="{{ filter }}">
-                        <option value="today">Today</option>
-                        <option value="0">Past week</option>
-                        <option value="2">2 weeks</option>
-                        <option value="4">4 weeks</option>
-                        <option value="all">All issues</option>
-                    </select>
+                    <div class="form-field">
+                        <label for="filter">
+                            Filter
+                        </label>
+                        <select id="filter" value="{{ filter }}">
+                            <option value="today">Today</option>
+                            <option value="0">Past week</option>
+                            <option value="2">2 weeks</option>
+                            <option value="4">4 weeks</option>
+                            <option value="all">All issues</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="recent-activity">
+                            Recent activity
+                        </label>
+                        <input id="recent-activity" type="checkbox" checked="{{ showRecentActivity }}">
+                    </div>
                 </div>
             </header>
             <cr-issue-inbox issues="{{ issues }}" weeks="{{ filter }}"></cr-issue-inbox>
@@ -60,20 +72,37 @@
     <script>
     (function() {
         var FILTER_KEY = "cr-inbox-view.filter";
+        var SHOW_RECENT_ACTIVITY_KEY = "cr-inbox-view.showRecentActivity";
 
         Polymer("cr-inbox-view", {
             filter: "2",
+            showRecentActivity: false,
             issues: null,
             loading: true,
             failed: false,
             butterbarMessage: "",
             attached: function() {
-                var self = this;
                 this.fire("title-change", {
                     value: "My issues"
                 });
                 this.filter = localStorage.getItem(FILTER_KEY) || this.filter;
-                this.issues = new IssueList({cached:true});
+                this.showRecentActivity = localStorage.getItem(SHOW_RECENT_ACTIVITY_KEY) || this.showRecentActivity;
+                this.issues = new IssueList({
+                    cached: true,
+                    recentActivity: this.showRecentActivity,
+                });
+                this.loadIssues();
+            },
+            filterChanged: function() {
+                localStorage.setItem(FILTER_KEY, this.filter);
+            },
+            showRecentActivityChanged: function(oldValue, newValue) {
+                this.issues.recentActivity = this.showRecentActivity;
+                this.loadIssues();
+                localStorage.setItem(SHOW_RECENT_ACTIVITY_KEY, this.showRecentActivity);
+            },
+            loadIssues: function() {
+                var self = this;
                 this.butterbarMessage = "Loading your issues.";
                 this.issues.loadIssues().then(function() {
                     self.butterbarMessage = "";
@@ -82,9 +111,6 @@
                     self.failed = true;
                     self.butterbarMessage = "Failed to load your issues. :(";
                 });
-            },
-            filterChanged: function() {
-                localStorage.setItem(FILTER_KEY, this.filter);
             },
         });
     })();
