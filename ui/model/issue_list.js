@@ -90,7 +90,7 @@ IssueList.updateListDates = function(a, b)
 
 IssueList.convertRelativeDate = function(value)
 {
-    var result = Date.create("today");
+    var result = Date.create();
     var args = {};
     value.split(",").each(function(value) {
         var tokens = value.trim().split(" ");
