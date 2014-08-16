@@ -97,6 +97,8 @@
                 localStorage.setItem(FILTER_KEY, this.filter);
             },
             showRecentActivityChanged: function(oldValue, newValue) {
+                // FIXME: We shouldn't reload issues just to toggle this status,
+                // but it's a lot plumbing to pass it down otherwise.
                 this.issues.recentActivity = this.showRecentActivity;
                 this.loadIssues();
                 localStorage.setItem(SHOW_RECENT_ACTIVITY_KEY, this.showRecentActivity);

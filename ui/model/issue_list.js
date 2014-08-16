@@ -133,8 +133,9 @@ IssueList.prototype.parseDocument = function(document)
     }
 
     function processHeaderRow(row) {
+        currentType = [];
         var type = row.classList[1];
-        currentType = issueList[type];
+        issueList[type] = currentType;
     }
 
     function processIssueRow(row) {
