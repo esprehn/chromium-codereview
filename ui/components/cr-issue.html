@@ -79,10 +79,7 @@
 
         <cr-issue-messages messages="{{ issue.messages }}" id="messages" on-message-save="{{ saveMessage }}"></cr-issue-messages>
 
-        <cr-try-dialog id="tryDialog" issue="{{ issue }}"></cr-try-dialog>
-        <cr-issue-edit-dialog id="editDialog" issue="{{ issue }}"></cr-issue-edit-dialog>
-        <cr-issue-publish-dialog id="publishDialog" issue="{{ issue }}"></cr-issue-publish-dialog>
-        <cr-issue-revert-dialog id="revertDialog" patchset="{{ issue.patchsets[issue.patchsets.length - 1] }}"></cr-issue-revert-dialog>
+        <div id="dialogs"></div>
 
         <cr-keyboard on-key-m="{{ handlePublishKey }}" global></cr-keyboard>
     </template>
@@ -115,19 +112,34 @@
                     console.log(e);
                 });
             },
+            showDialog: function(dialog) {
+                this.$.dialogs.appendChild(dialog);
+                dialog.addEventListener("close", function() {
+                    dialog.remove();
+                });
+                dialog.showModal();
+            },
             showTryDialog: function() {
-                this.$.tryDialog.showModal();
+                var dialog = document.createElement("cr-try-dialog");
+                dialog.issue = this.issue;
+                this.showDialog(dialog);
             },
             showEditDialog: function() {
-                this.$.editDialog.showModal();
+                var dialog = document.createElement("cr-issue-edit-dialog");
+                dialog.issue = this.issue;
+                this.showDialog(dialog);
             },
             showPublishDialog: function() {
-                this.$.publishDialog.showModal();
+                var dialog = document.createElement("cr-issue-publish-dialog");
+                dialog.issue = this.issue;
+                this.showDialog(dialog);
             },
             showRevertDialog: function() {
                 if (!this.issue.closed || this.issue.patchsets.isEmpty())
                     return;
-                this.$.revertDialog.showModal();
+                var dialog = document.createElement("cr-issue-revert-dialog");
+                dialog.patchset = this.issue.patchsets.last();
+                this.showDialog(dialog);
             },
             collapseAllMessages: function() {
                 this.$.messages.toggleAll({active: false});
