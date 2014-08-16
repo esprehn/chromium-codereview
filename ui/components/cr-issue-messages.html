@@ -64,7 +64,6 @@
                 var num = window.location.hash.replace(SELECTION_PREFIX, "");
                 if (/^[0-9]+$/.test(num) && num > 0 && num <= this.messages.length) {
                     this.selectionId = num;
-                    console.log(num);
                     this.activeId = num;
                     this.async(function() {
                         var message = this.shadowRoot.getElementById("message-" + this.selectionId);
