@@ -73,17 +73,10 @@
                     value: "My issues"
                 });
                 this.filter = localStorage.getItem(FILTER_KEY) || this.filter;
-                this.issues = IssueList.getCachedIssues();
+                this.issues = new IssueList({cached:true});
                 this.butterbarMessage = "Loading your issues.";
-                var issues = new IssueList();
-                issues.loadIssues(true).then(function() {
+                this.issues.loadIssues().then(function() {
                     self.butterbarMessage = "";
-                    // If the issues differ only in dates, update those
-                    // but don't create any new DOM.
-                    if (self.issues && self.issues.equalStructure(issues))
-                        self.issues.updateDates(issues);
-                    else
-                        self.issues = issues;
                 }).catch(function(error) {
                     console.log(error);
                     self.failed = true;

@@ -1,6 +1,6 @@
 "use strict";
 
-function IssueList()
+function IssueList(options)
 {
     this.owner = null; // User
     this.incoming = []; // Array<Issue>
@@ -9,83 +9,37 @@ function IssueList()
     this.cc = []; // Array<Issue>
     this.draft = []; // Array<Issue>
     this.closed = []; // Array<Issue>
+    this.issues = {};
+    this.cached = options && options.cached;
 }
 
 IssueList.ISSUE_LIST_URL = "/";
 IssueList.CACHE_KEY = "IssueList.cachedIssues";
 
-IssueList.cachedIssues = null;
-
-IssueList.getCachedIssues = function()
+IssueList.prototype.getIssue = function(id)
 {
-    if (IssueList.cachedIssues)
-        return IssueList.cachedIssues;
-    var html = localStorage.getItem(IssueList.CACHE_KEY);
-    if (!html)
-        return null;
-    var list = new IssueList();
-    var doc = document.implementation.createHTMLDocument();
-    doc.body.innerHTML = html;
-    list.parseDocument(doc);
-    IssueList.cachedIssues = list;
-    return list;
+    if (!this.issues[id])
+        this.issues[id] = new Issue(id);
+    return this.issues[id];
 };
 
-IssueList.prototype.loadIssues = function(cache)
+IssueList.prototype.loadIssues = function()
 {
-    var issues = this;
+    var self = this;
+    if (this.cached) {
+        var html = localStorage.getItem(IssueList.CACHE_KEY);
+        if (html) {
+            var doc = document.implementation.createHTMLDocument();
+            doc.body.innerHTML = html;
+            this.parseDocument(doc);
+        }
+    }
     return loadDocument(IssueList.ISSUE_LIST_URL).then(function(doc) {
-        if (cache) {
+        if (self.cached)
             localStorage.setItem(IssueList.CACHE_KEY, doc.body.innerHTML);
-            IssueList.cachedIssues = issues;
-        }
-        issues.parseDocument(doc);
-        return issues;
+        self.parseDocument(doc);
+        return self;
     });
-};
-
-IssueList.prototype.equalStructure = function(other)
-{
-    return User.compare(this.owner, other.owner)
-        && IssueList.equalListStructure(this.incoming, other.incoming)
-        && IssueList.equalListStructure(this.outgoing, other.outgoing)
-        && IssueList.equalListStructure(this.unsent, other.unsent)
-        && IssueList.equalListStructure(this.cc, other.cc)
-        && IssueList.equalListStructure(this.draft, other.draft)
-        && IssueList.equalListStructure(this.closed, other.closed);
-};
-
-// Note: Compares only the data that <cr-inbox-view> cares about.
-IssueList.equalListStructure = function(a, b)
-{
-    if (a.length != b.length)
-        return false;
-    for (var i = 0; i < a.length; ++a) {
-        if (a[i].id != b[i].id
-            || a[i].subject != b[i].subject
-            || a[i].displayName != b[i].displayName) {
-            return false;
-        }
-    }
-    return true;
-};
-
-IssueList.prototype.updateDates = function(other)
-{
-    IssueList.updateListDates(this.incoming, other.incoming);
-    IssueList.updateListDates(this.outgoing, other.outgoing);
-    IssueList.updateListDates(this.unsent, other.unsent);
-    IssueList.updateListDates(this.cc, other.cc);
-    IssueList.updateListDates(this.draft, other.draft);
-    IssueList.updateListDates(this.closed, other.closed);
-};
-
-IssueList.updateListDates = function(a, b)
-{
-    for (var i = 0; i < a.length; ++a) {
-        a[i].created = b[i].created;
-        a[i].lastModified = b[i].lastModified;
-    }
 };
 
 IssueList.convertRelativeDate = function(value)
@@ -114,6 +68,10 @@ IssueList.convertToReviewers = function(node, issue)
 {
     var links = node.querySelectorAll("a");
     var users = [];
+
+    issue.approvalCount = 0;
+    issue.disapprovalCount = 0;
+    issue.scores = {};
 
     function addUser(node) {
         if (!node)
@@ -181,14 +139,16 @@ IssueList.prototype.parseDocument = function(document)
     function processIssueRow(row) {
         if (!currentType)
             return;
-        var issue = new Issue();
-        issue.recentActivity = row.classList.contains("updated");
+        var issue = null;
         for (var td = row.firstElementChild, i = 0; td; td = td.nextElementSibling, ++i) {
             if (!FIELDS[i])
                 continue;
+            if (FIELDS[i] == "id")
+                issue = issueList.getIssue(Number(td.textContent));
             var serializer = SERIALIZERS[i] || IssueList.serializeWithInnerText;
             issue[FIELDS[i]] = HANDLERS[i](serializer(td), issue);
         }
+        issue.recentActivity = row.classList.contains("updated");
         currentType.push(issue);
     }
 
