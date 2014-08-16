@@ -53,9 +53,16 @@
 
             <template if="{{ fields | contains('private') }}">
                 <div class="form-row">
-                    <label class="form-label" for="private">Private</label>
+                    <label class="form-label form-label-textarea" for="private">Protected</label>
                     <div class="form-field">
                         <input id="private" type="checkbox" checked="{{ private }}">
+                        <template if="{{ private }}">
+                            <p class="form-warning">
+                                This issue will only be viewable by @chromium.org
+                                and @google.com accounts. Avoid adding
+                                mailing lists in the Reviewers and CC fields.
+                            </p>
+                        </template>
                         <div class="form-error">{{ errors.private }}</div>
                     </div>
                 </div>

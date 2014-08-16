@@ -43,3 +43,8 @@
 .form-error:empty {
     padding: 0;
 }
+
+.form-warning {
+    color: #9FA6AA;
+    font-size: 1em;
+}
