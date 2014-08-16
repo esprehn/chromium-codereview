@@ -14,7 +14,7 @@ User.CURRENT_USER_URL = "/settings";
 User.DETAIL_URL = "/user_popup/{1}";
 User.ISSUE_LIST_URL = "/user/{1}";
 
-User.EMAIL_PATTERN = /([^@]+@[^ ]+) \(([^)]+)\)/;
+User.EMAIL_PATTERN = /^([^@]+@[^ ]+) \((.+?)\)$/;
 User.ISSUES_OPEN_PATTERN = /issues created: (\d+)/;
 User.ISSUES_REVIEW_PATTERN = /issues reviewed: (\d+)/;
 User.XSRF_TOKEN_PATTERN = /xsrfToken = '([^']+)';/;
