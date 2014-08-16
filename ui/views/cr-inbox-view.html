@@ -86,7 +86,7 @@
                     value: "My issues"
                 });
                 this.filter = localStorage.getItem(FILTER_KEY) || this.filter;
-                this.showRecentActivity = localStorage.getItem(SHOW_RECENT_ACTIVITY_KEY) || this.showRecentActivity;
+                this.showRecentActivity = localStorage.getItem(SHOW_RECENT_ACTIVITY_KEY) == "true";
                 this.issues = new IssueList({
                     cached: true,
                     recentActivity: this.showRecentActivity,
