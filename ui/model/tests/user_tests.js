@@ -5,7 +5,7 @@ describe("User", function() {
         User.current = null;
     });
 
-    it("should parse documents on load", function() {
+    it("should parse settings document into current user", function() {
         var html = ' \
             <!DOCTYPE html> \
             <html> \
