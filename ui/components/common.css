@@ -57,6 +57,11 @@ a:hover {
     text-decoration: underline;
 }
 
+select,
+input {
+    margin: 0;
+}
+
 input[type=text] {
     padding: 0.5em;
 }
