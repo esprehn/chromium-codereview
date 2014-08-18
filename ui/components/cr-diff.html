@@ -108,10 +108,10 @@
                 var message = PatchFileMessage.createDraft();
                 message.text = defaultText || "";
                 if (row.classList.contains("remove")) {
-                    message.line = numbers[0].textContent.toNumber();
+                    message.line = numbers[0].getAttribute("value").toNumber();
                     message.left = true;
                 } else {
-                    message.line = numbers[1].textContent.toNumber();
+                    message.line = numbers[1].getAttribute("value").toNumber();
                 }
                 var fileMessage = document.createElement("cr-patch-file-message");
                 fileMessage.message = message;
