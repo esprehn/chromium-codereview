@@ -51,7 +51,7 @@ UserSettings.prototype.save = function()
             var errorData = parseFormErrorData(xhr.response);
             if (!errorData) {
                 // Synchronize the user's name now that we've saved it to the server.
-                return User.loadCurrentUser(true).then(function() {
+                return User.loadCurrentUser().then(function() {
                     return settings;
                 });
             }
@@ -65,7 +65,7 @@ UserSettings.prototype.save = function()
 UserSettings.prototype.createSaveData = function()
 {
     var settings = this;
-    return User.loadCurrentUser(true).then(function(user) {
+    return User.loadCurrentUser().then(function(user) {
         return {
             nickname: settings.name,
             xsrf_token: user.xsrfToken,

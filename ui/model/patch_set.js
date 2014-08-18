@@ -59,7 +59,7 @@ PatchSet.prototype.revert = function(options)
 
 PatchSet.prototype.createRevertData = function(options)
 {
-    return User.loadCurrentUser(true).then(function(user) {
+    return User.loadCurrentUser().then(function(user) {
         return {
             xsrf_token: user.xsrfToken,
             revert_reason: options.reason,

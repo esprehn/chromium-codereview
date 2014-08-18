@@ -166,7 +166,7 @@ Issue.prototype.toggleClosed = function()
         });
     }
     var issue = this;
-    return User.loadCurrentUser(true).then(function(user) {
+    return User.loadCurrentUser().then(function(user) {
         return sendFormData(issue.getCloseUrl(), {
             xsrf_token: user.xsrfToken,
         });
@@ -190,7 +190,7 @@ Issue.prototype.edit = function(options)
 
 Issue.prototype.createEditData = function(options)
 {
-    return User.loadCurrentUser(true).then(function(user) {
+    return User.loadCurrentUser().then(function(user) {
         return {
             xsrf_token: user.xsrfToken,
             subject: options.subject,
@@ -216,7 +216,7 @@ Issue.prototype.publish = function(options)
 Issue.prototype.createPublishData = function(options)
 {
     var issue = this;
-    return User.loadCurrentUser(true).then(function(user) {
+    return User.loadCurrentUser().then(function(user) {
         var message = options.message || "";
         var addAsReviewer = options.addAsReviewer;
         var publishDrafts = options.publishDrafts;
@@ -255,7 +255,7 @@ Issue.prototype.setFlags = function(options)
 Issue.prototype.createFlagsData = function(options)
 {
     var lastPatchsetId = this.patchsets.last().id;
-    return User.loadCurrentUser(true).then(function(user) {
+    return User.loadCurrentUser().then(function(user) {
         var data = {
             xsrf_token: user.xsrfToken,
             last_patchset: lastPatchsetId,

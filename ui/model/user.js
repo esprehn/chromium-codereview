@@ -42,10 +42,8 @@ User.parseCurrentUser = function(document)
     return user;
 };
 
-User.loadCurrentUser = function(refresh)
+User.loadCurrentUser = function()
 {
-    if (User.current && !refresh)
-        return Promise.resolve(User.current);
     return loadDocument(User.CURRENT_USER_URL).then(function(document) {
         return User.parseCurrentUser(document);
     });

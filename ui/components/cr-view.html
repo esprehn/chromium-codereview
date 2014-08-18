@@ -52,7 +52,7 @@
                         self.swapViews(newView);
                         return true;
                     }
-                    User.loadCurrentUser().then(function() {
+                    self.loadCurrentUser().then(function() {
                         self.swapViews(newView);
                     }).catch(function(e) {
                         if (e instanceof XMLHttpRequest && !e.status) {
@@ -65,6 +65,11 @@
                     });
                     return true;
                 });
+            },
+            loadCurrentUser: function() {
+                if (User.current)
+                    return Promise.resolve(User.current);
+                return User.loadCurrentUser();
             },
             swapViews: function(newView) {
                 if (this.activeView)
