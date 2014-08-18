@@ -1,0 +1,181 @@
+
+<link rel="import" href="cr-webcam.html">
+
+<polymer-element name="cr-gif-selfie" attributes="countdown">
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <style>
+            :host {
+                display: flex;
+                flex-direction: column;
+            }
+
+            #viewer,
+            #result {
+                height: 160px;
+            }
+
+            #viewer {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+            }
+
+            #countdown {
+                position: relative;
+                border: 2px solid #fcfcfc;
+                background-color: rgba(255, 255, 255, 0.6);
+                font-size: 3em;
+                padding: 16px;
+                border-radius: 32px;
+            }
+
+            #loading {
+                font-size: 2em;
+            }
+
+            cr-webcam {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+
+            #result {
+                display: none;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+
+            #viewer {
+                margin: 0.5em 16px;
+            }
+
+            #saving,
+            #framecount {
+                text-align: center;
+            }
+
+            .preview #result {
+                display: block;
+            }
+
+            .preview #webcam,
+            .preview #loading,
+            .preview #countdown {
+                display: none;
+            }
+
+            cr-toolbar {
+                justify-content: center;
+            }
+
+            cr-toolbar cr-button:last-child {
+                margin-right: 0;
+            }
+        </style>
+        <div id="viewer">
+            <cr-webcam id="webcam"></cr-webcam>
+            <img id="result">
+            <template if="{{ countdown > 0 }}">
+                <div id="countdown">{{ countdown }}</div>
+            </template>
+            <template if="{{ $.webcam.videoHeight == 0 }}">
+                <div id="loading">Starting...</div>
+            </template>
+        </div>
+        <cr-toolbar>
+            <cr-button on-tap="{{ save }}">Insert</cr-button>
+            <cr-button on-tap="{{ record }}">Record</cr-button>
+        </cr-toolbar>
+        <template if="{{ !countdown && recorder.remainingFrames }}">
+            <div id="framecount">
+                {{ recorder.remainingFrames }} frames left.
+            </div>
+        </template>
+        <template if="{{ state == 'saving' }}">
+            <div id="saving">
+                Saving...
+            </div>
+        </template>
+    </template>
+    <script>
+        Polymer("cr-gif-selfie", {
+            countdown: 0,
+            recorder: null,
+            state: "",
+            showCountdown: function() {
+                var self = this;
+                this.countdown = 4;
+                return new Promise(function(resolve, reject) {
+                    function decrement() {
+                        if (--self.countdown)
+                            setTimeout(decrement, 1000);
+                        else
+                            resolve();
+                    }
+                    decrement();
+                });
+            },
+            record: function() {
+                if (this.state && this.state != "preview")
+                    return Promise.reject(new Error("Invalid state"));
+                var self = this;
+                var webcam = this.$.webcam;
+                var result = this.$.result;
+                var viewer = this.$.viewer;
+                URL.revokeObjectURL(result.src);
+                viewer.classList.remove("preview");
+                this.state = "record";
+                return webcam.start()
+                    .then(this.showCountdown.bind(this))
+                    .then(function() {
+                        self.recorder = new GifRecorder({
+                            webcam: webcam,
+                            width: webcam.videoWidth / 3,
+                            height: webcam.videoHeight / 3
+                        });
+                        return self.recorder.record();
+                    }).then(function(imageUrl) {
+                        webcam.stop();
+                        viewer.classList.add("preview");
+                        self.state = "preview";
+                        result.src = imageUrl;
+                    }).catch(function(e) {
+                        // FIXME: Show an error message.
+                        console.log(e);
+                    });
+            },
+            save: function() {
+                var self = this;
+                if (this.state != "preview")
+                    return Promise.reject(new Error("Invalid state"));
+                var formData = {
+                    type: "base64",
+                    image: this.$.result.src.from("data:image/gif;base64,".length)
+                };
+                this.state = "saving";
+                return sendFormData("https://api.imgur.com/3/upload", formData, {
+                    responseType: "json",
+                    headers: {
+                        "Authorization": "Client-ID 2e727ed5413996b",
+                    }
+                }).then(function(xhr) {
+                    var url = xhr.response.data.link;
+                    self.state = "";
+                    self.fire("gif-save", {
+                        url: url,
+                    });
+                    return url;
+                }).catch(function(e) {
+                    self.state = "";
+                    // FIXME: Show an error message.
+                    console.log(e);
+                });
+            },
+        });
+    </script>
+</polymer-element>

@@ -4,6 +4,7 @@
 <link rel="import" href="cr-dialog.html">
 <link rel="import" href="cr-issue-editor.html">
 <link rel="import" href="cr-toolbar.html">
+<link rel="import" href="cr-gif-selfie.html">
 
 <polymer-element name="cr-issue-publish-dialog" attributes="issue addAsReviewer">
     <template>
@@ -19,6 +20,7 @@
             .issue-publish-field,
             .issue-publish-label {
                 padding: 0.5em 16px;
+                display: flex;
             }
 
             h2 {
@@ -65,6 +67,15 @@
             .message-text {
                 margin-top: 0.5em;
             }
+
+            cr-toolbar label {
+                margin-right: 16px;
+            }
+
+            cr-gif-selfie {
+                min-width: 300px;
+                flex-shrink: 0;
+            }
         </style>
 
         <dialog is="cr-dialog" id="dialog" on-cancel="{{ cancel }}">
@@ -83,6 +94,9 @@
                 <label class="issue-publish-label" for="message">Message</label>
                 <div class="issue-publish-field">
                     <textarea id="message" value="{{ message }}" rows="{{ issue.draftCount | editorHeight }}"></textarea>
+                    <template if="{{ addSelfie }}">
+                        <cr-gif-selfie on-gif-save="{{ handleGifSave }}"></cr-gif-selfie>
+                    </template>
                 </div>
             </fieldset>
 
@@ -134,6 +148,10 @@
                         Add as reviewer
                     </label>
                 </template>
+                <label>
+                    <input type="checkbox" checked="{{ addSelfie }}">
+                    Add a selfie!
+                </label>
             </cr-toolbar>
         </dialog>
     </template>
@@ -146,6 +164,7 @@
             addAsReviewer: true,
             userIsOwner: true,
             draftsVisible: false,
+            addSelfie: false,
             cancel: function(event) {
                 if (this.$.editor.dismissAutocomplete()) {
                     event.preventDefault();
@@ -199,6 +218,10 @@
             },
             editorHeight: function(draftCount) {
                 return draftCount ? 15 : 20;
+            },
+            handleGifSave: function(event) {
+                var text = "\n\nThis is how I feel about this patch: " + event.detail.url;
+                this.message = (this.message + text).trim();
             },
         });
     </script>

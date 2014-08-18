@@ -41,17 +41,21 @@ function loadJSON(url)
     });
 }
 
-function sendFormData(url, data)
+function sendFormData(url, data, options)
 {
     return new Promise(function(fulfill, reject) {
+        options = options || {};
         var formData = Object.keys(data).map(function(key) {
             return key + "=" + encodeURIComponent(data[key]);
         }).join("&");
 
         var xhr = new XMLHttpRequest();
-        xhr.responseType = "document";
+        xhr.responseType = options.responseType || "document";
         xhr.open("POST", url);
         xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        Object.keys(options.headers || {}, function(name, value) {
+            xhr.setRequestHeader(name, value);
+        });
         xhr.send(formData);
         xhr.onload = function() {
             fulfill(xhr);

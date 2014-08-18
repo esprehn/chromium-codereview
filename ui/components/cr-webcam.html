@@ -1,0 +1,83 @@
+
+<polymer-element name="cr-webcam">
+    <template>
+        <style>
+            :host {
+                display: flex;
+            }
+
+            video {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex: 1;
+            }
+        </style>
+        <video id="video" autoplay></video>
+    </template>
+    <script>
+        Polymer("cr-webcam", {
+            created: function() {
+                this.stream = Promise.reject(new Error("detached"));
+                this.videoWidth = 0;
+                this.videoHeight = 0;
+            },
+            stop: function() {
+                URL.revokeObjectURL(this.$.video.src);
+                this.stream.then(function(stream) {
+                    stream.stop();
+                });
+                this.stream = Promise.reject(new Error("detached"));
+                this.videoWidth = 0;
+                this.videoHeight = 0;
+            },
+            start: function() {
+                if (this.videoHeight)
+                    return this.stream;
+                this.stream = this.openStream()
+                    .then(this.connectStream.bind(this))
+                    .catch(function(e) {
+                        // FIXME: Show an error message.
+                        console.log(e);
+                    });
+                return this.stream;
+            },
+            attached: function() {
+                this.start();
+            },
+            detached: function() {
+                this.stop();
+            },
+            openStream: function() {
+                var self = this;
+                this.$.video.style.visibility = "hidden";
+                return new Promise(function(resolve, reject) {
+                    navigator.webkitGetUserMedia({video: true}, function(stream) {
+                        resolve(stream);
+                    }, function(e) {
+                        reject(e);
+                    });
+                });
+            },
+            connectStream: function(stream) {
+                var self = this;
+                var video = this.$.video;
+                video.src = URL.createObjectURL(stream);
+                return new Promise(function(resolve, reject) {
+                    video.onplay = function() {
+                        self.$.video.style.visibility = "";
+                        self.videoWidth = video.videoWidth;
+                        self.videoHeight = video.videoHeight;
+                        resolve(stream);
+                    };
+                });
+            },
+            captureFrame: function(context, width, height) {
+                var video = this.$.video;
+                context.drawImage(video,
+                    0, 0, this.videoWidth, this.videoHeight,
+                    0, 0, width, height);
+            },
+        });
+    </script>
+</polymer-element>
