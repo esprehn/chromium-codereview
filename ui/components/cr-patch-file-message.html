@@ -87,6 +87,8 @@
             expanded: false,
             text: "",
             expand: function() {
+                if (this.expanded)
+                    return;
                 this.text = this.message.text;
                 this.expanded = true;
                 this.saving = false;

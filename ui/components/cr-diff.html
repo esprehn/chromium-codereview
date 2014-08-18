@@ -100,8 +100,7 @@
                     return fileMessage.message.draft;
                 });
                 if (existingDraft) {
-                    if (!existingDraft.expanded)
-                        existingDraft.expand();
+                    existingDraft.expand();
                     existingDraft.focusInput();
                     return;
                 }
