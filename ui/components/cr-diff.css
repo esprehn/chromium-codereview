@@ -8,6 +8,10 @@
     background-color: #fef;
 }
 
+.line-number::before {
+    content: attr(value);
+}
+
 .remove .text {
     background-color: #fdd;
 }

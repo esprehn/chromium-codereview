@@ -132,9 +132,9 @@ DiffBuilder.prototype.createLineNumber = function(line, number, type)
     var div = document.createElement("div");
     div.className = "line-number";
     if (line.type == "both" || line.type == type)
-        div.textContent = number;
+        div.setAttribute("value", number);
     else if (line.type == "header")
-        div.textContent = "@@";
+        div.setAttribute("value", "@@");
     return div;
 };
 
