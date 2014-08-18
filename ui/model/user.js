@@ -15,6 +15,7 @@ User.DETAIL_URL = "/user_popup/{1}";
 User.ISSUE_LIST_URL = "/user/{1}";
 
 User.EMAIL_PATTERN = /^([^@]+@[^ ]+) \((.+?)\)$/;
+User.EMAIL_SUFFIX_PATTERN = /(\+[^@]+)?@.*/;
 User.ISSUES_OPEN_PATTERN = /issues created: (\d+)/;
 User.ISSUES_REVIEW_PATTERN = /issues reviewed: (\d+)/;
 User.XSRF_TOKEN_PATTERN = /xsrfToken = '([^']+)';/;
@@ -62,7 +63,7 @@ User.forMailingListEmail = function(email)
     // often use their normal user name just with the + part added.
     if (User.current && User.current.email === email)
         return User.current;
-    var name = email.remove(/(\+[^@]+)?@.*/);
+    var name = email.remove(User.EMAIL_SUFFIX_PATTERN);
     return new User(name, email, name);
 };
 
