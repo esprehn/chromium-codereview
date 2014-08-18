@@ -39,7 +39,7 @@
 
         <div class="message-header">
             <div class="message-title">
-                <div class="message-author">
+                <div class="message-author" title="{{ message.author.email }}">
                     <template if="{{ message.draft }}">
                         (Draft)
                     </template>

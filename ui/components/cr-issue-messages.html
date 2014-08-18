@@ -26,7 +26,7 @@
             <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval, selected: message.sequence == selectionId } | tokenList }}" active?="{{ message.sequence == activeId }}">
                 <div id="message-{{ message.sequence }}" class="message-header polymer-ui-collapsible-header" on-tap="{{ handleHeaderTap }}">
                     <div class="message-title">
-                        <div class="message-author">{{ message.author.displayName }}</div>
+                        <div class="message-author" title="{{ message.author.email }}">{{ message.author.displayName }}</div>
                         <div class="message-preview">{{ message.text | messagePreview }}</div>
                     </div>
                     <div class="message-date">
