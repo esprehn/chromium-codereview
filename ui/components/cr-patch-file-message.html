@@ -55,6 +55,11 @@
                 <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
             </div>
         </template>
+        <template if="{{ !message.draft }}">
+            <cr-toolbar>
+                <cr-action on-tap="{{ reply }}">Reply</cr-action>
+            </cr-toolbar>
+        </template>
         <template if="{{ message.draft }}">
             <template if="{{ !expanded }}">
                 <cr-toolbar>
@@ -85,6 +90,9 @@
                 this.text = this.message.text;
                 this.expanded = true;
                 this.saving = false;
+            },
+            reply: function() {
+                this.fire("file-message-reply");
             },
             expandedChanged: function() {
                 this.async(this.focusInput);

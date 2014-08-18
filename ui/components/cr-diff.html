@@ -16,6 +16,7 @@
             on-file-message-save="{{ saveDraft }}"
             on-file-message-discard="{{ discardDraft }}"
             on-file-message-cancel="{{ cancelDraft }}"
+            on-file-message-reply="{{ replyDraft }}"
             on-tap="{{ handleTap }}"></div>
     </template>
     <script>
@@ -35,35 +36,7 @@
                 if (!element.classList.contains("line-number"))
                     return;
                 var row = element.parentNode;
-                if (row.classList.contains("header"))
-                    return;
-                if (!row.nextSibling || !row.nextSibling.classList.contains("messages")) {
-                    var messages = document.createElement("div");
-                    messages.className = "messages";
-                    row.parentNode.insertBefore(messages, row.nextSibling);
-                }
-                var messages = row.nextSibling.querySelectorAll("cr-patch-file-message").array();
-                var existingDraft = messages.find(function(fileMessage) {
-                    return fileMessage.message.draft;
-                });
-                if (existingDraft) {
-                    if (!existingDraft.expanded)
-                        existingDraft.expand();
-                    existingDraft.focusInput();
-                    return;
-                }
-                var numbers = row.querySelectorAll(".line-number");
-                var message = PatchFileMessage.createDraft();
-                if (row.classList.contains("remove")) {
-                    message.line = numbers[0].textContent.toNumber();
-                    message.left = true;
-                } else {
-                    message.line = numbers[1].textContent.toNumber();
-                }
-                var fileMessage = document.createElement("cr-patch-file-message");
-                fileMessage.message = message;
-                fileMessage.expanded = true;
-                row.nextSibling.appendChild(fileMessage);
+                this.addMessage(row);
             },
             saveDraft: function(event) {
                 var self = this;
@@ -101,6 +74,50 @@
                     self.fire("butterbar-update");
                     console.log(e);
                 });
+            },
+            replyDraft: function(event) {
+                var message = event.target.message;
+                // FIXME: This is code duplication with <cr-issue-message-reply>.
+                var date = message.date.utc(true).format("On {yyyy}/{MM}/{dd} at {HH}:{mm}:{ss}");
+                var value = date + ", " + message.author.name + " wrote:\n";
+                message.text.split("\n").forEach(function(line) {
+                    value += "> " + line + "\n";
+                });
+                value += "\n";
+                var row = event.target.parentNode.previousSibling;
+                this.addMessage(row, value);
+            },
+            addMessage: function(row, defaultText) {
+                if (row.classList.contains("header"))
+                    return;
+                if (!row.nextSibling || !row.nextSibling.classList.contains("messages")) {
+                    var messages = document.createElement("div");
+                    messages.className = "messages";
+                    row.parentNode.insertBefore(messages, row.nextSibling);
+                }
+                var messages = row.nextSibling.querySelectorAll("cr-patch-file-message").array();
+                var existingDraft = messages.find(function(fileMessage) {
+                    return fileMessage.message.draft;
+                });
+                if (existingDraft) {
+                    if (!existingDraft.expanded)
+                        existingDraft.expand();
+                    existingDraft.focusInput();
+                    return;
+                }
+                var numbers = row.querySelectorAll(".line-number");
+                var message = PatchFileMessage.createDraft();
+                message.text = defaultText || "";
+                if (row.classList.contains("remove")) {
+                    message.line = numbers[0].textContent.toNumber();
+                    message.left = true;
+                } else {
+                    message.line = numbers[1].textContent.toNumber();
+                }
+                var fileMessage = document.createElement("cr-patch-file-message");
+                fileMessage.message = message;
+                fileMessage.expand();
+                row.nextSibling.appendChild(fileMessage);
             },
             showDiff: function() {
                 var self = this;
