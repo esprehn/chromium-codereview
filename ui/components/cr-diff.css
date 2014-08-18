@@ -22,7 +22,7 @@
 
 .text {
     flex: 1;
-    border-left: 1px solid #E4E2E4;
+    border-left: 1px solid #dcdcdc;
 }
 
 .text,
@@ -60,13 +60,13 @@ cr-diff-image {
 }
 
 .messages {
-    border: 1px solid #ccc;
+    border: 1px solid #dcdcdc;
     margin-left: calc(6em + 32px);
 }
 
 cr-patch-file-message {
     background-color: #ffd;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 cr-patch-file-message:last-child {

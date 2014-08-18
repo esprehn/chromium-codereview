@@ -45,7 +45,7 @@
 
 cr-diff[active] {
     margin: 0.25em 16px;
-    border: 1px solid #ccc;
+    border: 1px solid #dcdcdc;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
     border-radius: 2px;
     overflow: hidden;
