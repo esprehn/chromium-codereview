@@ -18,21 +18,23 @@
     <script>
         Polymer("cr-webcam", {
             created: function() {
-                this.stream = Promise.reject(new Error("detached"));
+                this.stream = null;
+                this.rawStream = null;
+                this.active = false;
                 this.videoWidth = 0;
                 this.videoHeight = 0;
             },
             stop: function() {
                 URL.revokeObjectURL(this.$.video.src);
-                this.stream.then(function(stream) {
-                    stream.stop();
-                });
-                this.stream = Promise.reject(new Error("detached"));
+                if (this.rawStream)
+                    this.rawStream.stop();
+                this.rawStream = null;
+                this.stream = null;
                 this.videoWidth = 0;
                 this.videoHeight = 0;
             },
             start: function() {
-                if (this.videoHeight)
+                if (this.stream)
                     return this.stream;
                 this.stream = this.openStream()
                     .then(this.connectStream.bind(this))
@@ -43,9 +45,11 @@
                 return this.stream;
             },
             attached: function() {
+                this.active = true;
                 this.start();
             },
             detached: function() {
+                this.active = false;
                 this.stop();
             },
             openStream: function() {
@@ -53,6 +57,9 @@
                 this.$.video.style.visibility = "hidden";
                 return new Promise(function(resolve, reject) {
                     navigator.webkitGetUserMedia({video: true}, function(stream) {
+                        self.rawStream = stream;
+                        if (!self.active)
+                            stream.stop();
                         resolve(stream);
                     }, function(e) {
                         reject(e);
