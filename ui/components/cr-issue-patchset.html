@@ -41,7 +41,7 @@
             </div>
         </template>
         <div id="try-job-results">
-            <template if="{{ patchset.files.length && ((patchset.mostRecent && !patchset.commit) || (!patchset.mostRecent && patchset.tryJobResults.length)) }}">
+            <template if="{{ patchset.files.length && ((patchset.mostRecent && !patchset.commit && (!patchset.issue.closed || patchset.tryJobResults.length)) || (!patchset.mostRecent && patchset.tryJobResults.length)) }}">
                 <h2>Try job results</h2>
                 <cr-try-results results="{{ patchset.tryJobResults }}"></cr-try-results>
                 <template if="{{ patchset.mostRecent && !patchset.issue.closed }}">
