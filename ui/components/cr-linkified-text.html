@@ -9,6 +9,10 @@
             word-wrap: break-word;
             font-family: Monaco, monospace;
         }
+
+        img {
+            margin: 0.5em 16px;
+        }
     </style><div id="output"></div></template>
     <script>
     Polymer("cr-linkified-text", {
@@ -23,10 +27,16 @@
                 return;
 
             var parser = new LinkTextParser(function(text, href) {
-                if (href)
+                if (href && href.startsWith("http://i.imgur.com/")) {
+                    var div = document.createElement("div");
+                    var img = div.appendChild(document.createElement("img"));
+                    img.src = href;
+                    output.appendChild(div);
+                } else if (href) {
                     output.appendChild(createAnchor(href, text));
-                else
+                } else {
                     output.appendChild(document.createTextNode(text));
+                }
             });
             parser.parse(newValue);
         },
