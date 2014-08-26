@@ -27,8 +27,8 @@
 <script src="../model/user.js"></script>
 <script src="../model/user_settings.js"></script>
 
+<link rel="import" href="cr-title-handler.html">
 <link rel="import" href="cr-view-handler.html">
-<link rel="import" href="cr-document-title.html">
 
 <link rel="import" href="../views/cr-inbox-view.html">
 <link rel="import" href="../views/cr-issue-view.html">
@@ -38,6 +38,7 @@
 <polymer-element name="cr-app" on-navigate="{{ handleNavigate }}">
     <template>
         <cr-view-handler></cr-view-handler>
+        <cr-title-handler titlesuffix="Code Review"></cr-title-handler>
         <link rel="stylesheet" href="common.css">
         <style>
             :host { display: block; }
@@ -108,7 +109,6 @@
                 <a href="/settings">Settings</a>
             </div>
         </header>
-        <cr-document-title titlesuffix="Code Review"></cr-document-title>
         <app-router id="router" trailingSlash="ignore">
             <app-route path="/" element="cr-inbox-view"></app-route>
             <app-route path="/settings" element="cr-settings-view"></app-route>
