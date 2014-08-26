@@ -2,6 +2,8 @@
 <script src="../lib/sugar.js"></script>
 <script src="../../bower_components/gif.js/dist/gif.js"></script>
 
+<link rel="import" href="../../bower_components/app-router/app-router.html">
+
 <script src="../base.js"></script>
 <script src="../diff_builder.js"></script>
 <script src="../diff_parser.js"></script>
@@ -25,8 +27,6 @@
 <script src="../model/user.js"></script>
 <script src="../model/user_settings.js"></script>
 
-<link rel="import" href="cr-route.html">
-<link rel="import" href="cr-view.html">
 <link rel="import" href="cr-view-handler.html">
 <link rel="import" href="cr-document-title.html">
 
@@ -36,7 +36,7 @@
 <link rel="import" href="../views/cr-settings-view.html">
 <link rel="import" href="../views/cr-user-view.html">
 
-<polymer-element name="cr-app" noscript>
+<polymer-element name="cr-app" on-navigate="{{ handleNavigate }}">
     <template>
         <cr-view-handler></cr-view-handler>
         <link rel="stylesheet" href="common.css">
@@ -87,6 +87,15 @@
             header img {
                 width: 25px;
             }
+
+            app-router,
+            active-route {
+                display: block;
+            }
+
+            app-route {
+                display: none;
+            }
         </style>
         <header>
             <div class="title">
@@ -101,12 +110,45 @@
             </div>
         </header>
         <cr-document-title titlesuffix="Code Review"></cr-document-title>
-        <cr-view pathprefix="/static/app">
-            <cr-route path="/" element="cr-inbox-view"></cr-route>
-            <cr-route path="/login" element="cr-login-view"></cr-route>
-            <cr-route path="/settings" element="cr-settings-view"></cr-route>
-            <cr-route path="/user/:username" element="cr-user-view"></cr-route>
-            <cr-route path="/:issueid" element="cr-issue-view"></cr-route>
+        <app-router id="router" trailingSlash="ignore">
+            <app-route path="/" element="cr-inbox-view"></app-route>
+            <app-route path="/login" element="cr-login-view"></app-route>
+            <app-route path="/settings" element="cr-settings-view"></app-route>
+            <app-route path="/user/:username" element="cr-user-view"></app-route>
+            <app-route path="/:issueId" element="cr-issue-view"></app-route>
         </cr-view>
     </template>
+    <script>
+        Polymer({
+            attached: function() {
+                this.replaceInitialUrl();
+            },
+            replaceInitialUrl: function() {
+                var self = this;
+                var path = window.location.pathname + window.location.search + window.location.hash;
+                path = path.replace("/static/app", "") || "/";
+                window.history.replaceState(null, null, path);
+                if (path.startsWith("/login")) {
+                    this.$.router.go();
+                    return;
+                }
+                User.loadCurrentUser().then(function() {
+                    self.$.router.go();
+                }).catch(function(e) {
+                    if (e instanceof XMLHttpRequest && !e.status) {
+                        self.asyncFire("navigate", {
+                            url: "/login#redirect=" + path,
+                        });
+                    }
+                    // FIXME: Handle errors.
+                    console.log(e);
+                });
+            },
+            handleNavigate: function(event) {
+                if (window.location.pathname != event.detail.url)
+                    window.history.pushState(null, null, event.detail.url);
+                this.$.router.go();
+            },
+        });
+    </script>
 </polymer-element>

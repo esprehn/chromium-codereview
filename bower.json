@@ -16,6 +16,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^0.3.0",
     "polymer-ui-collapsible": "Polymer/polymer-ui-collapsible#^0.3.0",
-    "gif.js": "~0.1.6"
+    "gif.js": "~0.1.6",
+    "app-router": "~0.6.2"
   }
 }

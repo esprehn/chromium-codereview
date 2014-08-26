@@ -22,14 +22,15 @@
                 // FIXME: Must redirect through /static/app because of some strangeness
                 // with extension where the webNavigation handlers aren't called on the
                 // redirect that is issued after login.
+                var hash = (window.location.hash || "#").from(1);
+                var redirect = Object.fromQueryString(hash).redirect || "";
                 var url = window.location.protocol
                     + "//"
                     + window.location.hostname
                     + window.location.port
                     + "/static/app"
-                    + window.location.hash.replace("#", "");
+                    + redirect;
                 this.loginUrl = REDIRECT_URL.assign(encodeURIComponent(url));
-                console.log(url);
             },
         });
     })();
