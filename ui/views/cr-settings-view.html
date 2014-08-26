@@ -1,16 +1,20 @@
 
 <link rel="import" href="../components/cr-butterbar.html">
 <link rel="import" href="../components/cr-settings-editor.html">
+<link rel="import" href="../components/cr-login-handler.html">
 
 <polymer-element name="cr-settings-view">
     <template>
+        <cr-login-handler on-user-loaded="{{ loadSettings }}" redirect></cr-login-handler>
         <link rel="stylesheet" href="../components/common.css">
         <link rel="stylesheet" href="../components/forms.css">
         <style>
             :host { display: block; }
         </style>
         <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
-        <h1 class="app-header">Settings for {{ user.email }}</h1>
+        <template if="{{ user.email }}">
+            <h1 class="app-header">Settings for {{ user.email }}</h1>
+        </template>
         <template if="{{ settings }}">
             <cr-settings-editor settings="{{ settings }}" disabled="{{ disabled }}" errors="{{ errors }}"></cr-settings-editor>
             <cr-toolbar>
@@ -25,7 +29,7 @@
             butterbarMessage: "",
             disabled: false,
             errors: {},
-            attached: function() {
+            loadSettings: function() {
                 var self = this;
                 var settings = new UserSettings();
                 this.user = User.current;

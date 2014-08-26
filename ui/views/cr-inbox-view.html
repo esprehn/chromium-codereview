@@ -1,9 +1,11 @@
 
 <link rel="import" href="../components/cr-butterbar.html">
 <link rel="import" href="../components/cr-issue-inbox.html">
+<link rel="import" href="../components/cr-login-handler.html">
 
 <polymer-element name="cr-inbox-view">
     <template>
+        <cr-login-handler on-user-loaded="{{ loadInbox }}" redirect></cr-login-handler>
         <link rel="stylesheet" href="../components/common.css">
         <style>
             :host { display: block; }
@@ -81,7 +83,7 @@
             loading: true,
             failed: false,
             butterbarMessage: "",
-            attached: function() {
+            loadInbox: function() {
                 this.fire("title-change", {
                     value: "My issues"
                 });

@@ -32,7 +32,6 @@
 
 <link rel="import" href="../views/cr-inbox-view.html">
 <link rel="import" href="../views/cr-issue-view.html">
-<link rel="import" href="../views/cr-login-view.html">
 <link rel="import" href="../views/cr-settings-view.html">
 <link rel="import" href="../views/cr-user-view.html">
 
@@ -112,7 +111,6 @@
         <cr-document-title titlesuffix="Code Review"></cr-document-title>
         <app-router id="router" trailingSlash="ignore">
             <app-route path="/" element="cr-inbox-view"></app-route>
-            <app-route path="/login" element="cr-login-view"></app-route>
             <app-route path="/settings" element="cr-settings-view"></app-route>
             <app-route path="/user/:username" element="cr-user-view"></app-route>
             <app-route path="/:issueId" element="cr-issue-view"></app-route>
@@ -128,21 +126,7 @@
                 var path = window.location.pathname + window.location.search + window.location.hash;
                 path = path.replace("/static/app", "") || "/";
                 window.history.replaceState(null, null, path);
-                if (path.startsWith("/login")) {
-                    this.$.router.go();
-                    return;
-                }
-                User.loadCurrentUser().then(function() {
-                    self.$.router.go();
-                }).catch(function(e) {
-                    if (e instanceof XMLHttpRequest && !e.status) {
-                        self.asyncFire("navigate", {
-                            url: "/login#redirect=" + path,
-                        });
-                    }
-                    // FIXME: Handle errors.
-                    console.log(e);
-                });
+                self.$.router.go();
             },
             handleNavigate: function(event) {
                 if (window.location.pathname != event.detail.url)
