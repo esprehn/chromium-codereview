@@ -130,8 +130,8 @@
                     self.loading = false;
                     if (!self.active)
                         return;
-                    var builder = new DiffBuilder(diff, self.file, self.$.output);
-                    builder.createDiff();
+                    var builder = new DiffBuilder(self.file, self.$.output);
+                    builder.emitDiff(diff);
                 }).catch(function(e) {
                     self.loading = false;
                     self.active = false;

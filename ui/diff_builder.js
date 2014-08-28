@@ -1,8 +1,7 @@
 "use strict";
 
-function DiffBuilder(diff, file, output)
+function DiffBuilder(file, output)
 {
-    this.diff = diff;
     this.file = file;
     this.language = file.language;
     this.output = output;
@@ -15,23 +14,23 @@ DiffBuilder.prototype.reset = function()
     this.highlightData = null;
 };
 
-DiffBuilder.prototype.createDiff = function()
+DiffBuilder.prototype.emitDiff = function(diff)
 {
-    if (this.diff.isImage) {
+    if (diff.isImage) {
         var image = document.createElement("cr-diff-image");
         image.file = this.file;
         this.output.appendChild(image);
         return;
     }
-    if (this.diff.from)
-        this.emitMoveHeader();
-    var groups = this.diff.groups;
+    if (diff.from)
+        this.emitMoveHeader(diff.from);
+    var groups = diff.groups;
     for (var i = 0; i < groups.length; ++i)
         this.emitGroup(groups[i]);
 };
 
 // Moves and copies need a header at the start of the file.
-DiffBuilder.prototype.emitMoveHeader = function()
+DiffBuilder.prototype.emitMoveHeader = function(text)
 {
     var section = document.createElement("div");
     this.output.appendChild(section);
@@ -42,7 +41,7 @@ DiffBuilder.prototype.emitMoveHeader = function()
         contextLinesStart: 0,
         contextLinesEnd: 0,
         context: false,
-        text: this.diff.from,
+        text: text,
     });
 };
 
