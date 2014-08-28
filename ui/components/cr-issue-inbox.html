@@ -6,32 +6,32 @@
         <link rel="stylesheet" href="common.css">
 
         <template if="{{ issues.draft.length }}">
-            <h1>Issues with Drafts</h2>
+            <h1>Issues with Drafts</h1>
             <cr-issue-inbox-section issues="{{ issues.draft }}" weeks="{{ weeks }}"></cr-issue-inbox-section>
         </template>
 
         <template if="{{ issues.outgoing.length }}">
-            <h1>Outgoing</h2>
+            <h1>Outgoing</h1>
             <cr-issue-inbox-section issues="{{ issues.outgoing }}" weeks="{{ weeks }}"></cr-issue-inbox-section>
         </template>
 
         <template if="{{ issues.unsent.length }}">
-            <h1>Unsent</h2>
+            <h1>Unsent</h1>
             <cr-issue-inbox-section issues="{{ issues.unsent }}" weeks="{{ weeks }}"></cr-issue-inbox-section>
         </template>
 
         <template if="{{ issues.incoming.length }}">
-            <h1>Incoming</h2>
+            <h1>Incoming</h1>
             <cr-issue-inbox-section issues="{{ issues.incoming }}" weeks="{{ weeks }}"></cr-issue-inbox-section>
         </template>
 
         <template if="{{ issues.cc.length }}">
-            <h1>CCed</h2>
+            <h1>CCed</h1>
             <cr-issue-inbox-section issues="{{ issues.cc }}" weeks="{{ weeks }}"></cr-issue-inbox-section>
         </template>
 
         <template if="{{ issues.closed.length }}">
-            <h1>Recently Closed</h2>
+            <h1>Recently Closed</h1>
             <cr-issue-inbox-section issues="{{ issues.closed }}" weeks="{{ weeks }}"></cr-issue-inbox-section>
         </template>
     </template>

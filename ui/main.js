@@ -12,7 +12,6 @@ window.addEventListener("load", function() {
         "<title>Chromium Code Review</title>" +
         "<script src='" + resolveUrl("bower_components/platform/platform.js") + "'></script>" +
         "<script>EXTENSION_URL = '" + chrome.extension.getURL("") + "';</script>" +
-        "<link rel='import' href='" + resolveUrl("bower_components/polymer/polymer.html") + "'>" +
         "<link rel='import' href='" + resolveUrl("ui/components/cr-app.html") + "'>" +
         "<link rel='stylesheet' href='" + resolveUrl("ui/style.css") + "'>" +
         "<cr-app></cr-app>"
