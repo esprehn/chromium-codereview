@@ -75,6 +75,12 @@
                 this.olderPatchsets = value.to(-1);
                 this.currentPatchset = value.last();
                 this.showOlderPatchsets = false;
+                if (this.currentPatchset) {
+                    this.currentPatchset.loadDetails().catch(function(e) {
+                        // FIXME: We should show an error message.
+                        console.log(e);
+                    });
+                }
             },
             pluralize: function(text, count) {
                 if (!count)
@@ -85,6 +91,12 @@
             },
             handleShowOlderPatchsets: function() {
                 this.showOlderPatchsets = true;
+                this.olderPatchsets.forEach(function(patchset) {
+                    patchset.loadDetails().catch(function(e) {
+                        // FIXME: We should show an error message.
+                        console.log(e);
+                    });
+                });
             },
             handleExpandKey: function(event) {
                 event.preventDefault();

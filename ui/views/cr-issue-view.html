@@ -53,15 +53,6 @@
                     self.fire("title-change", {
                         value: "Issue " + issue.id + ": " + issue.subject
                     });
-                    // FIXME: We should load patchsets on demand, unfortunately we can't
-                    // get the patchset titles from the JSON we load. We could switch to
-                    // screen scraping the issue page but that would be really slow.
-                    issue.patchsets.forEach(function(patchset) {
-                        patchset.loadDetails().catch(function(e) {
-                            // FIXME: We should show an error message.
-                            console.log(e);
-                        });
-                    });
                     self.issue = issue;
                 }).catch(function(error) {
                     console.log(error);
