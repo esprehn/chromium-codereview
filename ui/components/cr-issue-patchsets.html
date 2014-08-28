@@ -46,16 +46,18 @@
         </template>
 
         <div class="patchsets">
-            <template if="{{ showOlderPatchsets }}">
-                <template repeat="{{ patchset in olderPatchsets }}">
-                    <polymer-ui-collapsible class="patchset" active="{{ patchset.active }}">
-                        <cr-patchset-header class="polymer-ui-collapsible-header" patchset="{{ patchset }}"></cr-patchset-header>
-                        <template if="{{ patchset.active }}">
-                            <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
-                        </template>
-                    </polymer-ui-collapsible>
+            <polymer-ui-collapsible active="{{ showOlderPatchsets }}">
+                <template if="{{ showOlderPatchsets }}">
+                    <template repeat="{{ patchset in olderPatchsets }}">
+                        <polymer-ui-collapsible class="patchset" active="{{ patchset.active }}">
+                            <cr-patchset-header class="polymer-ui-collapsible-header" patchset="{{ patchset }}"></cr-patchset-header>
+                            <template if="{{ patchset.active }}">
+                                <cr-issue-patchset patchset="{{ patchset }}"></cr-issue-patchset>
+                            </template>
+                        </polymer-ui-collapsible>
+                    </template>
                 </template>
-            </template>
+            </polymer-ui-collapsible>
             <polymer-ui-collapsible class="patchset" active>
                 <cr-patchset-header class="polymer-ui-collapsible-header" patchset="{{ currentPatchset }}"></cr-patchset-header>
                 <cr-issue-patchset patchset="{{ currentPatchset }}"></cr-issue-patchset>
