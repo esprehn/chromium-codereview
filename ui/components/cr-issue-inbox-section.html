@@ -15,12 +15,14 @@
 
         <cr-issue-list issues="{{ visibleIssues }}"></cr-issue-list>
         <template if="{{ hiddenIssues.length }}">
-            <polymer-ui-collapsible>
+            <polymer-ui-collapsible active="{{ showingHiddenIssues }}">
                 <cr-action class="polymer-ui-collapsible-header">
                     {{ hiddenIssues.length }} older
                     {{ "issue" | pluralize(hiddenIssues.length) }}
                 </cr-action>
-                <cr-issue-list issues="{{ hiddenIssues }}"></cr-issue-list>
+                <template if="{{ showingHiddenIssues }}">
+                    <cr-issue-list issues="{{ hiddenIssues }}"></cr-issue-list>
+                </template>
             </polymer-ui-collapsible>
         </template>
     </template>
@@ -30,6 +32,7 @@
             issues: null,
             visibleIssues: [],
             hiddenIssues: [],
+            showingHiddenIssues: false,
             computed: {
                 state: "[issues, weeks]",
             },
