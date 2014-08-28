@@ -116,10 +116,12 @@ DiffBuilder.prototype.createContextAction = function(section, line)
     action.onclick = function() {
         self.file.loadContext(line.contextLinesStart, line.contextLinesEnd).then(function(lines) {
             self.reset();
-            section.innerHTML = "";
+            var newSection = document.createElement("div");
             lines.forEach(function(line) {
-                self.emitLine(section, line);
+                self.emitLine(newSection, line);
             });
+            self.output.insertBefore(newSection, section);
+            section.remove();
         }).catch(function(e) {
             console.log(e);
         });
