@@ -49,11 +49,12 @@ User.loadCurrentUser = function(options)
 {
     if (User.currentPromise)
         return User.currentPromise;
-    if (options.cached && User.current)
+    if (options && options.cached && User.current)
         return Promise.resolve(User.current);
     User.currentPromise = loadDocument(User.CURRENT_USER_URL).then(function(document) {
-        User.currentPromise = null;
         return User.parseCurrentUser(document);
+    }).either(function(e) {
+        User.currentPromise = null;
     });
     return User.currentPromise;
 };
