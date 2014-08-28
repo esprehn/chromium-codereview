@@ -77,15 +77,7 @@ DiffParser.prototype.parseFile = function()
         }
 
         var groupType = type;
-        var line = {
-            type: type,
-            beforeNumber: 0,
-            afterNumber: 0,
-            contextLinesStart: 0,
-            contextLinesEnd: 0,
-            context: false,
-            text: "",
-        };
+        var line = new DiffLine(type);
 
         if (groupType == "header") {
             var matchedHeader = this.takeLine().match(DiffParser.HEADER_PATTERN);
@@ -134,15 +126,12 @@ DiffParser.prototype.parseFile = function()
 
     // Always have a header at the end of the file to allow an "Expand context"
     // link to show the rest of the file after the last group.
-    groups.push([{
-        type: "header",
-        beforeNumber: 0,
-        afterNumber: 0,
-        contextLinesStart: currentBeforeLineNumber + deltaOffset,
-        contextLinesEnd: Number.MAX_SAFE_INTEGER,
-        context: true,
-        text: "",
-    }]);
+    var endLine = new DiffLine("header");
+    endLine.contextLinesStart = currentBeforeLineNumber + deltaOffset;
+    endLine.contextLinesEnd = Number.MAX_SAFE_INTEGER;
+    endLine.context = true;
+    groups.push([endLine]);
+
     return groups;
 };
 
