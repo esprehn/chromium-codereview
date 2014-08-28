@@ -65,4 +65,5 @@ if (!String.prototype.contains) {
 
 Promise.prototype.either = function(fn) {
     this.then(fn, fn);
+    return this;
 };
