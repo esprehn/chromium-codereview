@@ -1,10 +1,8 @@
 
 <link rel="import" href="../components/cr-issue.html">
-<link rel="import" href="../components/cr-login-handler.html">
 
 <polymer-element name="cr-issue-view" attributes="issueId">
     <template>
-        <cr-login-handler on-user-loaded="{{ loadIssue }}" redirect></cr-login-handler>
         <style>
             :host { display: block; }
 
@@ -39,6 +37,12 @@
         Polymer("cr-issue-view", {
             issue: null,
             issueId: 0,
+            attached: function() {
+                var self = this;
+                User.loadCurrentUser({cached: true}).either(function() {
+                    self.loadIssue();
+                });
+            },
             loadIssue: function() {
                 var self = this;
                 this.fire("title-change", {

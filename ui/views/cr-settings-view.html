@@ -1,11 +1,9 @@
 
 <link rel="import" href="../components/cr-butterbar.html">
 <link rel="import" href="../components/cr-settings-editor.html">
-<link rel="import" href="../components/cr-login-handler.html">
 
 <polymer-element name="cr-settings-view">
     <template>
-        <cr-login-handler on-user-loaded="{{ loadSettings }}" redirect></cr-login-handler>
         <link rel="stylesheet" href="../components/common.css">
         <link rel="stylesheet" href="../components/forms.css">
         <style>
@@ -29,6 +27,14 @@
             butterbarMessage: "",
             disabled: false,
             errors: {},
+            attached: function() {
+                var self = this;
+                User.loadCurrentUser({cached: true}).then(function() {
+                    self.loadSettings();
+                }).catch(function(e) {
+                    self.fire("login");
+                });
+            },
             loadSettings: function() {
                 var self = this;
                 var settings = new UserSettings();

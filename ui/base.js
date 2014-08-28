@@ -62,3 +62,7 @@ if (!String.prototype.contains) {
         return this.indexOf(text) != -1;
     };
 }
+
+Promise.prototype.either = function(fn) {
+    this.then(fn, fn);
+};

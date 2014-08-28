@@ -27,6 +27,7 @@
 <script src="../model/user.js"></script>
 <script src="../model/user_settings.js"></script>
 
+<link rel="import" href="cr-action.html">
 <link rel="import" href="cr-title-handler.html">
 <link rel="import" href="cr-view-handler.html">
 
@@ -35,7 +36,7 @@
 <link rel="import" href="../views/cr-settings-view.html">
 <link rel="import" href="../views/cr-user-view.html">
 
-<polymer-element name="cr-app" on-navigate="{{ handleNavigate }}">
+<polymer-element name="cr-app" on-navigate="{{ handleNavigate }}" on-login="{{ handleLogin }}">
     <template>
         <cr-view-handler></cr-view-handler>
         <cr-title-handler titlesuffix="Code Review"></cr-title-handler>
@@ -73,7 +74,8 @@
                 display: flex;
             }
 
-            .view-links a {
+            .view-links a,
+            cr-action {
                 color: white;
                 flex-shrink: 0;
                 margin-right: 16px;
@@ -96,6 +98,19 @@
             app-route {
                 display: none;
             }
+
+            .view-links .login-link,
+            .view-links .settings-link {
+                display: none;
+            }
+
+            :host-context(.login) .settings-link {
+                display: block;
+            }
+
+            :host-context(.no-login) .login-link {
+                display: block;
+            }
         </style>
         <header>
             <div class="title">
@@ -106,7 +121,8 @@
             </div>
             <div class="view-links">
                 <a class="bug-report" href="https://github.com/esprehn/chromium-codereview/issues/new" target="_blank">Report a bug</a>
-                <a href="/settings">Settings</a>
+                <a href="/settings" class="settings-link">Settings</a>
+                <cr-action on-tap="{{ handleLogin }}" class="login-link" white>Login</cr-action>
             </div>
         </header>
         <app-router id="router" trailingSlash="ignore">
@@ -119,7 +135,13 @@
     <script>
         Polymer({
             attached: function() {
+                var self = this;
                 this.replaceInitialUrl();
+                User.loadCurrentUser().then(function() {
+                    self.classList.add("login");
+                }).catch(function(e) {
+                    self.classList.add("no-login");
+                });
             },
             replaceInitialUrl: function() {
                 var self = this;
@@ -132,6 +154,9 @@
                 if (window.location.pathname != event.detail.url)
                     window.history.pushState(null, null, event.detail.url);
                 this.$.router.go();
+            },
+            handleLogin: function() {
+                window.location.href = User.getLoginUrl();
             },
         });
     </script>

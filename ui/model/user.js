@@ -19,8 +19,10 @@ User.EMAIL_SUFFIX_PATTERN = /(\+[^@]+)?@.*/;
 User.ISSUES_OPEN_PATTERN = /issues created: (\d+)/;
 User.ISSUES_REVIEW_PATTERN = /issues reviewed: (\d+)/;
 User.XSRF_TOKEN_PATTERN = /xsrfToken = '([^']+)';/;
+User.LOGIN_REDIRECT_URL = "https://www.google.com/accounts/ServiceLogin?service=ah&passive=true&continue=https://appengine.google.com/_ah/conflogin%3Fcontinue%3D{1}&ltmpl=gm";
 
 User.current = null;
+User.currentPromise = null;
 
 User.parseCurrentUser = function(document)
 {
@@ -43,11 +45,22 @@ User.parseCurrentUser = function(document)
     return user;
 };
 
-User.loadCurrentUser = function()
+User.loadCurrentUser = function(options)
 {
-    return loadDocument(User.CURRENT_USER_URL).then(function(document) {
+    if (User.currentPromise)
+        return User.currentPromise;
+    if (options.cached && User.current)
+        return Promise.resolve(User.current);
+    User.currentPromise = loadDocument(User.CURRENT_USER_URL).then(function(document) {
+        User.currentPromise = null;
         return User.parseCurrentUser(document);
     });
+    return User.currentPromise;
+};
+
+User.getLoginUrl = function()
+{
+    return User.LOGIN_REDIRECT_URL.assign(encodeURIComponent(location.href));
 };
 
 User.forName = function(name, email)

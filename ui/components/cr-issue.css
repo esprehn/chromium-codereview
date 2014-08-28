@@ -84,3 +84,11 @@ header h2 {
         text-align: center;
     }
 }
+
+:host-context(.no-login) .issue-toolbar {
+    display: none;
+}
+
+:host-context(.no-login) .issue-content {
+    margin-top: 1em;
+}

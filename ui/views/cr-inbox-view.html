@@ -1,19 +1,13 @@
 
+<link rel="import" href="../components/cr-action.html">
 <link rel="import" href="../components/cr-butterbar.html">
 <link rel="import" href="../components/cr-issue-inbox.html">
-<link rel="import" href="../components/cr-login-handler.html">
 
 <polymer-element name="cr-inbox-view">
     <template>
-        <cr-login-handler on-user-loaded="{{ loadInbox }}" redirect></cr-login-handler>
         <link rel="stylesheet" href="../components/common.css">
         <style>
             :host { display: block; }
-
-            p {
-                padding: 1em;
-                font-size: 2em;
-            }
 
             header {
                 display: flex;
@@ -42,8 +36,21 @@
             .form-field {
                 margin: 0 8px;
             }
+
+            .login-prompt {
+                text-align: center;
+                display: none;
+                padding: 1em;
+                font-size: 1.8em;
+            }
+            :host-context(.no-login) .login-prompt {
+                display: block;
+            }
         </style>
         <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
+        <div class="login-prompt">
+            <p><cr-action on-tap="{{ login }}">Login</cr-action> to view your issues.</p>
+        </div>
         <template if="{{ issues && !failed }}">
             <header>
                 <h1 class="app-header">My Issues</h1>
@@ -83,10 +90,16 @@
             loading: true,
             failed: false,
             butterbarMessage: "",
-            loadInbox: function() {
+            attached: function() {
+                var self = this;
                 this.fire("title-change", {
                     value: "My issues"
                 });
+                User.loadCurrentUser({cached: true}).then(function() {
+                    self.loadInbox();
+                });
+            },
+            loadInbox: function() {
                 this.filter = localStorage.getItem(FILTER_KEY) || this.filter;
                 this.showRecentActivity = localStorage.getItem(SHOW_RECENT_ACTIVITY_KEY) == "true";
                 this.issues = new IssueList({
@@ -115,6 +128,9 @@
                     self.failed = true;
                     self.butterbarMessage = "Failed to load your issues. :(";
                 });
+            },
+            login: function() {
+                this.fire("login");
             },
         });
     })();

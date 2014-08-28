@@ -14,6 +14,10 @@
             .reply-input {
                 margin: 0.5em 16px 0 16px;
             }
+
+            :host-context(.no-login) cr-toolbar {
+                display: none;
+            }
         </style>
         <template if="{{ !expanded }}">
             <cr-toolbar>

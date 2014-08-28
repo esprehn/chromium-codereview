@@ -32,6 +32,8 @@
                     output.innerHTML = "";
             },
             handleTap: function(event) {
+                if (!User.current)
+                    return;
                 var element = event.target;
                 if (!element.classList.contains("line-number"))
                     return;
