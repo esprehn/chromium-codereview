@@ -103,18 +103,11 @@ DiffBuilder.prototype.createContextAction = function(section, line)
 {
     if (!line.context)
         return null;
-    var self = this;
     var action = document.createElement("cr-action");
     action.textContent = "Show context";
-    action.onclick = function() {
-        self.file.loadContext(line.contextLinesStart, line.contextLinesEnd).then(function(lines) {
-            var builder = new DiffBuilder(self.file, self.output);
-            builder.emitGroup(lines, section);
-            section.remove();
-        }).catch(function(e) {
-            console.log(e);
-        });
-    };
+    action.className = "show-context";
+    action.line = line;
+    action.section = section;
     return action;
 };
 

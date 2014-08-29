@@ -32,13 +32,13 @@
                     output.innerHTML = "";
             },
             handleTap: function(event) {
-                if (!User.current)
-                    return;
                 var element = event.target;
-                if (!element.classList.contains("line-number"))
-                    return;
-                var row = element.parentNode;
-                this.addMessage(row);
+                if (User.current && element.classList.contains("line-number")) {
+                    var row = element.parentNode;
+                    this.addMessage(row);
+                } else if (element.classList.contains("show-context")) {
+                    this.showContext(element.line, element.section);
+                }
             },
             saveDraft: function(event) {
                 var self = this;
@@ -144,6 +144,18 @@
                 this.active = false;
                 this.$.output.innerHTML = "";
                 return Promise.resolve(this);
+            },
+            showContext: function(line, section) {
+                var self = this;
+                this.file.loadContext(line.contextLinesStart, line.contextLinesEnd).then(function(lines) {
+                    if (!section.parentNode)
+                        return;
+                    var builder = new DiffBuilder(self.file, self.$.output);
+                    builder.emitGroup(lines, section);
+                    section.remove();
+                }).catch(function(e) {
+                    console.log(e);
+                });
             },
             toggleDiff: function() {
                 return this.active ? this.hideDiff() : this.showDiff();
