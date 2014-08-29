@@ -28,15 +28,9 @@ DiffBuilder.prototype.emitMoveHeader = function(text)
 {
     var section = document.createElement("div");
     this.output.appendChild(section);
-    this.emitLine(section, {
-        type: "header",
-        beforeNumber: 0,
-        afterNumber: 0,
-        contextLinesStart: 0,
-        contextLinesEnd: 0,
-        context: false,
-        text: text,
-    });
+    var line = new DiffLine("header");
+    line.text = text;
+    this.emitLine(section, line);
 };
 
 DiffBuilder.prototype.emitGroup = function(group, beforeSection)

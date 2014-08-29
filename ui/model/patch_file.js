@@ -305,15 +305,11 @@ PatchFile.prototype.parseContext = function(data)
         // we harden the code to skip them instead of throwing errors.
         if (!newLine || !oldLine)
             continue;
-        lines.push({
-            type: "both",
-            beforeNumber: oldLine.lineNumber,
-            afterNumber: newLine.lineNumber,
-            contextLinesStart: 0,
-            contextLinesEnd: 0,
-            context: false,
-            text: newLine.text,
-        });
+        var line = new DiffLine("both");
+        line.beforeNumber = oldLine.lineNumber;
+        line.afterNumber = newLine.lineNumber;
+        line.text = newLine.text;
+        lines.push(line);
     }
     return lines;
 };
