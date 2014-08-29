@@ -33,7 +33,11 @@
                     img.src = href;
                     output.appendChild(div);
                 } else if (href) {
-                    output.appendChild(createAnchor(href, text));
+                    var a = document.createElement("a");
+                    a.href = href;
+                    a.textContent = text;
+                    a.target = "_blank";
+                    output.appendChild(a);
                 } else {
                     output.appendChild(document.createTextNode(text));
                 }
