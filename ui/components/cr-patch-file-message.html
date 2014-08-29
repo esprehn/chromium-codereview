@@ -104,7 +104,8 @@
                     return;
                 this.scrollIntoViewIfNeeded();
                 var textarea = this.shadowRoot.getElementById("textarea");
-                textarea.focus();
+                if (textarea)
+                    textarea.focus();
             },
             save: function() {
                 if (!this.text.trim()) {
