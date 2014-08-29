@@ -8,12 +8,6 @@ function DiffBuilder(file, output)
     this.highlightData = null;
 }
 
-DiffBuilder.prototype.reset = function()
-{
-    this.language = this.file.language;
-    this.highlightData = null;
-};
-
 DiffBuilder.prototype.emitDiff = function(diff)
 {
     if (diff.isImage) {
@@ -114,8 +108,8 @@ DiffBuilder.prototype.createContextAction = function(section, line)
     action.textContent = "Show context";
     action.onclick = function() {
         self.file.loadContext(line.contextLinesStart, line.contextLinesEnd).then(function(lines) {
-            self.reset();
-            self.emitGroup(lines, section);
+            var builder = new DiffBuilder(self.file, self.output);
+            builder.emitGroup(lines, section);
             section.remove();
         }).catch(function(e) {
             console.log(e);
