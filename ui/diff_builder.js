@@ -45,12 +45,12 @@ DiffBuilder.prototype.emitMoveHeader = function(text)
     });
 };
 
-DiffBuilder.prototype.emitGroup = function(group)
+DiffBuilder.prototype.emitGroup = function(group, beforeSection)
 {
     var section = document.createElement("div");
     for (var i = 0; i < group.length; ++i)
         this.emitLine(section, group[i]);
-    this.output.appendChild(section);
+    this.output.insertBefore(section, beforeSection);
 };
 
 DiffBuilder.prototype.emitLine = function(section, line)
@@ -115,11 +115,7 @@ DiffBuilder.prototype.createContextAction = function(section, line)
     action.onclick = function() {
         self.file.loadContext(line.contextLinesStart, line.contextLinesEnd).then(function(lines) {
             self.reset();
-            var newSection = document.createElement("div");
-            lines.forEach(function(line) {
-                self.emitLine(newSection, line);
-            });
-            self.output.insertBefore(newSection, section);
+            self.emitGroup(lines, section);
             section.remove();
         }).catch(function(e) {
             console.log(e);
