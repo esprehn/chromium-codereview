@@ -5,7 +5,11 @@ rm -fr build
 
 # Compile the app.
 mkdir -p build/ui/components
-vulcanize --strip --inline -o build/ui/components/cr-app.html ui/components/cr-app.html
+# Can't use --strip otherwise there's lots of layout bugs. Ex. templates with
+# <img> <a>Link here</a> end up with the link against the image and templates
+# that repeat links like <template> <a> link </a> </template> end up with all
+# the links against each other.
+vulcanize --inline -o build/ui/components/cr-app.html ui/components/cr-app.html
 
 # Copy all extension files.
 js_files=(
