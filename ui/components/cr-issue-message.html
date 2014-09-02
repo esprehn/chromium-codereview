@@ -1,0 +1,46 @@
+
+<link rel="import" href="../../bower_components/polymer-ui-collapsible/polymer-ui-collapsible.html">
+
+<link rel="import" href="cr-issue-message-reply.html">
+<link rel="import" href="cr-linkified-text.html">
+<link rel="import" href="cr-view-handler.html">
+
+<polymer-element name="cr-issue-message" attributes="message selected">
+    <template>
+        <cr-view-handler></cr-view-handler>
+        <link rel="stylesheet" href="cr-issue-message.css">
+
+        <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval, selected: selected } | tokenList }}" active="{{ message.active }}">
+            <div id="message-{{ message.sequence }}" class="message-header polymer-ui-collapsible-header">
+                <div class="message-title" on-tap="{{ showMessage }}">
+                    <div class="message-author" title="{{ message.author.email }}">{{ message.author.displayName }}</div>
+                    <div class="message-preview">{{ message.preview }}</div>
+                </div>
+                <div class="message-date">
+                    {{ message.date | formatDate }}
+                </div>
+                <a class="message-number" href="#msg{{ message.sequence }}">#{{ message.sequence }}</a>
+            </div>
+            <div class="message-text">
+                <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
+            </div>
+            <cr-issue-message-reply message="{{ message }}"></cr-issue-message-reply>
+        </polymer-ui-collapsible>
+    </template>
+    <script>
+        Polymer("cr-issue-message", {
+            message: null,
+            selected: false,
+            formatDate: function(date) {
+                if (!date)
+                    return "";
+                return date.relative();
+            },
+            showMessage: function() {
+                this.fire("message-show", {
+                    message: this.message,
+                });
+            },
+        });
+    </script>
+</polymer-element>

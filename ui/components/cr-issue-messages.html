@@ -1,45 +1,50 @@
 
-<link rel="import" href="../../bower_components/polymer-ui-collapsible/polymer-ui-collapsible.html">
-
+<link rel="import" href="cr-action.html">
 <link rel="import" href="cr-hash-observer.html">
-<link rel="import" href="cr-issue-message-reply.html">
-<link rel="import" href="cr-linkified-text.html">
-<link rel="import" href="cr-view-handler.html">
+<link rel="import" href="cr-issue-message.html">
 
-<polymer-element name="cr-issue-messages" attributes="messages selectionId activeId">
+<polymer-element name="cr-issue-messages" attributes="messages" on-message-show="{{ revealMessage }}">
     <template>
-        <cr-view-handler></cr-view-handler>
         <cr-hash-observer on-hash-changed="{{ hashChanged }}"></cr-hash-observer>
+        <style>
+            :host { display: block; }
 
-        <link rel="stylesheet" href="cr-issue-messages.css">
+            cr-toolbar {
+                margin: 0;
+                margin-bottom: 1em;
+                padding: 0;
+            }
+        </style>
 
-        <template if="{{ visibleMessages.length != messages.length }}">
+        <template if="{{ !showOlderMessages && olderMessages.length }}">
             <cr-toolbar>
                 <cr-action on-tap="{{ handleShowOlderMessages }}">
-                    Show {{ messages.length - visibleMessages.length }} older
-                    {{ "message" | pluralize(messages.length - visibleMessages.length) }}
+                    Show {{ olderMessages.length }} older
+                    {{ "message" | pluralize(olderMessages.length) }}
                 </cr-action>
             </cr-toolbar>
         </template>
 
-        <template repeat="{{ message in visibleMessages }}">
-            <polymer-ui-collapsible class="message {{ {approval: message.approval, disapproval: message.disapproval, selected: message.sequence == selectionId } | tokenList }}" active?="{{ message.sequence == activeId }}">
-                <div id="message-{{ message.sequence }}" class="message-header polymer-ui-collapsible-header" on-tap="{{ handleHeaderTap }}">
-                    <div class="message-title">
-                        <div class="message-author" title="{{ message.author.email }}">{{ message.author.displayName }}</div>
-                        <div class="message-preview">{{ message.preview }}</div>
-                    </div>
-                    <div class="message-date">
-                        {{ message.date | formatDate }}
-                    </div>
-                    <a class="message-number" href="#msg{{ message.sequence }}">#{{ message.sequence }}</a>
-                </div>
-                <div class="message-text">
-                    <cr-linkified-text text="{{ message.text }}" pre></cr-linkified-text>
-                </div>
-                <cr-issue-message-reply message="{{ message }}"></cr-issue-message-reply>
-            </polymer-ui-collapsible>
-        </template>
+        <div id="messages">
+            <template if="{{ olderMessages.length }}">
+                <polymer-ui-collapsible active="{{ showOlderMessages }}">
+                    <template if="{{ showOlderMessages }}">
+                        <template repeat="{{ message in olderMessages }}">
+                            <cr-issue-message
+                                id="message-{{ message.sequence"
+                                message="{{ message }}"
+                                selected="{{ message.sequence == selectionId }}"></cr-issue-message>
+                        </template>
+                    </template>
+                </polymer-ui-collapsible>
+            </template>
+            <template repeat="{{ message in visibleMessages }}">
+                <cr-issue-message
+                    id="message-{{ message.sequence"
+                    message="{{ message }}"
+                    selected="{{ message.sequence == selectionId }}"></cr-issue-message>
+            </template>
+        </div>
     </template>
     <script>
     (function() {
@@ -48,11 +53,16 @@
 
         Polymer("cr-issue-messages", {
             messages: null,
+            olderMessages: null,
             visibleMessages: null,
             selectionId: null,
-            activeId: null,
             messagesChanged: function() {
-                this.activeId = this.messages.length;
+                var index = Math.max(this.messages.length - MAX_MESSAGES, 0);
+                this.olderMessages = this.messages.to(index);
+                this.visibleMessages = this.messages.from(index);
+                var lastMessage = this.messages.last();
+                if (lastMessage)
+                    lastMessage.active = true;
                 this.hashChanged();
             },
             hashChanged: function() {
@@ -61,25 +71,15 @@
                 var num = window.location.hash.replace(SELECTION_PREFIX, "");
                 if (/^[0-9]+$/.test(num) && num > 0 && num <= this.messages.length) {
                     this.selectionId = num;
-                    this.activeId = num;
                     this.async(function() {
-                        var message = this.shadowRoot.getElementById("message-" + this.selectionId);
+                        var message = this.$.messages.getElementById("message-" + this.selectionId);
                         if (message)
                             this.scrollMessageToVisibleIfNeeded(message);
                     });
                 }
             },
-            activeIdChanged: function() {
-                this.visibleMessages = this.messages.from(Math.max(this.activeId - MAX_MESSAGES, 0));
-            },
             handleShowOlderMessages: function() {
-                this.visibleMessages = this.messages;
-            },
-            toggleAll: function(options) {
-                var messages = this.shadowRoot.querySelectorAll(".message").array();
-                messages.forEach(function(message) {
-                    message.active = options.active;
-                });
+                this.showOlderMessages = true;
             },
             pluralize: function(text, count) {
                 if (!count)
@@ -88,13 +88,8 @@
                     return text;
                 return text.pluralize();
             },
-            formatDate: function(date) {
-                if (!date)
-                    return "";
-                return date.relative();
-            },
-            handleHeaderTap: function(event) {
-                this.scrollMessageToVisibleIfNeeded(event.currentTarget.parentNode);
+            revealMessage: function(event) {
+                this.scrollMessageToVisibleIfNeeded(event.target);
             },
             scrollMessageToVisibleIfNeeded: function(message) {
                 // If you click the header then scroll the message until you can read it. This is

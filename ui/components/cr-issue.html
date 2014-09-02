@@ -142,10 +142,14 @@
                 this.showDialog(dialog);
             },
             collapseAllMessages: function() {
-                this.$.messages.toggleAll({active: false});
+                this.issue.messages.forEach(function(message) {
+                    message.active = false;
+                });
             },
             expandAllMessages: function() {
-                this.$.messages.toggleAll({active: true});
+                this.issue.messages.forEach(function(message) {
+                    message.active = true;
+                });
                 this.async(function() {
                     this.$.messages.scrollIntoViewIfNeeded();
                 }, null, 350);
