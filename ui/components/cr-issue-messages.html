@@ -27,7 +27,7 @@
                 <div id="message-{{ message.sequence }}" class="message-header polymer-ui-collapsible-header" on-tap="{{ handleHeaderTap }}">
                     <div class="message-title">
                         <div class="message-author" title="{{ message.author.email }}">{{ message.author.displayName }}</div>
-                        <div class="message-preview">{{ message.text | messagePreview }}</div>
+                        <div class="message-preview">{{ message.preview }}</div>
                     </div>
                     <div class="message-date">
                         {{ message.date | formatDate }}
@@ -43,9 +43,6 @@
     </template>
     <script>
     (function() {
-        var REPLY_HEADER = /^On \d+\/\d+\/\d+ (at )?\d+:\d+:\d+, .*? wrote:$/;
-        var FILE_HEADER = /^https:\/\/codereview.chromium.org\/\d+\/diff\/\d+\/.*$/;
-        var MAX_PREVIEW_LENGTH = 300;
         var SELECTION_PREFIX = "#msg";
         var MAX_MESSAGES = 5;
 
@@ -108,34 +105,6 @@
                     message.scrollIntoViewIfNeeded();
                 }, null, 350);
             },
-            messagePreview: function(text) {
-                var lines = text.split("\n");
-                var i = 0;
-
-                while (i < text.length) {
-                    if (lines[i] === "") {
-                        ++i;
-                    } if (REPLY_HEADER.test(lines[i])) {
-                        ++i;
-                    } else if (FILE_HEADER.test(lines[i])) {
-                        i += 5;
-                    } else if (lines[i] && lines[i].startsWith(">")) {
-                        ++i;
-                    } else {
-                        break;
-                    }
-                }
-
-                // If we hit the end then it's not clear what's in this reply so
-                // just show it all.
-                if (i >= text.length)
-                    return text;
-
-                return lines
-                    .slice(i)
-                    .join("\n")
-                    .substr(0, MAX_PREVIEW_LENGTH);
-            }
         });
     })();
     </script>
