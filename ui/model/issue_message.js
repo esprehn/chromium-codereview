@@ -10,6 +10,7 @@ function IssueMessage(issue, sequence)
     this.date = ""; // Date
     this.approval = false;
     this.sequence = sequence || 0;
+    this.generated = false;
 }
 
 IssueMessage.prototype.parseData = function(data)
@@ -23,4 +24,5 @@ IssueMessage.prototype.parseData = function(data)
     this.disapproval = data.disapproval || false;
     this.date = Date.utc.create(data.date);
     this.approval = data.approval || false;
+    this.generated = data.auto_generated || false;
 };
