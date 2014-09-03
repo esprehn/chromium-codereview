@@ -59,8 +59,10 @@
             cancelDraft: function(event) {
                 var message = event.detail.message;
                 var target = event.target;
-                if (!message.date)
+                if (!message.date) {
+                    this.file.removeMessage(message);
                     target.remove();
+                }
             },
             discardDraft: function(event) {
                 var self = this;
@@ -107,7 +109,9 @@
                     return;
                 }
                 var numbers = row.querySelectorAll(".line-number");
-                var message = PatchFileMessage.createDraft();
+                var message = new PatchFileMessage(this.file);
+                message.draft = true;
+                message.author = User.current;
                 message.text = defaultText || "";
                 if (row.classList.contains("remove")) {
                     message.line = numbers[0].getAttribute("value").toNumber();
@@ -115,6 +119,7 @@
                 } else {
                     message.line = numbers[1].getAttribute("value").toNumber();
                 }
+                this.file.addMessage(message);
                 var fileMessage = document.createElement("cr-patch-file-message");
                 fileMessage.message = message;
                 fileMessage.expand();

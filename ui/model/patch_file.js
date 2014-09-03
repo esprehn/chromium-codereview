@@ -158,7 +158,7 @@ PatchFile.prototype.parseData = function(data)
 
     var self = this;
     (data.messages || []).forEach(function(messageData) {
-        var message = new PatchFileMessage();
+        var message = new PatchFileMessage(self);
         message.parseData(messageData);
         self.addMessage(message);
     });
@@ -228,6 +228,10 @@ PatchFile.prototype.saveDraft = function(message, newText)
 
 PatchFile.prototype.discardDraft = function(message)
 {
+    if (!message.messageId) {
+        this.removeMessage(message);
+        return;
+    }
     var self = this;
     return this.createDraftData(message).then(function(data) {
         data.old_text = message.text;

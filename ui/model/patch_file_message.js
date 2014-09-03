@@ -1,7 +1,8 @@
 "use strict";
 
-function PatchFileMessage()
+function PatchFileMessage(file)
 {
+    this.file = file || null;
     this.author = null; // User
     this.text = "";
     this.draft = false;
@@ -10,14 +11,6 @@ function PatchFileMessage()
     this.left = false;
     this.messageId = "";
 }
-
-PatchFileMessage.createDraft = function()
-{
-    var message = new PatchFileMessage();
-    message.draft = true;
-    message.author = User.current;
-    return message;
-};
 
 PatchFileMessage.findDraftMessageId = function(document)
 {
