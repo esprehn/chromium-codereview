@@ -54,6 +54,12 @@
                         value: "Issue " + issue.id + ": " + issue.subject
                     });
                     self.issue = issue;
+                    issue.patchsets.forEach(function(patchset) {
+                        patchset.loadDetails().catch(function(e) {
+                            // FIXME: We should show an error message.
+                            console.log(e);
+                        });
+                    });
                 }).catch(function(error) {
                     console.log(error);
                     self.failed = true;
