@@ -213,6 +213,7 @@
             showModal: function() {
                 if (!this.issue)
                     return;
+                this.issue.updateDraftFiles();
                 this.reset();
                 this.$.dialog.showModal();
             },

@@ -17,7 +17,6 @@ function Issue(id)
     this.created = ""; // Date
     this.patchsets = []; // Array<PatchSet>
     this.draftPatchsets = []; // Array<DraftPatchSet>
-    this.shouldUpdateDraftFiles = true;
     this.lastModified = ""; // Date
     this.closed = false;
     this.commit = false;
@@ -321,8 +320,6 @@ Issue.prototype.getDrafts = function()
 
 Issue.prototype.updateDraftFiles = function()
 {
-    if (!this.shouldUpdateDraftFiles)
-        return;
     var draftPatchsets = {};
     this.draftPatchsets.forEach(function(draftPatchset) {
         if (draftPatchset.patchset.draftCount)

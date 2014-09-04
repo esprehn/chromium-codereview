@@ -124,7 +124,6 @@ PatchFile.prototype.addMessage = function(message)
         this.draftCount++;
         this.patchset.draftCount++;
         this.patchset.issue.draftCount++;
-        this.patchset.issue.updateDraftFiles();
     }
 };
 
@@ -141,7 +140,6 @@ PatchFile.prototype.removeMessage = function(message)
         this.draftCount--;
         this.patchset.draftCount--;
         this.patchset.issue.draftCount--;
-        this.patchset.issue.updateDraftFiles();
     }
 };
 
