@@ -33,6 +33,7 @@ Issue.PUBLISH_URL = "/{1}/publish";
 Issue.EDIT_URL = "/{1}/edit";
 Issue.CLOSE_URL = "/{1}/close";
 Issue.FLAGS_URL = "/{1}/edit_flags";
+Issue.DELETE_DRAFTS_URL = "/{1}/delete_drafts";
 
 Issue.prototype.getDetailUrl = function()
 {
@@ -57,6 +58,11 @@ Issue.prototype.getFlagsUrl = function()
 Issue.prototype.getCloseUrl = function()
 {
     return Issue.CLOSE_URL.assign(encodeURIComponent(this.id));
+};
+
+Issue.prototype.getDiscardAllDraftsUrl = function()
+{
+    return Issue.DELETE_DRAFTS_URL.assign(encodeURIComponent(this.id));
 };
 
 Issue.prototype.reviewerEmails = function()
@@ -266,6 +272,51 @@ Issue.prototype.createFlagsData = function(options)
             data.builders = TryServers.createFlagValue(options.builders);
         return data;
     });
+};
+
+Issue.prototype.createEditData = function(options)
+{
+    return User.loadCurrentUser().then(function(user) {
+        return {
+            xsrf_token: user.xsrfToken,
+            subject: options.subject,
+            description: options.description,
+            reviewers: options.reviewers,
+            cc: options.cc,
+            closed: options.closed ? "on" : "",
+            private: options.private ? "on" : "",
+        };
+    });
+};
+
+Issue.prototype.discardAllDrafts = function()
+{
+    var issue = this;
+    var drafts = this.getDrafts();
+    return User.loadCurrentUser().then(function(user) {
+        var data = {
+            xsrf_token: user.xsrfToken,
+        };
+        return sendFormData(issue.getDiscardAllDraftsUrl(), data).then(function() {
+            drafts.forEach(function(draft) {
+                draft.file.removeMessage(draft);
+            });
+            return issue;
+        });
+    });
+};
+
+Issue.prototype.getDrafts = function()
+{
+    var drafts = [];
+    this.draftPatchsets.forEach(function(draftPatchset) {
+        draftPatchset.files.forEach(function(file) {
+            file.drafts.forEach(function(draft) {
+                drafts.push(draft);
+            });
+        });
+    });
+    return drafts;
 };
 
 Issue.prototype.updateDraftFiles = function()

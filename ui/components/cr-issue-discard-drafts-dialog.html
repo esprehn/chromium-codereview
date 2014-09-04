@@ -1,0 +1,87 @@
+
+<link rel="import" href="cr-butterbar.html">
+<link rel="import" href="cr-button.html">
+<link rel="import" href="cr-dialog.html">
+<link rel="import" href="cr-toolbar.html">
+
+<polymer-element name="cr-issue-discard-drafts-dialog" attributes="issue">
+    <template>
+        <link rel="stylesheet" href="common.css">
+        <style>
+            .dialog-fields-label {
+                font-weight: bold;
+                color: #959595;
+                -webkit-user-select: none;
+                cursor: default;
+            }
+
+            .dialog-fields-field,
+            .dialog-fields-label {
+                padding: 0.5em 16px;
+            }
+
+            p {
+                margin: 1em 16px;
+                font-size: 1.3em;
+            }
+
+            #dialog {
+                width: 600px;
+            }
+        </style>
+
+        <dialog is="cr-dialog" id="dialog" on-cancel="{{ cancel }}">
+            <cr-butterbar message="{{ butterbarMessage }}"></cr-butterbar>
+
+            <h1>Discard all drafts</h1>
+
+            <p>
+                There's no undo, are you sure?
+            </p>
+
+            <cr-toolbar>
+                <cr-button primary on-tap="{{ discardAllDrafts }}">Discard my drafts</cr-button>
+                <cr-button on-tap="{{ cancel }}">No thanks</cr-button>
+            </cr-toolbar>
+        </dialog>
+    </template>
+    <script>
+        Polymer("cr-issue-discard-drafts-dialog", {
+            issue: null,
+            butterbarMessage: "",
+            sending: false,
+            cancel: function(event) {
+                this.close();
+            },
+            reset: function() {
+                this.sending = false;
+                this.butterbarMessage = "";
+            },
+            close: function() {
+                this.reset();
+                this.$.dialog.close();
+            },
+            discardAllDrafts: function() {
+                this.sending = true;
+                this.butterbarMessage = "Saving...";
+                this.issue.discardAllDrafts()
+                    .then(this.discardSuccess.bind(this))
+                    .catch(this.discardFailure.bind(this));
+            },
+            discardSuccess: function() {
+                this.fire("issue-refresh");
+                this.close();
+            },
+            discardFailure: function(error) {
+                // FIXME: We should show an better error message.
+                this.sending = false;
+                this.butterbarMessage = "Error: " + error.message;
+            },
+            showModal: function() {
+                if (!this.issue)
+                    return;
+                this.$.dialog.showModal();
+            },
+        });
+    </script>
+</polymer-element>

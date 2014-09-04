@@ -2,6 +2,7 @@
 <link rel="import" href="cr-action.html">
 <link rel="import" href="cr-butterbar.html">
 <link rel="import" href="cr-button.html">
+<link rel="import" href="cr-issue-discard-drafts-dialog.html">
 <link rel="import" href="cr-issue-edit-dialog.html">
 <link rel="import" href="cr-issue-messages.html">
 <link rel="import" href="cr-issue-meta.html">
@@ -11,8 +12,8 @@
 <link rel="import" href="cr-keyboard.html">
 <link rel="import" href="cr-linkified-text.html">
 <link rel="import" href="cr-toolbar.html">
-<link rel="import" href="cr-try-results.html">
 <link rel="import" href="cr-try-dialog.html">
+<link rel="import" href="cr-try-results.html">
 <link rel="import" href="cr-view-handler.html">
 
 <polymer-element name="cr-issue" attributes="issue" on-butterbar-update="{{ updateButterbar }}" on-show-try-dialog="{{ handleShowTryDialog }}">
@@ -64,7 +65,15 @@
             </div>
         </div>
 
-        <h2>Patches</h2>
+        <header>
+            <h2>Patches</h2>
+            <div class="ui-actions">
+                <template if="{{ issue.draftCount }}">
+                    <cr-action on-tap="{{ discardAllDrafts }}">Discard all drafts</cr-action>
+                </template>
+            </div>
+        </header>
+
         <cr-issue-patchsets patchsets="{{ issue.patchsets }}"></cr-issue-patchsets>
 
         <template if="{{ issue.messages.length }}">
@@ -153,6 +162,11 @@
                 this.async(function() {
                     this.$.messages.scrollIntoViewIfNeeded();
                 }, null, 350);
+            },
+            discardAllDrafts: function() {
+                var dialog = document.createElement("cr-issue-discard-drafts-dialog");
+                dialog.issue = this.issue;
+                this.showDialog(dialog);
             },
             saveMessage: function(event) {
                 if (event.detail.messageText)
