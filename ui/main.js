@@ -12,10 +12,11 @@ window.addEventListener("load", function() {
         return chrome.extension.getURL(name);
     }
 
+    var title = document.querySelector("title");
+    title.textContent = "Chromium Code Review";
     document.write(
         "<!DOCTYPE html>" +
         "<meta name=viewport content='initial-scale=1, maximum-scale=1, user-scalable=no'>" +
-        "<title>Chromium Code Review</title>" +
         "<script src='" + resolveUrl("bower_components/platform/platform.js") + "'></script>" +
         "<script>EXTENSION_URL = '" + resolveUrl("") + "';</script>" +
         "<link rel='import' href='" + resolveUrl("ui/components/cr-app.html") + "'>" +
@@ -23,5 +24,6 @@ window.addEventListener("load", function() {
         "<cr-app></cr-app>"
     );
     document.close();
+    document.head.appendChild(title);
     document.documentElement.style.display = '';
 });
