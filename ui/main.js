@@ -12,6 +12,8 @@ window.addEventListener("load", function() {
         return chrome.extension.getURL(name);
     }
 
+    // FIXME: Work around http://crbug.com/411111 where the title won't dynamically
+    // update anymore in Chrome 37 unless we reuse the same <title> element.
     var title = document.querySelector("title");
     title.textContent = "Chromium Code Review";
     document.write(
