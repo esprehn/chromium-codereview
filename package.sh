@@ -21,6 +21,7 @@ js_files=(
     ui/resources.js
     ui/style.css
     bower_components/platform/platform.js
+    bower_components/gif.js/dist/gif.worker.js
 )
 image_files=`find ui icons -name *.jpg -o -name *.jpeg -o -name *.gif -o -name *.png`
 all_files="${js_files[@]} ${image_files[@]}"
