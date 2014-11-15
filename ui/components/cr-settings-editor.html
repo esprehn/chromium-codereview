@@ -35,10 +35,24 @@
                 </div>
             </div>
             <div class="form-row">
+                <label class="form-label" for="tabSpaces">Tab spaces</label>
+                <div class="form-field">
+                    <input type="text" id="tabSpaces" value="{{ settings.tabSpaces }}" autocomplete="off" class="{{ {invalid: errors.tabSpaces} | tokenList }}">
+                    <div class="form-error">{{ errors.tabSpaces }}</div>
+                </div>
+            </div>
+            <div class="form-row">
                 <label class="form-label" for="notifyByChat">Notify by chat</label>
                 <div class="form-field">
                     <input type="checkbox" id="notifyByChat" checked="{{ settings.notifyByChat }}" class="{{ {invalid: errors.notifyByChat} | tokenList }}">
                     <div class="form-error">{{ errors.notifyByChat }}</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="form-label" for="displayGeneratedMessages">Show generated messages</label>
+                <div class="form-field">
+                    <input type="checkbox" id="displayGeneratedMessages" checked="{{ settings.displayGeneratedMessages }}" class="{{ {invalid: errors.displayGeneratedMessages} | tokenList }}">
+                    <div class="form-error">{{ errors.displayGeneratedMessages }}</div>
                 </div>
             </div>
         </fieldset>

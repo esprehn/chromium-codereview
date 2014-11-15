@@ -5,6 +5,8 @@ function UserSettings()
     this.name = "";
     this.context = "";
     this.columnWidth = 0;
+    this.tabSpaces = 0;
+    this.displayGeneratedMessages = false;
     this.notifyByChat = false;
 }
 
@@ -14,6 +16,8 @@ UserSettings.FIELD_NAME_MAP = {
     "nickname": "name",
     "notify_by_chat": "notifyByChat",
     "column_width": "columnWidth",
+    "tab_spaces": "tabSpaces",
+    "display_generated_msgs": "displayGeneratedMessages",
     "context": "context",
 };
 
@@ -38,9 +42,17 @@ UserSettings.prototype.parseDocument = function(doc)
     if (columnWidth)
         this.columnWidth = parseInt(columnWidth.value, 10) || 0;
 
+    var tabSpaces = doc.getElementById("id_tab_spaces");
+    if (tabSpaces)
+        this.tabSpaces = parseInt(tabSpaces.value, 10) || 0;
+
     var notifyByChat = doc.getElementById("id_notify_by_chat");
     if (notifyByChat)
         this.notifyByChat = notifyByChat.checked;
+
+    var displayGeneratedMessages = doc.getElementById("id_display_generated_msgs");
+    if (displayGeneratedMessages)
+        this.displayGeneratedMessages = displayGeneratedMessages.checked;
 };
 
 UserSettings.prototype.save = function()
@@ -72,6 +84,8 @@ UserSettings.prototype.createSaveData = function()
             notify_by_chat: settings.notifyByChat ? "on" : "",
             notify_by_email: "on",
             column_width: settings.columnWidth,
+            tab_spaces: settings.tabSpaces,
+            display_generated_msgs: settings.displayGeneratedMessages,
             context: settings.context,
         };
     });  
