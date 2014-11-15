@@ -16,7 +16,6 @@ js_files=(
     manifest.json
     background.js
     ui/base.js
-    ui/dom.js
     ui/main.js
     ui/resources.js
     ui/style.css
