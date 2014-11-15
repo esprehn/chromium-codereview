@@ -18,6 +18,9 @@ function GifRecorder(options)
     this.context = canvas.getContext("2d");
 }
 
+if (!window.EXTENSION_URL)
+  window.EXTENSION_URL = "";
+
 GifRecorder.ACTUAL_WORKER_URL = EXTENSION_URL + "bower_components/gif.js/dist/gif.worker.js";
 GifRecorder.WORKER_URL = null;
 
