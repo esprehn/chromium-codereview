@@ -60,6 +60,7 @@ a:hover {
 select,
 input {
     margin: 0;
+    vertical-align: middle;
 }
 
 input[type=text] {
