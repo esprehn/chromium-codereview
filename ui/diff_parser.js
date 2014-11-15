@@ -14,7 +14,7 @@ DiffParser.COPY_FROM_PREFIX = "copy from ";
 DiffParser.COPY_TO_PREFIX = "copy to ";
 DiffParser.RENAME_FROM_PREFIX = "rename from ";
 DiffParser.RENAME_TO_PREFIX = "rename to ";
-DiffParser.HEADER_PATTERN = /^@@ \-(\d+),[^+]+\+(\d+)(,\d+)? @@ ?(.*)/;
+DiffParser.HEADER_PATTERN = /^@@ \-(\d+)(,\d+)? \+(\d+)(,\d+)? @@ ?(.*)/;
 
 DiffParser.prototype.peekLine = function()
 {
@@ -81,12 +81,12 @@ DiffParser.prototype.parseFile = function()
 
         if (groupType == "header") {
             var matchedHeader = this.takeLine().match(DiffParser.HEADER_PATTERN);
-            var beforeLineNumber = parseInt(matchedHeader[1], 10);
-            var afterLineNumber = parseInt(matchedHeader[2], 10);
+            var beforeLineNumber = parseInt(matchedHeader[1], 10) || 0;
+            var afterLineNumber = parseInt(matchedHeader[3], 10) || 0;
             line.contextLinesStart = currentBeforeLineNumber + deltaOffset;
             line.contextLinesEnd = beforeLineNumber - 1 + deltaOffset;
             line.context = line.contextLinesEnd > 0;
-            line.text = matchedHeader[4];
+            line.text = matchedHeader[5];
             currentBeforeLineNumber = beforeLineNumber;
             currentAfterLineNumber = afterLineNumber;
             if (!beforeLineNumber)

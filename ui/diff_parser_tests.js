@@ -1,6 +1,18 @@
 "use strict";
 
 describe("DiffParser", function() {
+    it("should parse headers", function() {
+        var pattern = DiffParser.HEADER_PATTERN;
+        expect("@@ -1,1 +1,1 @@ text here").toMatch(pattern);
+        expect("@@ -2,1 +1,1 @@").toMatch(pattern);
+        expect("@@ -3 +1,1 @@").toMatch(pattern);
+        expect("@@ -4,1 +1 @@").toMatch(pattern);
+        expect("@@ -5,12 +1,1 @@").toMatch(pattern);
+        expect("@@ -6,1 +12,1 @@").toMatch(pattern);
+        expect("@@ -7,55 +12,1 @@").toMatch(pattern);
+        expect("@@ -81,1 +1,1 @@ suffix").toMatch(pattern);
+        expect("@@ -9,12 +1,11 @@").toMatch(pattern);
+    });
     it("should not show context link for file deletes", function() {
         var text =
             "Index: example.cc\n" +
