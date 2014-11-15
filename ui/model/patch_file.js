@@ -64,6 +64,7 @@ PatchFile.SYNTAX_LANGUAGES = {
     // FIXME: We should create a proper language definition for idl. For now we
     // use ActionScript since they're actually quite similar.
     "idl": "actionscript",
+    "sky": "html",
 };
 
 PatchFile.compare = function(a, b)
